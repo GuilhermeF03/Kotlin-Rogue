@@ -1,6 +1,7 @@
 [[races]]
 id = 0
 name = "HUMAN"
+
 [stats]
 vitality = 5
 strength = 5
@@ -22,6 +23,7 @@ description = "Versatile and ambitious, humans adapt to any challenge. They have
 [[races]]
 id = 1
 name = "ELF"
+
 [stats]
 vitality = 4
 strength = 3
@@ -43,6 +45,7 @@ description = "Children of nature and the stars, elves excel in agility and arca
 [[races]]
 id = 2
 name = "GOBLIN"
+
 [stats]
 vitality = 3
 strength = 4
@@ -64,6 +67,7 @@ description = "Clever and resourceful, goblins thrive in chaos. What they lack i
 [[races]]
 id = 3
 name = "ORC"
+
 [stats]
 vitality = 8
 strength = 9
@@ -85,6 +89,7 @@ description = "Born for battle, orcs embody raw strength and endurance. Their po
 [[races]]
 id = 4
 name = "VAMPIRE"
+
 [stats]
 vitality = 5
 strength = 6
@@ -106,6 +111,7 @@ description = "Cursed immortals who feed on life itself. Vampires walk the line 
 [[races]]
 id = 5
 name = "AUTOMATA"
+
 [stats]
 vitality = 9
 strength = 8
