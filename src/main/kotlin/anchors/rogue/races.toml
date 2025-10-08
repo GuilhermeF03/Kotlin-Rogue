@@ -1,0 +1,125 @@
+[[races]]
+id = 0
+name = "HUMAN"
+[stats]
+vitality = 5
+strength = 5
+constitution = 5
+dexterity = 5
+luck = 5
+intelligence = 5
+
+[blessing]
+name = "Jack Of All Trades"
+description = "Adapt to any challenge — all your stats are balanced and reliable."
+
+[curse]
+name = "Master Of None"
+description = "You can’t level your character class past level 7."
+
+description = "Versatile and ambitious, humans adapt to any challenge. They have no great strengths, but few true weaknesses."
+
+[[races]]
+id = 1
+name = "ELF"
+[stats]
+vitality = 4
+strength = 3
+constitution = 4
+dexterity = 7
+luck = 5
+intelligence = 7
+
+[blessing]
+name = "Son Of The Forest"
+description = "Begin each battle with an extra action due to your attunement with natural energies."
+
+[curse]
+name = "Spirit Magic"
+description = "Your deep bond with magic burdens your body — all spells cost 25% more mana to cast."
+
+description = "Children of nature and the stars, elves excel in agility and arcane arts. Their fragile bodies hide ancient power."
+
+[[races]]
+id = 2
+name = "GOBLIN"
+[stats]
+vitality = 3
+strength = 4
+constitution = 3
+dexterity = 8
+luck = 8
+intelligence = 4
+
+[blessing]
+name = "Scavenger"
+description = "“One creature’s trash is your treasure.” — After battles, you find 25% more items."
+
+[curse]
+name = "Unblessed"
+description = "Rejected by the divine, your body is frail — VIT and CON growth are reduced."
+
+description = "Clever and resourceful, goblins thrive in chaos. What they lack in toughness, they make up for in cunning and luck."
+
+[[races]]
+id = 3
+name = "ORC"
+[stats]
+vitality = 8
+strength = 9
+constitution = 8
+dexterity = 3
+luck = 2
+intelligence = 0
+
+[blessing]
+name = "Blessed Body"
+description = "“Power flows through your veins.” — STR, VIT, and CON growth are doubled, granting immense physical might and endurance."
+
+[curse]
+name = "Learning Disability"
+description = "Your mind rejects complex thought — you cannot learn or use any form of magic without the help equipment."
+
+description = "Born for battle, orcs embody raw strength and endurance. Their power is unmatched, but intellect is not their ally."
+
+[[races]]
+id = 4
+name = "VAMPIRE"
+[stats]
+vitality = 5
+strength = 6
+constitution = 4
+dexterity = 5
+luck = 4
+intelligence = 6
+
+[blessing]
+name = "Blood Sucking"
+description = "Heal for 10% of all physical damage dealt; the blood of your enemies sustains you."
+
+[curse]
+name = "Blood Magic"
+description = "You possess no mana pool — all magic consumes your own health instead of mana."
+
+description = "Cursed immortals who feed on life itself. Vampires walk the line between predator and prey, wielding both blade and dark sorcery."
+
+[[races]]
+id = 5
+name = "AUTOMATA"
+[stats]
+vitality = 9
+strength = 8
+constitution = 9
+dexterity = 4
+luck = 0
+intelligence = 0
+
+[blessing]
+name = "Sacred Shell"
+description = "Immune to all status effects and INT checks."
+
+[curse]
+name = "Iron Heart"
+description = "Lacking a soul, you have no luck or capabilities to wield magic — cannot grow the INT and LUCK stats."
+
+description = "Forged of divine metal, the Automata feel neither pain nor fear. Their minds are hollow, yet their shells are eternal."

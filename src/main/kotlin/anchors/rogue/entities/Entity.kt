@@ -10,11 +10,26 @@ data class Entity(
     val skillPoints: Int = 0,
     val equippedSkills: List<Skill> = listOf(),
     val skills: List<Skill> = listOf(),
-    val inventory: Inventory,
+    val inventory: Inventory
 ) {
     val health: Int
         get() = race.stats.vitality
 
     val mana: Int
         get() = race.stats.intelligence
+
+    val stats: Stats
+        get() = race.stats
+
+    val statusWindow: String
+        get() = """
+            Name: $name
+            Race: $race
+            Class: ${characterClass.name} (Level ${characterClass.level})
+            Health: $health
+            Mana: $mana
+            Stats: $stats
+            Skill Points: $skillPoints
+            Equipped Skills:\n${equippedSkills.joinToString { "- ${it.name}\n" }}
+            """
 }
