@@ -7,4 +7,13 @@ data class Stats(
     val dexterity: Int,
     val luck: Int,
     val intelligence: Int,
-)
+) {
+    override fun toString(): String = """
+            VIT: $vitality
+            STR: $strength
+            CON: $constitution
+            DEX: $dexterity
+            LUCK: $luck
+            INT: $intelligence
+            """
+}

@@ -2,39 +2,41 @@ package anchors.rogue.entities
 
 import anchors.rogue.systems.combat.Skill
 
-enum class Race(
+data class Race(
+    val id: Int,
+    val name: String,
     val stats: Stats,
     val blessing: Skill,
     val curse: Skill,
-) {
-    HUMAN(
-        Stats(1, 1, 1, 1, 1, 1),
-        Skill("Jack Of All Trades"),
-        Skill("Master Of None"),
-    ),
-    ELF(
-        Stats(1, 1, 1, 1, 1, 1),
-        Skill("Son Of The Forest"),
-        Skill("Spirit Magic"),
-    ),
-    GOBLIN(
-        Stats(1, 1, 1, 1, 1, 1),
-        Skill("Scavenger"),
-        Skill("Unblessed"),
-    ),
-    ORC(
-        Stats(1, 1, 1, 1, 1, 0),
-        Skill("Blessed Body"),
-        Skill("Learning Disability"),
-    ),
-    VAMPIRE(
-        Stats(1, 1, 1, 1, 1, -1),
-        Skill("Blood Sucking"),
-        Skill("Blood Magic"),
-    ),
-    AUTOMATA(
-        Stats(1, 1, 1, 1, -1, -1),
-        Skill("Sacred Shell"),
-        Skill("Iron Heart"),
-    ),
-}
+    val description: String
+)
+
+/*import com.moandjiezana.toml.Toml
+import java.io.File
+
+fun loadRacesFromToml(filePath: String): List<RaceData> {
+    val toml = Toml().read(File(filePath))
+    return toml.getTables("races").map { table ->
+        RaceData(
+            id = table.getLong("id").toInt(),
+            name = table.getString("name"),
+            vitals = Stats(
+                vitality = table.getTable("vitals").getLong("vitality").toInt(),
+                strength = table.getTable("vitals").getLong("strength").toInt(),
+                constitution = table.getTable("vitals").getLong("constitution").toInt(),
+                dexterity = table.getTable("vitals").getLong("dexterity").toInt(),
+                luck = table.getTable("vitals").getLong("luck").toInt(),
+                intelligence = table.getTable("vitals").getLong("intelligence").toInt()
+            ),
+            blessing = Skill(
+                name = table.getTable("blessing").getString("name"),
+                description = table.getTable("blessing").getString("description")
+            ),
+            curse = Skill(
+                name = table.getTable("curse").getString("name"),
+                description = table.getTable("curse").getString("description")
+            ),
+            lore = table.getString("lore")
+        )
+    }
+}*/

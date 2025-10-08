@@ -17,4 +17,19 @@ data class Entity(
 
     val mana: Int
         get() = race.stats.intelligence
+
+    val stats: Stats
+        get() = race.stats
+
+    val statusWindow: String
+        get() = """
+            Name: $name
+            Race: $race
+            Class: ${archetype.name} (Level ${archetype.level})
+            Health: $health
+            Mana: $mana
+            Stats: $stats
+            Skill Points: $skillPoints
+            Equipped Skills:\n${equippedSkills.joinToString { "- ${it.name}\n" }}
+            """
 }
