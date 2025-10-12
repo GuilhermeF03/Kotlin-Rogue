@@ -31,5 +31,5 @@ data class Entity(
             Stats: $stats
             Skill Points: $skillPoints
             Equipped Skills:\n${equippedSkills.joinToString { "- ${it.name}\n" }}
-            """
+        """.trimIndent()
 }

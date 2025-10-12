@@ -1,18 +1,23 @@
 package anchors.rogue.systems.combat
 
+import anchors.rogue.data.serializers.UUIDSerializer
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
+@Serializable
 data class Skill(
-    val id: UUID,
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID = UUID.randomUUID(),
     val name: String,
     val description: String = "",
     val type: SkillType,
     val category: SkillCategory,
     val effect: SkillEffect,
-    val basePower: Int,
-    val cost: Int
+    val basePower: Int = 0,
+    val cost: Int = 0
 )
 
+@Serializable
 enum class SkillType {
     PHYSICAL,
     FIRE,
@@ -22,6 +27,7 @@ enum class SkillType {
     HOLY
 }
 
+@Serializable
 enum class SkillCategory {
     PHYSICAL,
     MAGIC,
@@ -29,12 +35,14 @@ enum class SkillCategory {
     DEBUFF
 }
 
+@Serializable
 data class SkillEffect(
-    val effect: EffectType,
+    val type: EffectType,
     val multiplier: Double = 0.0,
     val duration: Int = 0
 )
 
+@Serializable
 enum class EffectType {
     NONE,
     ATTACK_UP,

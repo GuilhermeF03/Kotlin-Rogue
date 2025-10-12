@@ -1,0 +1,98 @@
+[
+  {
+    "name": "WARRIOR",
+    "passive": {
+      "name": "Battle Hardened",
+      "description": "Increase max HP and physical defense by 10%."
+    },
+    "skillTree": [
+      {"name": "Power Strike", "description": "Deal 1.2× damage to a single target."},
+      {"name": "Defensive Stance", "description": "Reduce all damage taken by 25% for 2 turns."},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""}
+    ]
+  },
+  {
+    "name": "ARCHER",
+    "passive": {
+      "name": "Keen Eye",
+      "description": "Increase accuracy and critical hit rate by 10%"
+    },
+    "skillTree": [
+      {"name": "Piercing Shot", "description": "Deal 1.1× damage and ignore 15% of target defense"},
+      {"name": "Poison Arrow", "description": "Deal 1.0× damage and inflict poison for 3 turns."},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""}
+    ]
+  },
+  {
+    "name": "MAGE",
+    "passive": {
+      "name": "Mana Flow",
+      "description": "Recover a bit of mana every turn"
+    },
+    "skillTree": [
+      {"name": "Fireball", "description": "Deal 1.2× fire damage to an enemy"},
+      {"name": "Ice Spike", "description": "Deal 1.0× ice damage and has 30% chance to freeze target."},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""}
+    ]
+  },
+  {
+    "name": "PRIEST",
+    "passive": {
+      "name": "Divine Grace",
+      "description": "Healing done increased by 15%"
+    },
+    "skillTree": [
+      {"name": "Heal", "description": "Restore 25% of an ally’s HP."},
+      {"name": "Smite", "description": "Deal 1.0× holy damage."},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""}
+    ]
+  },
+  {
+    "name": "THIEF",
+    "passive": {
+      "name": "Shadow Step",
+      "description": "10% higher evasion rate"
+    },
+    "skillTree": [
+      {"name": "Backstab", "description": "Deal 1.4× damage if attacking after a dodge"},
+      {"name": "Poison Dagger", "description": "Deal 1.0× damage and inflict poison for 3 turns."},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""},
+      {"name": "", "description": ""}
+    ]
+  }
+]
+
