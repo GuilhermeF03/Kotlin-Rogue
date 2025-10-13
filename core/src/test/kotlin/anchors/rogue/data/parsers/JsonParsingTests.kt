@@ -2,14 +2,10 @@ package anchors.rogue.data.parsers
 
 import anchors.rogue.entities.Race
 import anchors.rogue.entities.Stats
-import anchors.rogue.systems.combat.EffectType
-import anchors.rogue.systems.combat.Skill
-import anchors.rogue.systems.combat.SkillCategory
-import anchors.rogue.systems.combat.SkillEffect
-import anchors.rogue.systems.combat.SkillType
-import org.junit.Test
+import anchors.rogue.systems.combat.*
 import org.assertj.core.api.Assertions.assertThat
-import java.util.UUID
+import org.junit.Test
+import java.util.*
 
 class JsonParsingTests {
     val racesJson = """

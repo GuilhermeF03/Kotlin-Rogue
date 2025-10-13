@@ -3,7 +3,7 @@ package anchors.rogue.entities
 import anchors.rogue.data.serializers.UUIDSerializer
 import anchors.rogue.systems.combat.Skill
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import java.util.*
 
 /**
  * Represents a character race in the game

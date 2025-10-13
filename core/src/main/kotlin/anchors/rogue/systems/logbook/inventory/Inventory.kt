@@ -1,6 +1,6 @@
-package anchors.rogue.systems.inventory
+package anchors.rogue.systems.logbook.inventory
 
-data class Inventory(
+data class Inventory (
     val equippedItems: List<Item> = listOf(),
     val storedItems: List<Item> = listOf(),
 )

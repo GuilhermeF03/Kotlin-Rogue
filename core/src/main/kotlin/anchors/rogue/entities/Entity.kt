@@ -1,7 +1,7 @@
 package anchors.rogue.entities
 
 import anchors.rogue.systems.combat.Skill
-import anchors.rogue.systems.inventory.Inventory
+import anchors.rogue.systems.logbook.inventory.Inventory
 
 data class Entity(
     val name: String,

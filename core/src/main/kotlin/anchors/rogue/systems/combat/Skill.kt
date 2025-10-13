@@ -2,7 +2,7 @@ package anchors.rogue.systems.combat
 
 import anchors.rogue.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import java.util.*
 
 @Serializable
 data class Skill(

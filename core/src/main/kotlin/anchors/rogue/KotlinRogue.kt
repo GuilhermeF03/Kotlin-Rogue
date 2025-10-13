@@ -1,5 +1,7 @@
 package anchors.rogue
 
+import anchors.rogue.misc.ManagersPipeline
+import anchors.rogue.systems.logbook.LogBookManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -14,6 +16,12 @@ import ktx.graphics.use
 class KotlinRogue : KtxGame<KtxScreen>() {
     override fun create() {
         KtxAsync.initiate()
+
+        // Managers setup
+        ManagersPipeline.apply {
+            /* Register all managers here */
+            registerManager(LogBookManager())
+        }.setup()
 
         addScreen(FirstScreen())
         setScreen<FirstScreen>()
@@ -34,5 +42,7 @@ class FirstScreen : KtxScreen {
     override fun dispose() {
         image.disposeSafely()
         batch.disposeSafely()
+
+        ManagersPipeline.teardown()
     }
 }
