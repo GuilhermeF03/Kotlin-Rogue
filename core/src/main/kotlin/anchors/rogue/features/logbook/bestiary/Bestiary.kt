@@ -1,4 +1,4 @@
-package anchors.rogue.systems.logbook.bestiary
+package anchors.rogue.features.logbook.bestiary
 
 /**
  * A collection of discovered entities in the game.

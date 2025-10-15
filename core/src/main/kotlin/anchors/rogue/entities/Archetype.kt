@@ -1,6 +1,6 @@
 package anchors.rogue.entities
 
-import anchors.rogue.systems.combat.Skill
+import anchors.rogue.features.combat.Skill
 
 /**
  * Represents a character archetype or class in the game

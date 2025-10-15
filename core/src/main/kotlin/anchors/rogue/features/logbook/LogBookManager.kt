@@ -1,9 +1,9 @@
-package anchors.rogue.systems.logbook
+package anchors.rogue.features.logbook
 
-import anchors.rogue.misc.Manager
-import anchors.rogue.systems.logbook.bestiary.Bestiary
-import anchors.rogue.systems.logbook.inventory.Inventory
-import anchors.rogue.systems.logbook.journal.Journal
+import anchors.rogue.ecs.systems.managers.Manager
+import anchors.rogue.features.logbook.bestiary.Bestiary
+import anchors.rogue.features.logbook.inventory.Inventory
+import anchors.rogue.features.logbook.journal.Journal
 
 class LogBookManager private constructor(
     val inventoryManager: Inventory = Inventory(),

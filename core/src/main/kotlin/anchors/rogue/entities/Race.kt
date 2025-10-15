@@ -1,7 +1,7 @@
 package anchors.rogue.entities
 
 import anchors.rogue.data.serializers.UUIDSerializer
-import anchors.rogue.systems.combat.Skill
+import anchors.rogue.features.combat.Skill
 import kotlinx.serialization.Serializable
 import java.util.*
 

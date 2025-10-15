@@ -1,4 +1,4 @@
-package anchors.rogue.systems.combat
+package anchors.rogue.features.combat
 
 import anchors.rogue.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable

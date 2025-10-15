@@ -6,6 +6,9 @@ plugins{
 eclipse.project.name = appName + '-core'
 
 dependencies {
+  // ECS
+  implementation 'io.github.quillraven.fleks:Fleks:2.12'
+
   // Testing
   testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
   testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
@@ -76,5 +79,3 @@ dependencies {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
 }
-
-

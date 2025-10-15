@@ -1,4 +1,4 @@
-package anchors.rogue.misc
+package anchors.rogue.ecs.systems.managers
 
 import anchors.rogue.utils.log.info
 
