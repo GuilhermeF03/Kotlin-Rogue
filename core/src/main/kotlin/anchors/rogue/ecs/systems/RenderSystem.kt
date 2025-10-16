@@ -1,14 +1,16 @@
 package anchors.rogue.ecs.systems
 
-import anchors.rogue.ecs.components.PositionComponent
-import anchors.rogue.ecs.components.SpriteComponent
+import anchors.rogue.ecs.spatial.components.PositionComponent
+import anchors.rogue.ecs.graphics.components.SpriteComponent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import com.github.quillraven.fleks.World.Companion.inject
+import com.github.quillraven.fleks.collection.compareEntity
 import com.github.quillraven.fleks.collection.compareEntityBy
+import ktx.ashley.get
 import ktx.graphics.use
 import ktx.log.logger
 
@@ -20,30 +22,29 @@ import ktx.log.logger
 class RenderSystem(
     private val stage: Stage = inject(),
 ) : IteratingSystem(
-    family { all(PositionComponent, SpriteComponent) },
-    compareEntityBy(PositionComponent)
+    family { any(SpriteComponent) },
+    compareEntity { e1, e2 ->
+        e1[SpriteComponent].image.y compareTo e2[SpriteComponent].image.y
+    }
 ) {
     override fun onInit() {
         super.onInit()
         logger.info { "Render system bootstrapped!" }
     }
 
-    override fun onTick() {
+    override fun onUpdate() {
         with(stage){
             viewport.apply()
-            batch.use {
-                super.onTick()
-            }
-            act()
+            batch.use { super.onUpdate() }
+            act(deltaTime)
             draw()
         }
     }
     override fun onTickEntity(entity: Entity) {
-        val pos = entity[PositionComponent].coords
         val sprite = entity[SpriteComponent].image
 
         val imageActor = Image(sprite.texture)
-        imageActor.setPosition(pos.x, pos.y)
+        imageActor.setPosition(sprite.x, sprite.y)
         stage.addActor(imageActor)
     }
 

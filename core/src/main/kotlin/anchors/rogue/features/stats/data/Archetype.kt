@@ -1,4 +1,4 @@
-package anchors.rogue.entities
+package anchors.rogue.features.stats.data
 
 import anchors.rogue.features.combat.Skill
 

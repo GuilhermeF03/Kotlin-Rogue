@@ -1,6 +1,6 @@
 package anchors.rogue.features.logbook
 
-import anchors.rogue.ecs.systems.managers.Manager
+import anchors.rogue.ecs.managers.Manager
 import anchors.rogue.features.logbook.bestiary.Bestiary
 import anchors.rogue.features.logbook.inventory.Inventory
 import anchors.rogue.features.logbook.journal.Journal

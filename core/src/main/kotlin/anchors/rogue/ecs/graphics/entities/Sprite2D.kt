@@ -1,7 +1,6 @@
-package anchors.rogue.ecs.entities
+package anchors.rogue.ecs.graphics.entities
 
-import anchors.rogue.ecs.components.PositionComponent
-import anchors.rogue.ecs.components.SpriteComponent
+import anchors.rogue.ecs.graphics.components.SpriteComponent
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
@@ -22,6 +21,6 @@ fun World.sprite2D(
     position : Vector2 = Vector2(0f,0f),
     block: EntityUpdateContext.(Entity) -> Unit = {} // For further configuration
 ) = entity {
-    it += PositionComponent(position)
     it += SpriteComponent(Sprite(image))
+    it[SpriteComponent].image.translate(position.x, position.y)
 }.configure(block)

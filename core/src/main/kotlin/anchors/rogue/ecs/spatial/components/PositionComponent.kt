@@ -1,4 +1,4 @@
-package anchors.rogue.ecs.components
+package anchors.rogue.ecs.spatial.components
 
 import com.badlogic.gdx.math.Vector2
 import com.github.quillraven.fleks.Component
@@ -10,7 +10,7 @@ import com.github.quillraven.fleks.ComponentType
  * This component is used for entities that need to have a position in the game world.
  */
 class PositionComponent(
-     var coords: Vector2 = Vector2(0f, 0f),
+    var coords: Vector2 = Vector2(0f, 0f),
 ) : Component<PositionComponent>, Comparable<PositionComponent> {
     override fun type() = PositionComponent
 

@@ -1,6 +1,6 @@
 package anchors.rogue.features.logbook.bestiary
 
-import anchors.rogue.data.serializers.UUIDSerializer
+import anchors.rogue.utils.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 

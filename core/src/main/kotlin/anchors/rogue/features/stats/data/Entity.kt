@@ -1,7 +1,8 @@
-package anchors.rogue.entities
+package anchors.rogue.features.stats.data
 
 import anchors.rogue.features.combat.Skill
 import anchors.rogue.features.logbook.inventory.Inventory
+import anchors.rogue.features.stats.data.Archetype
 
 data class Entity(
     val name: String,

@@ -1,4 +1,4 @@
-package anchors.rogue.entities
+package anchors.rogue.features.stats.data
 
 import kotlinx.serialization.Serializable
 

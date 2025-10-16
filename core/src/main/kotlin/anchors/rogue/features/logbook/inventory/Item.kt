@@ -1,6 +1,6 @@
 package anchors.rogue.features.logbook.inventory
 
-import anchors.rogue.entities.Stats
+import anchors.rogue.features.stats.data.Stats
 
 sealed interface Item {
     val name: String

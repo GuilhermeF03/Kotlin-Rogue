@@ -1,9 +1,14 @@
-package anchors.rogue.ecs.components
+package anchors.rogue.ecs.graphics.components
 
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.ComponentType
+import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.World
+import com.github.quillraven.fleks.World.Companion.inject
 
 /**
  * SpriteComponent holds a Sprite for rendering an entity.

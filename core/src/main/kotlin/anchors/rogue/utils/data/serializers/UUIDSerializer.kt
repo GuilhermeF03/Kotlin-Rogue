@@ -1,4 +1,4 @@
-package anchors.rogue.data.serializers
+package anchors.rogue.utils.data.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
