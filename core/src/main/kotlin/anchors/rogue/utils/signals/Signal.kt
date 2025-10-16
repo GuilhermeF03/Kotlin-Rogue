@@ -1,5 +1,6 @@
 package anchors.rogue.utils.signals
 
+
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -7,88 +8,73 @@ import java.util.concurrent.CopyOnWriteArrayList
  * Generic weak-reference signal-slot implementation.
  * Supports 0..3 arguments.
  */
-sealed interface Signal {
-
+sealed interface Signal<T> {
     fun clear()
+    infix fun connect(listener: T)
+    infix fun disconnect(listener: T)
+}
 
-    // Helper class for managing weak listeners
-    private class WeakListeners<T : Any> {
-        val listeners = CopyOnWriteArrayList<WeakReference<T>>()
+private class WeakListeners<T : Any> {
+    val listeners = CopyOnWriteArrayList<WeakReference<T>>()
 
-        fun add(listener: T) {
-            listeners += WeakReference(listener)
-        }
+    fun add(listener: T) {
+        listeners += WeakReference(listener)
+    }
 
-        fun remove(listener: T) {
-            listeners.removeIf { it.get() == listener || it.get() == null }
-        }
+    fun remove(listener: T) {
+        listeners.removeIf { it.get() == listener || it.get() == null }
+    }
 
-        fun forEach(action: (T) -> Unit) {
-            val iterator = listeners.iterator()
-            while (iterator.hasNext()) {
-                val listener = iterator.next().get()
-                if (listener != null) {
-                    action(listener)
-                } else {
-                    iterator.remove()
-                }
+    fun forEach(action: (T) -> Unit) {
+        listeners.forEach {
+            val listener = it.get()
+            if (listener == null) {
+                listeners.remove(it)
             }
+            else action(listener)
         }
-
-        fun clear() = listeners.clear()
     }
 
-    /** 0-argument signal */
-    class NoArgSignal : Signal {
-        private val callbacks = WeakListeners<() -> Unit>()
+    fun clear() = listeners.clear()
+}
 
-        infix fun connect(listener: () -> Unit) = callbacks.add(listener)
-        infix fun disconnect(listener: () -> Unit) = callbacks.remove(listener)
 
-        fun emit() = callbacks.forEach { it() }
-        operator fun invoke() = emit()
-        override fun clear() = callbacks.clear()
-    }
+/** 0-argument signal */
+class NoArgSignal : Signal<() -> Unit> {
+    private val callbacks = WeakListeners<() -> Unit>()
 
-    /** 1-argument signal */
-    class OneArgSignal<A> : Signal {
-        private val callbacks = WeakListeners<(A) -> Unit>()
+    override infix fun connect(listener: () -> Unit) = callbacks.add(listener)
+    override infix fun disconnect(listener: () -> Unit) = callbacks.remove(listener)
 
-        infix fun connect(listener: (A) -> Unit) = callbacks.add(listener)
-        infix fun disconnect(listener: (A) -> Unit) = callbacks.remove(listener)
+    fun emit() = callbacks.forEach { it() }
+    override fun clear() = callbacks.clear()
+}
 
-        fun emit(a: A) = callbacks.forEach { it(a) }
-        operator fun invoke(a: A) = emit(a)
-        override fun clear() = callbacks.clear()
-    }
+/** 1-argument signal */
+class OneArgSignal<A> : Signal<(A) -> Unit> {
+    private val callbacks = WeakListeners<(A) -> Unit>()
 
-    /** 2-argument signal */
-    class TwoArgsSignal<A, B> : Signal {
-        private val callbacks = WeakListeners<(A, B) -> Unit>()
+    override infix fun connect(listener: (A) -> Unit) = callbacks.add(listener)
+    override infix fun disconnect(listener: (A) -> Unit) = callbacks.remove(listener)
 
-        infix fun connect(listener: (A, B) -> Unit) = callbacks.add(listener)
-        infix fun disconnect(listener: (A, B) -> Unit) = callbacks.remove(listener)
+    fun emit(a: A) = callbacks.forEach { it(a) }
+    override fun clear() = callbacks.clear()
+}
 
-        fun emit(a: A, b: B) = callbacks.forEach { it(a, b) }
-        operator fun invoke(a: A, b: B) = emit(a, b)
-        override fun clear() = callbacks.clear()
-    }
+/** 2-argument signal */
+class TwoArgsSignal<A, B> : Signal<(A, B) -> Unit> {
+    private val callbacks = WeakListeners<(A, B) -> Unit>()
 
-    /** 3-argument signal */
-    class ThreeArgsSignal<A, B, C> : Signal {
-        private val callbacks = WeakListeners<(A, B, C) -> Unit>()
+    override infix fun connect(listener: (A, B) -> Unit) = callbacks.add(listener)
+    override infix fun disconnect(listener: (A, B) -> Unit) = callbacks.remove(listener)
 
-        infix fun connect(listener: (A, B, C) -> Unit) = callbacks.add(listener)
-        infix fun disconnect(listener: (A, B, C) -> Unit) = callbacks.remove(listener)
-
-        fun emit(a: A, b: B, c: C) = callbacks.forEach { it(a, b, c) }
-        operator fun invoke(a: A, b: B, c: C) = emit(a, b, c)
-        override fun clear() = callbacks.clear()
-    }
+    fun emit(a: A, b: B) = callbacks.forEach { it(a, b) }
+    override fun clear() = callbacks.clear()
 }
 
 // Factory functions
-fun signal() = Signal.NoArgSignal()
-inline fun <reified A> signal() = Signal.OneArgSignal<A>()
-inline fun <reified A, reified B> signal() = Signal.TwoArgsSignal<A, B>()
-inline fun <reified A, reified B, reified C> signal() = Signal.ThreeArgsSignal<A, B, C>()
+
+fun createSignal() = NoArgSignal()
+fun <A> createSignal() = OneArgSignal<A>()
+fun <A, B> createSignal() = TwoArgsSignal<A, B>()
+

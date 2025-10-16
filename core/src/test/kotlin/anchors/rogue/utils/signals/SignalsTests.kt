@@ -2,6 +2,7 @@ package anchors.rogue.utils.signals
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.atomics.AtomicInt
@@ -10,8 +11,9 @@ import kotlin.test.Test
 
 class SignalsTests {
     @Test
-    fun testSignal() {
-        val signal = signal<Int>()
+    fun `callback should be called on signal emission`() {
+        val signal = createSignal<Int>()
+
         var receivedValue: Int? = null
         val callback: (Int) -> Unit = { value -> receivedValue = value }
 
@@ -28,8 +30,8 @@ class SignalsTests {
     }
 
     @Test
-    fun testSignalDisconnectOneOfTwo() {
-        val signal = signal<Int>()
+    fun `signal disconnection shouldn't impact other listeners`() {
+        val signal = createSignal<Int>()
 
         var receivedByFirst: Int? = null
         var receivedBySecond: Int? = null
@@ -65,7 +67,7 @@ class SignalsTests {
     fun `test signal thread-safety`() = runBlocking {
         val container = AtomicInt(0)
 
-        val signal = signal<Int>()
+        val signal = createSignal<Int>()
         val callback: (Int) -> Unit = { value -> container.addAndFetch(value) }
 
         // Connect listener
@@ -80,8 +82,24 @@ class SignalsTests {
             }
         }
         // Wait for all producers to finish
-        producers.forEach { it.join() }
+        producers.joinAll()
         // Verify result
         assert(container.load() == 10_000) { "Container should be 10000 but was ${container.load()}" }
+    }
+
+    @Test
+    fun `test signal clear`(){
+        val signal = createSignal<Int>()
+
+        var callCount = 0
+        val callback: (Int) -> Unit = { _ -> callCount++ }
+
+        signal connect callback
+
+        signal.emit(42)
+        signal.clear()
+        signal.emit(100)
+
+        assert(callCount == 1) { "Listener should have been called only once before clear." }
     }
 }
