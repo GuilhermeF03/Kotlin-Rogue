@@ -1,6 +1,5 @@
 package anchors.rogue.ecs.systems
 
-import anchors.rogue.ecs.spatial.components.PositionComponent
 import anchors.rogue.ecs.graphics.components.SpriteComponent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -9,11 +8,8 @@ import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import com.github.quillraven.fleks.World.Companion.inject
 import com.github.quillraven.fleks.collection.compareEntity
-import com.github.quillraven.fleks.collection.compareEntityBy
-import ktx.ashley.get
 import ktx.graphics.use
 import ktx.log.logger
-
 
 /**
  * RenderingSystem is responsible for rendering entities with SpriteComponent.
