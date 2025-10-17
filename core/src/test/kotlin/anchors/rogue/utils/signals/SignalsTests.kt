@@ -71,7 +71,7 @@ class SignalsTests {
         val callback: (Int) -> Unit = { value -> container.addAndFetch(value) }
 
         // Connect listener
-        signal connect callback
+        signal connect callback // signal.connect(callback)
 
         // Launch multiple concurrent producers on different threads
         val producers = List(10) {

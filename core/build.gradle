@@ -9,8 +9,8 @@ dependencies {
   // ECS
   implementation 'io.github.quillraven.fleks:Fleks:2.12'
   // Testing
-  testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
-  testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+  testImplementation "org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion"
+  testImplementation "org.junit.jupiter:junit-jupiter:5.13.4"
   testImplementation "org.assertj:assertj-core:3.24.2"
   // JSON
   implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
@@ -75,4 +75,8 @@ dependencies {
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
+}
+
+tasks.test {
+  useJUnitPlatform() // <- important! tells Gradle to use JUnit 5 platform
 }

@@ -1,41 +1,44 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.features.stats.data.Stats
+import kotlinx.serialization.Serializable
 
+
+/**
+ * Represents an item in the game with various types such as Trinket, Weapon, Armor, Accessory, and Consumable.
+ * Each item has a name, description, stats, and rank.
+ * The different item types have their own specific attributes in addition to the common ones.
+ */
+@Serializable
 sealed interface Item {
     val name: String
-    val stats: Stats
-    val rank: Int
+    val description : String
+    val rank: ItemRank
+    val sellValue : Int
 
-    data class Weapon(
-        val damage: Int,
-        val speed: Int,
-        val range: Int,
+    /**
+     * Trinket items are special items that do not have stats but can be sold for gold.
+     * They have a name, description, rank, and sell value.
+     */
+    @Serializable
+    data class Trinket(
         override val name: String,
-        override val stats: Stats,
-        override val rank: Int,
+        override val description: String = "",
+        override val rank: ItemRank = ItemRank.COMMON,
+        override val sellValue: Int = 0, // Trinkets can be sold for gold
     ) : Item
 
-    data class Armor(
-        //val defense: Int,  <-- Isto vem dos stats acho que não é necessário
-        // val slot: ArmorSlot, <- bot generated
+    /**
+     * Consumable items can be used to provide temporary effects or restore health/mana.
+     * They also have a name, description, stats, and rank.
+     */
+    @Serializable
+    data class Consumable( // Não sei se vamos conseguir meter logo um sistema de ‘items’ em batalha, mas podemos ver
         override val name: String,
-        override val stats: Stats,
-        override val rank: Int,
-    ) : Item
-
-    data class Accessory(
-        val effect: String,
-        override val name: String,
-        override val stats: Stats,
-        override val rank: Int,
-    ) : Item
-
-    data class Consumable( // Não sei se vamos conseguir meter logo um sistema de items em batalha mas podemos ver
-        val effect: String,
-        override val name: String,
-        override val stats: Stats,
-        override val rank: Int,
+        override val description: String = "",
+        override val rank: ItemRank = ItemRank.COMMON,
+        override val sellValue: Int = 0,
+        val effect: String = "", // Descrição do efeito do consumível -≥ mudar para objeto Effect mais tarde
     ) : Item
 }
 

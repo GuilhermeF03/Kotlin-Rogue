@@ -1,14 +1,201 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.utils.signals.OneArgSignal
+import anchors.rogue.utils.signals.SignalVal
+import anchors.rogue.utils.signals.asSignalVal
 import anchors.rogue.utils.signals.createSignal
+import kotlin.reflect.KClass
+import kotlin.reflect.typeOf
 
-data class Inventory (
-    val equippedItems: List<Item> = listOf(),
-    val storedItems: List<Item> = listOf(),
-    val onItemPickup : OneArgSignal<Item> = createSignal<Item>()
+class Inventory private constructor(
+    // Amount of gold the player has
+    val gold: SignalVal<Int> = SignalVal(0),
+
+    // Currently equipped items
+    val equipment : EquipmentData = EquipmentData(),
+
+    // Stored items categorized by their type
+    val trinkets: MutableList<Item.Trinket> = mutableListOf(),
+    val consumables: MutableList<Item.Consumable> = mutableListOf(),
+
+    val weapons: MutableList<EquippableItem.Weapon> = mutableListOf(),
+    val armors: MutableList<EquippableItem.Armor> = mutableListOf(),
+    val accessories: MutableList<EquippableItem.Accessory> = mutableListOf(),
+
+    // Signals - events that can be listened to
+
+    val onPickItem : OneArgSignal<Item> = createSignal<Item>(),
+    val onSellItem : OneArgSignal<Item> = createSignal<Item>(),
+
+    val onEquip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>(),
+    val onUnequip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>(),
+    val onUseItem : OneArgSignal<Item.Consumable> = createSignal<Item.Consumable>(),
 ){
-    fun pickupItem(item: Item) {
-        onItemPickup.emit(item)
+    constructor() : this(
+        gold = SignalVal(0),
+        equipment = EquipmentData(),
+        trinkets = mutableListOf(),
+        consumables = mutableListOf(),
+        weapons = mutableListOf(),
+        armors = mutableListOf(),
+        accessories = mutableListOf(),
+        onPickItem = createSignal<Item>(),
+        onSellItem = createSignal<Item>(),
+        onEquip = createSignal<EquippableItem>(),
+        onUnequip = createSignal<EquippableItem>(),
+        onUseItem = createSignal<Item.Consumable>(),
+    )
+
+    /**
+     * Loads inventory data from the provided InventoryData object.
+     * This method populates the inventory with gold, equipped items, and stored items.
+     * Used when loading a saved game.
+     * @param data The InventoryData object containing the inventory information to load.
+     */
+    fun loadData(data: InventoryData) {
+        gold.value = data.gold
+
+        equipment.currWeapon = data.equipment.currWeapon
+        equipment.currArmor = data.equipment.currArmor
+        equipment.currAccessory = data.equipment.currAccessory
+
+        trinkets.clear()
+        trinkets.addAll(data.trinkets)
+
+        consumables.clear()
+        consumables.addAll(data.consumables)
+
+        weapons.clear()
+        weapons.addAll(data.weapons)
+
+        armors.clear()
+        armors.addAll(data.armors)
+
+        accessories.clear()
+        accessories.addAll(data.accessories)
+    }
+
+    /**
+     * Adds the specified amount of gold to the inventory.
+     */
+    fun addGold(amount: Int) {
+        require(amount > 0){"Amount to add must be positive."}
+        gold.value += amount
+    }
+
+    /** ========================================================================
+     *                        Item Management Methods
+     *  ===================================================================== */
+
+    /**
+     * Removes the specified amount of gold from the inventory.
+     */
+    fun removeGold(amount: Int) {
+        require(amount > 0){"Amount to remove must be positive."}
+        gold.value = 0.coerceAtLeast(gold.value - amount)
+    }
+
+    /**
+     * Call this method when the player picks up an item.
+     * It emits the onPickItem signal with the picked item.
+     */
+    fun pickItem(item: Item) {
+        when(item) {
+            is Item.Trinket -> trinkets.add(item)
+            is Item.Consumable -> consumables.add(item)
+            is EquippableItem.Weapon -> weapons.add(item)
+            is EquippableItem.Armor -> armors.add(item)
+            is EquippableItem.Accessory -> accessories.add(item)
+        }
+        onPickItem.emit(item)
+    }
+
+    /**
+     * Sells the specified item from the inventory.
+     * Removes the item from storedItems and adds its sell value to gold.
+     * Emits the onSellItem signal with the sold item.
+     */
+    fun sellItem(item: Item) {
+        when(item) {
+            is Item.Trinket -> check(trinkets.remove(item)) {"Item not found in inventory."}
+            is Item.Consumable -> check(consumables.remove(item)) {"Item not found in inventory."}
+            is EquippableItem.Weapon -> check(weapons.remove(item)) {"Item not found in inventory."}
+            is EquippableItem.Armor -> check(armors.remove(item)) {"Item not found in inventory."}
+            is EquippableItem.Accessory -> check(accessories.remove(item)) {"Item not found in inventory."}
+        }
+
+        val sellValue = item.sellValue
+        gold.value += sellValue
+        onSellItem.emit(item)
+    }
+
+    /** ========================================================================
+     *                        Equipment Management Methods
+     *  ===================================================================== */
+
+    /**
+     * Equips the specified equippable item.
+     * Updates the equipment slots and emits the onEquip signal.
+     * @param item The equippable item to be equipped.
+     */
+    fun equipItem(item: EquippableItem) {
+        when(item) {
+            is EquippableItem.Weapon -> {
+                check(item in weapons){"Item not found in inventory."}
+                equipment.currWeapon = item
+            }
+            is EquippableItem.Armor -> {
+                check(item in armors){"Item not found in inventory."}
+                equipment.currArmor = item
+            }
+            is EquippableItem.Accessory -> {
+                check(item in accessories){"Item not found in inventory."}
+                equipment.currAccessory = item
+            }
+        }
+        onEquip.emit(item)
+    }
+
+    /**
+     * Unequips the specified equippable item.
+     * Updates the equipment slots and emits the onUnequip signal.
+     * This is a generic method that infers the type of item to unequip based on the reified type parameter T.
+     * This blocks any attempt to unequip an item type that is not currently equipped.
+     * @param T The type of equippable item to be unequipped (Weapon, Armor, or Accessory).
+     * @throws IllegalStateException if no item of type T is currently equipped or if T is an unknown item type.
+     */
+    inline fun <reified T: EquippableItem> unequipItem() {
+        val item : EquippableItem = when (T::class) {
+            EquippableItem.Weapon::class -> {
+                val curr = equipment.currWeapon ?: throw IllegalStateException("No weapon is currently equipped.")
+                equipment.currWeapon = null
+                curr
+            }
+            EquippableItem.Armor::class -> {
+                val curr = equipment.currArmor ?: throw IllegalStateException("No armor is currently equipped.")
+                equipment.currArmor = null
+                curr
+            }
+            EquippableItem.Accessory::class -> {
+                val curr = equipment.currAccessory ?: throw IllegalStateException("No accessory is currently equipped.")
+                equipment.currAccessory = null
+                curr
+            }
+            else -> throw IllegalStateException("Unknown item type: ${T::class}")
+        }
+        onUnequip.emit(item)
+    }
+
+    /**
+     * Uses the specified consumable item.
+     * Removes the item from the inventory and emits the onUseItem signal.
+     * @param item The consumable item to be used.
+     */
+    fun useConsumable(item: Item.Consumable) {
+        check(item in consumables){"Item not found in inventory."}
+        consumables.remove(item)
+        onUseItem.emit(item)
     }
 }
+
+
