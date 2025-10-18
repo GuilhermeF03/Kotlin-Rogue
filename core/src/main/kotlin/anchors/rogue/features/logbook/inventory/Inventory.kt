@@ -7,44 +7,28 @@ import anchors.rogue.utils.signals.createSignal
 import kotlin.reflect.KClass
 import kotlin.reflect.typeOf
 
-class Inventory private constructor(
+class Inventory (private val registry: ItemRegistry = ItemRegistry()){
     // Amount of gold the player has
-    val gold: SignalVal<Int> = SignalVal(0),
-
+    val gold: SignalVal<Int> = SignalVal(0)
     // Currently equipped items
-    val equipment : EquipmentData = EquipmentData(),
-
+    var equipment : EquipmentData = EquipmentData()
     // Stored items categorized by their type
-    val trinkets: MutableList<Item.Trinket> = mutableListOf(),
-    val consumables: MutableList<Item.Consumable> = mutableListOf(),
-
-    val weapons: MutableList<EquippableItem.Weapon> = mutableListOf(),
-    val armors: MutableList<EquippableItem.Armor> = mutableListOf(),
-    val accessories: MutableList<EquippableItem.Accessory> = mutableListOf(),
+    val trinkets: MutableList<Item.Trinket> = mutableListOf()
+    val consumables: MutableList<Item.Consumable> = mutableListOf()
+    val weapons: MutableList<EquippableItem.Weapon> = mutableListOf()
+    val armors: MutableList<EquippableItem.Armor> = mutableListOf()
+    val accessories: MutableList<EquippableItem.Accessory> = mutableListOf()
 
     // Signals - events that can be listened to
+    val onPickItem : OneArgSignal<Item> = createSignal<Item>()
+    val onSellItem : OneArgSignal<Item> = createSignal<Item>()
+    val onEquip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>()
+    val onUnequip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>()
+    val onUseItem : OneArgSignal<Item.Consumable> = createSignal<Item.Consumable>()
 
-    val onPickItem : OneArgSignal<Item> = createSignal<Item>(),
-    val onSellItem : OneArgSignal<Item> = createSignal<Item>(),
-
-    val onEquip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>(),
-    val onUnequip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>(),
-    val onUseItem : OneArgSignal<Item.Consumable> = createSignal<Item.Consumable>(),
-){
-    constructor() : this(
-        gold = SignalVal(0),
-        equipment = EquipmentData(),
-        trinkets = mutableListOf(),
-        consumables = mutableListOf(),
-        weapons = mutableListOf(),
-        armors = mutableListOf(),
-        accessories = mutableListOf(),
-        onPickItem = createSignal<Item>(),
-        onSellItem = createSignal<Item>(),
-        onEquip = createSignal<EquippableItem>(),
-        onUnequip = createSignal<EquippableItem>(),
-        onUseItem = createSignal<Item.Consumable>(),
-    )
+    init {
+        registry.loadRegistry()
+    }
 
     /**
      * Loads inventory data from the provided InventoryData object.
@@ -53,26 +37,25 @@ class Inventory private constructor(
      * @param data The InventoryData object containing the inventory information to load.
      */
     fun loadData(data: InventoryData) {
+        // Creates a new registry for mapping items' ids to item data
         gold.value = data.gold
 
-        equipment.currWeapon = data.equipment.currWeapon
-        equipment.currArmor = data.equipment.currArmor
-        equipment.currAccessory = data.equipment.currAccessory
+        equipment = data.equipment
 
         trinkets.clear()
-        trinkets.addAll(data.trinkets)
+        trinkets.addAll(registry.mapItems( data.trinkets))
 
         consumables.clear()
-        consumables.addAll(data.consumables)
+        consumables.addAll(registry.mapItems(data.consumables))
 
         weapons.clear()
-        weapons.addAll(data.weapons)
+        weapons.addAll(registry.mapItems(data.weapons))
 
         armors.clear()
-        armors.addAll(data.armors)
+        armors.addAll(registry.mapItems(data.armors))
 
         accessories.clear()
-        accessories.addAll(data.accessories)
+        accessories.addAll(registry.mapItems(data.accessories))
     }
 
     /**
@@ -142,15 +125,15 @@ class Inventory private constructor(
         when(item) {
             is EquippableItem.Weapon -> {
                 check(item in weapons){"Item not found in inventory."}
-                equipment.currWeapon = item
+                equipment = equipment.copy(currWeapon = item)
             }
             is EquippableItem.Armor -> {
                 check(item in armors){"Item not found in inventory."}
-                equipment.currArmor = item
+                equipment = equipment.copy(currArmor = item)
             }
             is EquippableItem.Accessory -> {
                 check(item in accessories){"Item not found in inventory."}
-                equipment.currAccessory = item
+                equipment = equipment.copy(currAccessory = item)
             }
         }
         onEquip.emit(item)
@@ -168,17 +151,17 @@ class Inventory private constructor(
         val item : EquippableItem = when (T::class) {
             EquippableItem.Weapon::class -> {
                 val curr = equipment.currWeapon ?: throw IllegalStateException("No weapon is currently equipped.")
-                equipment.currWeapon = null
+                equipment = equipment.copy(currWeapon = null)
                 curr
             }
             EquippableItem.Armor::class -> {
                 val curr = equipment.currArmor ?: throw IllegalStateException("No armor is currently equipped.")
-                equipment.currArmor = null
+                equipment = equipment.copy(currArmor = null)
                 curr
             }
             EquippableItem.Accessory::class -> {
                 val curr = equipment.currAccessory ?: throw IllegalStateException("No accessory is currently equipped.")
-                equipment.currAccessory = null
+                equipment = equipment.copy(currAccessory = null)
                 curr
             }
             else -> throw IllegalStateException("Unknown item type: ${T::class}")

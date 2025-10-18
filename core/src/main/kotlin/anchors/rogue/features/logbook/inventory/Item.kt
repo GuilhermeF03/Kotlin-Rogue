@@ -1,7 +1,9 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.features.stats.data.Stats
+import anchors.rogue.utils.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 
 /**
@@ -11,6 +13,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed interface Item {
+    val id : String
     val name: String
     val description : String
     val rank: ItemRank
@@ -22,6 +25,7 @@ sealed interface Item {
      */
     @Serializable
     data class Trinket(
+        override val id : String = "trinket:",
         override val name: String,
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
@@ -34,6 +38,7 @@ sealed interface Item {
      */
     @Serializable
     data class Consumable( // Não sei se vamos conseguir meter logo um sistema de ‘items’ em batalha, mas podemos ver
+        override val id : String = "consumable:",
         override val name: String,
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,

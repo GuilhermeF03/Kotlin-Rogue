@@ -2,24 +2,32 @@ package anchors.rogue.utils.data.parsers
 
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 
 /**
  * A utility object for parsing JSON data from files or strings into Kotlin objects.
+ * Allows callers to provide their own [SerializersModule] for custom polymorphic serialization.
+ */
+/**
+ * A generic JSON parsing utility with optional polymorphic support.
  */
 object JsonParser {
-    /**
-     * Parses a JSON file and converts its content into a list of objects of type [T].
-     * @param T The type of objects to parse the JSON into.
-     * @param filePath The path to the JSON file.
-     * @return A list of objects of type [T] parsed from the JSON file.
-     */
-    inline fun <reified T> parseFile(file : FileHandle): List<T> =
-        Json.decodeFromString(file.file().readText())
-    /**
-     * Parses a JSON string and converts its content into a list of objects of type [T].
-     * @param T The type of objects to parse the JSON into.
-     * @param jsonString The JSON string to parse.
-     * @return A list of objects of type [T] parsed from the JSON string.
-     */
-    inline fun <reified T> parseString(jsonString: String): List<T> = Json.decodeFromString(jsonString)
+
+    fun createJson(module: SerializersModule?) = Json {
+        if (module != null) serializersModule = module
+        classDiscriminator = "type"
+        ignoreUnknownKeys = true
+        prettyPrint = false
+    }
+
+    inline fun <reified T> parseFile(file: FileHandle, module: SerializersModule? = null): T {
+        val json = createJson(module)
+        return json.decodeFromString(file.file().readText())
+    }
+
+    inline fun <reified T> parseString(jsonString: String, module: SerializersModule? = null): T {
+        val json = createJson(module)
+        return json.decodeFromString(jsonString)
+    }
 }
+

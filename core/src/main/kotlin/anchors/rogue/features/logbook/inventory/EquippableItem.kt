@@ -1,7 +1,9 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.features.stats.data.Stats
+import anchors.rogue.utils.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 
 /**
@@ -16,6 +18,7 @@ sealed interface EquippableItem : Item {
      */
     @Serializable
     data class Weapon(
+        override val id : String = "weapon:",
         override val name: String,
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
@@ -32,6 +35,7 @@ sealed interface EquippableItem : Item {
      */
     @Serializable
     data class Armor(
+        override val id : String = "armor:",
         override val name: String,
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
@@ -46,6 +50,7 @@ sealed interface EquippableItem : Item {
      */
     @Serializable
     data class Accessory(
+        override val id : String = "acc:",
         override val name: String,
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
