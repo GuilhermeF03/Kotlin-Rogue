@@ -48,19 +48,19 @@ class Inventory(
         equipment = data.equipment
 
         trinkets.clear()
-        trinkets.addAll(registry.mapIds( data.trinkets))
+        trinkets += registry.mapIds( data.trinkets)
 
         consumables.clear()
-        consumables.addAll(registry.mapIds(data.consumables))
+        consumables += registry.mapIds(data.consumables)
 
         weapons.clear()
-        weapons.addAll(registry.mapIds(data.weapons))
+        weapons += registry.mapIds(data.weapons)
 
         armors.clear()
-        armors.addAll(registry.mapIds(data.armors))
+        armors += registry.mapIds(data.armors)
 
         accessories.clear()
-        accessories.addAll(registry.mapIds(data.accessories))
+        accessories += registry.mapIds(data.accessories)
     }
 
     /**

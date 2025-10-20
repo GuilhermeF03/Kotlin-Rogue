@@ -8,8 +8,8 @@ const val BESTIARY_JSON = "data/bestiary.json"
 
 /**
  * A collection of discovered entities in the game.
- * @param discoveredEntities List of entities the player has encountered.
- * @param totalEntities Total number of unique entities in the game.
+ * @param discovered List of entities the player has encountered.
+ * @param total Total number of unique entities in the game.
  */
 class Bestiary (
     registryProvider : () -> IdRegistry<BestiaryEntry> = {
@@ -18,13 +18,11 @@ class Bestiary (
 ){
     private val registry = registryProvider()
     // Data
-    val discovered: MutableList<BestiaryEntry> = mutableListOf()
+    val discovered = mutableListOf<BestiaryEntry>()
     // Total number of unique entities in the game
     val total: Int = registry.nEntries()
-
     // Signals
     val onDiscovered = createSignal<BestiaryEntry>()
-
     /**
      * Loads bestiary data from the provided BestiaryData object.
      * This method populates the bestiary with discovered entities.
@@ -33,14 +31,13 @@ class Bestiary (
      */
     fun loadData(data: BestiaryData) {
         discovered.clear()
-        discovered.addAll(registry.mapIds(data.discovered))
+        discovered += registry.mapIds(data.discovered)
     }
-
     /**
      * Add new bestiary entry
      */
     fun addEntry(entry : BestiaryEntry){
-        discovered.add(entry)
+        discovered += entry
         onDiscovered.emit(entry)
     }
 }

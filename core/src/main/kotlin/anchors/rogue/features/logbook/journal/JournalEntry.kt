@@ -1,3 +1,15 @@
 package anchors.rogue.features.logbook.journal
 
-data class JournalEntry(val title: String, val content: String)
+import anchors.rogue.utils.data.registry.IdEntry
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class JournalEntry(
+    override val name: String = "",
+    val type : JournalEntryType = JournalEntryType.DEFAULT,
+    val content: String = ""
+) : IdEntry { override val domain = "journal"}
+
+enum class JournalEntryType {
+    DEFAULT
+}
