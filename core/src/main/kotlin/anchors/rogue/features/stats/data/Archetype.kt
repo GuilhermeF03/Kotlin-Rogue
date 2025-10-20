@@ -1,6 +1,7 @@
 package anchors.rogue.features.stats.data
 
 import anchors.rogue.features.combat.Skill
+import anchors.rogue.utils.data.registry.IdEntry
 
 /**
  * Represents a character archetype or class in the game
@@ -10,8 +11,10 @@ import anchors.rogue.features.combat.Skill
  * @param skillTree A list of skills available to this archetype
  */
 data class Archetype(
-    val name: String,
+    override val name: String,
     val level: Int = 0,
     val passives: List<Skill>,
     val skillTree: List<Skill>
-)
+) : IdEntry {
+    override val domain = "archetype"
+}

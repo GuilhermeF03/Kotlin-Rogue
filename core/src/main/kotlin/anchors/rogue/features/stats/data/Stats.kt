@@ -13,12 +13,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Stats(
-    val vitality: Int,
-    val strength: Int,
-    val constitution: Int,
-    val dexterity: Int,
-    val luck: Int,
-    val intelligence: Int,
+    val vitality: Int = 1,
+    val strength: Int = 1,
+    val constitution: Int = 1,
+    val dexterity: Int = 1,
+    val luck: Int = 1,
+    val intelligence: Int = 1,
 ) {
     override fun toString(): String = """
         VIT: $vitality

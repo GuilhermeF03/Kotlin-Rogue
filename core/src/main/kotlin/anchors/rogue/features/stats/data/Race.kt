@@ -1,9 +1,8 @@
 package anchors.rogue.features.stats.data
 
-import anchors.rogue.utils.data.serializers.UUIDSerializer
 import anchors.rogue.features.combat.Skill
+import anchors.rogue.utils.data.registry.IdEntry
 import kotlinx.serialization.Serializable
-import java.util.*
 
 /**
  * Represents a character race in the game
@@ -16,11 +15,11 @@ import java.util.*
  */
 @Serializable
 data class Race(
-    @Serializable(with = UUIDSerializer::class)
-    val id: UUID = UUID.randomUUID(),
-    val name: String,
+    override val name: String,
     val stats: Stats,
     val blessing: Skill,
     val curse: Skill,
     val description: String
-)
+) : IdEntry {
+    override val domain = "race"
+}

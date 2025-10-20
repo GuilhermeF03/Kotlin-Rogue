@@ -1,7 +1,6 @@
 package anchors.rogue.utils.signals
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -71,7 +70,7 @@ class SignalsTests {
         val callback: (Int) -> Unit = { value -> container.addAndFetch(value) }
 
         // Connect listener
-        signal connect callback
+        signal connect callback // signal.connect(callback)
 
         // Launch multiple concurrent producers on different threads
         val producers = List(10) {
