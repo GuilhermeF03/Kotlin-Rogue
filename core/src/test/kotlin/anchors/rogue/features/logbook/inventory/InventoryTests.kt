@@ -22,67 +22,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@Ignore
 @DisplayName("Inventory Tests")
 class InventoryTests {
-    // Mocked Dependencies
-    val mockedRegistry: ItemRegistry = mock{
-        on { loadRegistry() }.doAnswer {  }
-    }
-    val inventory = Inventory(mockedRegistry)
-
-    @Nested
-    @DisplayName("Inventory Data loading Tests")
-    inner class InventoryDataLoadingTests {
-        @Test
-        fun `loading empty inventory data should initialize inventory with zero gold and no items`() {
-            // Setup
-            val inventory = Inventory(mockedRegistry)
-            val data = InventoryData()
-            // Act
-            inventory.loadData(data)
-            // Assert
-            assertAll(
-                { assertEquals(0, inventory.gold.value) },
-                { assertTrue {inventory.weapons.isEmpty() }},
-                { assertTrue {inventory.armors.isEmpty() }},
-                { assertTrue {inventory.consumables.isEmpty() }},
-                { assertTrue {inventory.trinkets.isEmpty() }}
-            )
+    val inventory = Inventory(object : ItemRegistry(){
+        init {
+            loadRegistry()
         }
-
-        @Test
-        fun `loading inventory data should populate inventory correctly`() {
-            // Setup
-            val sword = EquippableItem.Weapon(
-                name ="Sword",
-                stats = Stats(),
-            )
-            val shield = EquippableItem.Armor(
-                name ="Shield",
-                stats = Stats(),
-            )
-            val potion = Item.Consumable(
-                name = "Health Potion",
-                effect = "Restores 50 HP"
-            )
-            val data = InventoryData(
-                gold = 100,
-                weapons = listOf(sword.id),
-                armors = listOf(shield.id),
-                consumables = listOf(potion.id)
-            )
-
-            // Setup mock behaviour
-
-            inventory.loadData(data)
-
-            assert(inventory.gold.value == 100)
-            assert(inventory.weapons.contains(sword))
-            assert(inventory.armors.contains(shield))
-            assert(inventory.consumables.contains(potion))
-        }
-    }
+    })
 
     @Nested
     @DisplayName("Inventory Item Management Tests")

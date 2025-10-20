@@ -12,6 +12,7 @@ import java.util.UUID
  */
 @Serializable
 sealed interface EquippableItem : Item {
+    val stats : Stats
     /**
      * Weapon items are used for improving attack-based stats.
      * They also have a name, description, stats, and rank.
@@ -23,7 +24,7 @@ sealed interface EquippableItem : Item {
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
         override val sellValue: Int = 0,
-        val stats: Stats,
+        override val stats: Stats = Stats(),
         val minDamage: Int = 0,
         val maxDamage: Int = 0,
         val range: Int = 1, // Será que armas vão ter range? Por exemplo, espadas devem atacar inimigos próximos, mas arcos podem atacar de longe
@@ -40,7 +41,7 @@ sealed interface EquippableItem : Item {
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
         override val sellValue: Int = 0,
-        val stats: Stats,
+        override val stats: Stats = Stats(),
         //val defense: Int, ≤- Isto vem dos stats acho que não é necessário
     ) : EquippableItem
 
@@ -55,7 +56,7 @@ sealed interface EquippableItem : Item {
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
         override val sellValue: Int = 0,
-        val stats: Stats,
+        override val stats: Stats = Stats(),
         val effect: String = "", // Descrição do efeito do acessório -≥ mudar para objeto Effect mais tarde
     ) : EquippableItem
 }

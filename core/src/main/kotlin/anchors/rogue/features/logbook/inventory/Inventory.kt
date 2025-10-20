@@ -7,7 +7,9 @@ import anchors.rogue.utils.signals.createSignal
 import kotlin.reflect.KClass
 import kotlin.reflect.typeOf
 
-class Inventory (private val registry: ItemRegistry = ItemRegistry()){
+class Inventory(
+    private val registry: ItemRegistry = ItemRegistry()
+) {
     // Amount of gold the player has
     val gold: SignalVal<Int> = SignalVal(0)
     // Currently equipped items
@@ -18,17 +20,12 @@ class Inventory (private val registry: ItemRegistry = ItemRegistry()){
     val weapons: MutableList<EquippableItem.Weapon> = mutableListOf()
     val armors: MutableList<EquippableItem.Armor> = mutableListOf()
     val accessories: MutableList<EquippableItem.Accessory> = mutableListOf()
-
     // Signals - events that can be listened to
     val onPickItem : OneArgSignal<Item> = createSignal<Item>()
     val onSellItem : OneArgSignal<Item> = createSignal<Item>()
     val onEquip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>()
     val onUnequip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>()
     val onUseItem : OneArgSignal<Item.Consumable> = createSignal<Item.Consumable>()
-
-    init {
-        registry.loadRegistry()
-    }
 
     /**
      * Loads inventory data from the provided InventoryData object.

@@ -1,18 +1,14 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.utils.data.parsers.JsonParser
-import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
-import java.io.File
-import kotlin.reflect.KClass
-import kotlin.reflect.typeOf
 
 /**
  * Loads defined items from .json files into registry maps.
  * Maps ids from the inventory save data into items.
  */
-class ItemRegistry {
+open class ItemRegistry {
     val trinketsMap : MutableMap<String, Item.Trinket> = mutableMapOf()
     val consumableMap : MutableMap<String, Item.Consumable> = mutableMapOf()
 
@@ -20,12 +16,22 @@ class ItemRegistry {
     val armorsMap : MutableMap<String, EquippableItem.Armor> = mutableMapOf()
     val accessoryMap : MutableMap<String, EquippableItem.Accessory> = mutableMapOf()
 
+    init {
+        loadRegistry()
+    }
+
     /**
      * Loads all items defined in .json files in /data/items recursively
+     * @param testItems - items passed during unit tests
      */
-    fun loadRegistry(){
+    fun loadRegistry(testItems : List<Item>? = null){
+        if(testItems != null){
+            addItemsToRegistry(testItems)
+            return
+        }
+
         // Path to the folder on disk (adjust as needed)
-        val folder = Gdx.files.internal("data/items") // or "src/test/resources/data/items" for tests
+        val folder = Gdx.files.internal("data/items")
         require(folder.exists() && folder.isDirectory) { "Expected folder at ${folder.path()}" }
 
         // Recursively collect all JSON files
@@ -60,7 +66,9 @@ class ItemRegistry {
         }
     }
 
-    inline fun <reified T : Item> mapItems(ids: List<String>): List<T> {
+    inline fun <reified T : Item> mapItems(ids : List<String>): List<T> {
+        if(ids.isEmpty()) return listOf()
+
         val registry: Map<String, Item> = when (T::class) {
             EquippableItem.Weapon::class -> weaponsMap
             EquippableItem.Armor::class -> armorsMap
