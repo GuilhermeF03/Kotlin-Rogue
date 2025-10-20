@@ -1,6 +1,7 @@
 package anchors.rogue.features.stats.data
 
 import anchors.rogue.features.combat.Skill
+import anchors.rogue.utils.data.registry.IdEntry
 import kotlinx.serialization.Serializable
 
 /**
@@ -14,10 +15,11 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Race(
-    val id: String,
-    val name: String,
+    override val name: String,
     val stats: Stats,
     val blessing: Skill,
     val curse: Skill,
     val description: String
-)
+) : IdEntry {
+    override val domain = "race"
+}

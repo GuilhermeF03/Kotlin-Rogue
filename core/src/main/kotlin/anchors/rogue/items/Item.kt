@@ -1,4 +1,4 @@
-package anchors.rogue.features.logbook.inventory
+package anchors.rogue.items
 
 import anchors.rogue.utils.data.registry.IdEntry
 import kotlinx.serialization.Serializable
@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Item : IdEntry {
     override val id : String
-    val name: String
+    override val name: String
     val description : String
     val rank: ItemRank
     val sellValue : Int
@@ -28,7 +28,9 @@ sealed interface Item : IdEntry {
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
         override val sellValue: Int = 0, // Trinkets can be sold for gold
-    ) : Item
+    ) : Item {
+        override val domain = "trinket"
+    }
 
     /**
      * Consumable items can be used to provide temporary effects or restore health/mana.
@@ -42,6 +44,8 @@ sealed interface Item : IdEntry {
         override val rank: ItemRank = ItemRank.COMMON,
         override val sellValue: Int = 0,
         val effect: String = "", // Descrição do efeito do consumível -≥ mudar para objeto Effect mais tarde
-    ) : Item
+    ) : Item {
+        override val domain = "consumable"
+    }
 }
 

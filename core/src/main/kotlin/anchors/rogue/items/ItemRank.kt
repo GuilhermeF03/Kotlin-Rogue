@@ -1,4 +1,4 @@
-package anchors.rogue.features.logbook.inventory
+package anchors.rogue.items
 
 /**
  * ItemRank represents the rarity or quality of an item.

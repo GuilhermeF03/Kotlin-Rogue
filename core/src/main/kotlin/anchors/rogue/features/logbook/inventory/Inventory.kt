@@ -1,15 +1,20 @@
 package anchors.rogue.features.logbook.inventory
 
-import anchors.rogue.utils.data.registry.JsonIdRegistry
+import anchors.rogue.items.EquippableItem
+import anchors.rogue.items.Item
+import anchors.rogue.utils.data.registry.IdRegistry
 import anchors.rogue.utils.signals.OneArgSignal
 import anchors.rogue.utils.signals.SignalVal
 import anchors.rogue.utils.signals.asSignalVal
 import anchors.rogue.utils.signals.createSignal
 import com.badlogic.gdx.Gdx
 
+
+const val ITEMS_JSON = "data/items"
+
 class Inventory(
-    registryProvider: () -> JsonIdRegistry<Item> = {
-        JsonIdRegistry<Item>(Gdx.files.internal("data/items")).also { it.loadRegistry()}
+    registryProvider: () -> IdRegistry<Item> = {
+        IdRegistry<Item>(Gdx.files.internal(ITEMS_JSON)).also { it.loadRegistry()}
     }
 ) {
     // Amount of gold the player has
@@ -43,19 +48,19 @@ class Inventory(
         equipment = data.equipment
 
         trinkets.clear()
-        trinkets.addAll(registry.mapItems( data.trinkets))
+        trinkets.addAll(registry.mapIds( data.trinkets))
 
         consumables.clear()
-        consumables.addAll(registry.mapItems(data.consumables))
+        consumables.addAll(registry.mapIds(data.consumables))
 
         weapons.clear()
-        weapons.addAll(registry.mapItems(data.weapons))
+        weapons.addAll(registry.mapIds(data.weapons))
 
         armors.clear()
-        armors.addAll(registry.mapItems(data.armors))
+        armors.addAll(registry.mapIds(data.armors))
 
         accessories.clear()
-        accessories.addAll(registry.mapItems(data.accessories))
+        accessories.addAll(registry.mapIds(data.accessories))
     }
 
     /**

@@ -2,21 +2,24 @@ package anchors.rogue.utils.data.registry
 
 import anchors.rogue.utils.data.parsers.JsonParser
 import com.badlogic.gdx.files.FileHandle
-import kotlin.reflect.KClass
 
 /**
  * Loads defined items from .json files into registry maps.
  * Useful for mapping ids into concrete objects
  */
-class JsonIdRegistry<T : IdEntry>(
+class IdRegistry<T : IdEntry>(
     private val source : FileHandle? = null // null for tests
 ) {
-    val map : MutableMap<KClass<out T>, MutableMap<String, T>> = mutableMapOf()
+    /**
+     * Maps a class / subclass of T to an id-map
+     */
+    val map : MutableMap<String, T> = mutableMapOf()
 
     init{
-        if(source != null)
-            check(source.exists()) {"'${source.path()}' not found!"}
+        if(source != null) check(source.exists()) {"'${source.path()}' not found!"}
     }
+
+    fun nEntries() : Int = map.size
 
     /**
      * Loads registry - either by passing a list of items,
@@ -29,17 +32,20 @@ class JsonIdRegistry<T : IdEntry>(
         }
 
         check(source != null) {"No registry items passed - source shouldn't be null!"}
-
         val jsonFiles = if( source.isDirectory) collectJsonFiles(source) else listOf(source)
 
-        jsonFiles.forEach { file ->
+        jsonFiles
+            .filter { it.extension() == "json" }
+            .forEach { file ->
             val items: List<T> = JsonParser.parseFile(file)
             addItemsToRegistry(items)
         }
     }
 
-    private  fun addItemsToRegistry(items: List<T>) {
-        items.forEach { item -> map.getOrPut(item::class) { mutableMapOf() }[item.id] = item }
+    private fun addItemsToRegistry(items: List<T>) {
+        items.forEach { item ->
+            require(map.putIfAbsent(item.id, item) == null) { "Item with duplicate id found: ${item.id}" }
+        }
     }
 
     private fun collectJsonFiles(dir: FileHandle): List<FileHandle> {
@@ -52,15 +58,10 @@ class JsonIdRegistry<T : IdEntry>(
         } ?: emptyList()
     }
 
-    inline fun <reified R : T> mapItems(ids: List<String>): List<R> {
+    inline fun <reified R : T> mapIds(ids: List<String>): List<R> {
         if (ids.isEmpty()) return emptyList()
-
-        val registry = map[R::class] ?: throw IllegalArgumentException(
-            "No items of type '${R::class.simpleName}' found in registry"
-        )
-
         return ids.map { id ->
-            val item = registry[id] ?: throw IllegalArgumentException(
+            val item = map[id] ?: throw IllegalArgumentException(
                 "Id '$id' not found in registry '${R::class.simpleName}'"
             )
             item as R

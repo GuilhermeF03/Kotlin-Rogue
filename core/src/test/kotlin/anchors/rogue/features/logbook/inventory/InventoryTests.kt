@@ -1,7 +1,8 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.features.stats.data.Stats
-import anchors.rogue.utils.data.registry.JsonIdRegistry
+import anchors.rogue.items.EquippableItem
+import anchors.rogue.utils.data.registry.IdRegistry
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
@@ -9,7 +10,7 @@ import kotlin.test.Test
 
 @DisplayName("Inventory Tests")
 class InventoryTests {
-    val inventory = Inventory { JsonIdRegistry() }
+    val inventory = Inventory { IdRegistry() }
 
     @Nested
     @DisplayName("Inventory Item Management Tests")

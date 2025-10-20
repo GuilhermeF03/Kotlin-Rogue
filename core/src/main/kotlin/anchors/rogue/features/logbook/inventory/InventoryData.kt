@@ -1,5 +1,6 @@
 package anchors.rogue.features.logbook.inventory
 
+import anchors.rogue.items.EquippableItem
 import kotlinx.serialization.Serializable
 
 @Serializable

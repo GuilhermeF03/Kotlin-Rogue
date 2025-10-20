@@ -1,4 +1,4 @@
-package anchors.rogue.features.logbook.inventory
+package anchors.rogue.items
 
 import anchors.rogue.features.stats.data.Stats
 import kotlinx.serialization.Serializable
@@ -26,8 +26,9 @@ sealed interface EquippableItem : Item {
         val minDamage: Int = 0,
         val maxDamage: Int = 0,
         val range: Int = 1, // Será que armas vão ter range? Por exemplo, espadas devem atacar inimigos próximos, mas arcos podem atacar de longe
-    ) : EquippableItem
-
+    ) : EquippableItem {
+        override val domain = "weapon"
+    }
     /**
      * Armor items are used to improve defense-related stats.
      * They also have a name, description, stats, and rank.
@@ -41,8 +42,9 @@ sealed interface EquippableItem : Item {
         override val sellValue: Int = 0,
         override val stats: Stats = Stats(),
         //val defense: Int, ≤- Isto vem dos stats acho que não é necessário
-    ) : EquippableItem
-
+    ) : EquippableItem {
+        override val domain = "armor"
+    }
     /**
      * Accessory items provide various effects or bonuses to the player.
      * They also have a name, description, stats, and rank.
@@ -56,7 +58,7 @@ sealed interface EquippableItem : Item {
         override val sellValue: Int = 0,
         override val stats: Stats = Stats(),
         val effect: String = "", // Descrição do efeito do acessório -≥ mudar para objeto Effect mais tarde
-    ) : EquippableItem
+    ) : EquippableItem {
+        override val domain = "accessory"
+    }
 }
-
-

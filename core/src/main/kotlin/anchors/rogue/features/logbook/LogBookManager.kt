@@ -2,6 +2,7 @@ package anchors.rogue.features.logbook
 
 import anchors.rogue.ecs.managers.Manager
 import anchors.rogue.features.logbook.bestiary.Bestiary
+import anchors.rogue.features.logbook.bestiary.BestiaryData
 import anchors.rogue.features.logbook.inventory.Inventory
 import anchors.rogue.features.logbook.inventory.InventoryData
 import anchors.rogue.features.logbook.journal.Journal
@@ -11,23 +12,9 @@ class LogBookManager : Manager() {
     /**
      * Player's inventory containing items, equipment, and gold.
      */
-    val inventory: Inventory by lazy {
-        Inventory()
-    }
-
-    /**
-     * Player's journal containing quests, notes, and lore entries.
-     */
-    val journal: Journal by lazy {
-        Journal()
-    }
-
-    /**
-     * Player's bestiary containing information about encountered creatures.
-     */
-    val bestiary: Bestiary by lazy {
-        Bestiary()
-    }
+    val inventory = Inventory()
+    val bestiary = Bestiary()
+    val journal = Journal()
 
     /**
      * Reads the logbook data from player save file and initializes its components.
@@ -40,6 +27,8 @@ class LogBookManager : Manager() {
         val inventoryData = /* load from save file or create new */ InventoryData()
         inventory.loadData(inventoryData)
 
+        val bestiaryData = /**/ BestiaryData()
+        bestiary.loadData(bestiaryData)
     }
 
     override fun teardown() {
