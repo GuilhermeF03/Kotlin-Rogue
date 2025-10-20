@@ -1,6 +1,6 @@
 package anchors.rogue.features.logbook.bestiary
 
-import java.util.UUID
+import java.util.*
 
 /**
  * A collection of discovered entities in the game.

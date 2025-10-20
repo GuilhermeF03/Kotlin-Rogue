@@ -1,9 +1,7 @@
 package anchors.rogue.features.logbook.inventory
 
-import anchors.rogue.features.stats.data.Stats
-import anchors.rogue.utils.data.serializers.UUIDSerializer
+import anchors.rogue.utils.data.registry.IdEntry
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 
 /**
@@ -12,8 +10,8 @@ import java.util.UUID
  * The different item types have their own specific attributes in addition to the common ones.
  */
 @Serializable
-sealed interface Item {
-    val id : String
+sealed interface Item : IdEntry {
+    override val id : String
     val name: String
     val description : String
     val rank: ItemRank

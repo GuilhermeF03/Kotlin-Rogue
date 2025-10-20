@@ -1,8 +1,6 @@
 package anchors.rogue.features.logbook.bestiary
 
-import anchors.rogue.utils.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 
 /**
  * Represents a single entry in the bestiary.
@@ -14,8 +12,7 @@ import java.util.*
  */
 @Serializable
 data class BestiaryEntry(
-    @Serializable(with = UUIDSerializer::class)
-    val id : UUID,
+    val id : String,
     val name: String,
     val picturePath: String,
     val description: String,

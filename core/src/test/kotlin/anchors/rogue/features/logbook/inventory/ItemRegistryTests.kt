@@ -1,23 +1,20 @@
 package anchors.rogue.features.logbook.inventory
 
+import anchors.rogue.utils.data.registry.JsonIdRegistry
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertContentEquals
 
 class ItemRegistryTests {
-    val sword = EquippableItem.Weapon(name = "sword")
-    val armor = EquippableItem.Armor(name = "armor")
-    val consumable = Item.Consumable(name = "consumable")
+    val sword = EquippableItem.Weapon(name = "sword", maxDamage = 3)
+    val armor = EquippableItem.Armor(name = "armor", sellValue = 10)
+    val consumable = Item.Consumable(name = "consumable", description = "abc")
+
+    val registry : JsonIdRegistry<Item> = JsonIdRegistry()
 
     @Test
     fun `should be unable to find any item`(){
-        // Setup
-        val registry = object : ItemRegistry(){
-            init {
-                super.loadRegistry(listOf())
-            }
-        }
         // Assert
         assertAll(
             { assertThrows<IllegalArgumentException> {
@@ -34,12 +31,8 @@ class ItemRegistryTests {
     @Test
     fun `should correctly map items`(){
         // Setup
-        val items = listOf(sword, armor, consumable)
-        val registry = object : ItemRegistry(){
-            init {
-                super.loadRegistry(items)
-            }
-        }
+        val items = listOf(sword.copy(), armor.copy(), consumable.copy())
+        registry.loadRegistry(items)
 
         // Act
         val weapons : List<EquippableItem.Weapon> = registry.mapItems(listOf(sword.id))

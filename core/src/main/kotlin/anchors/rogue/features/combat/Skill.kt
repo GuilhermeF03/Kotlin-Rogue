@@ -1,13 +1,10 @@
 package anchors.rogue.features.combat
 
-import anchors.rogue.utils.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
-import java.util.*
 
 @Serializable
 data class Skill(
-    @Serializable(with = UUIDSerializer::class)
-    val id: UUID = UUID.randomUUID(),
+    val id: String,
     val name: String,
     val description: String = "",
     val type: SkillType,

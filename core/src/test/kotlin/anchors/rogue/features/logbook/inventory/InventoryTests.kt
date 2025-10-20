@@ -1,34 +1,15 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.features.stats.data.Stats
-import com.badlogic.gdx.ApplicationListener
-import com.badlogic.gdx.Gdx
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
+import anchors.rogue.utils.data.registry.JsonIdRegistry
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doAnswer
-import org.mockito.kotlin.doNothing
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.stub
-import org.mockito.kotlin.whenever
-import kotlin.test.Ignore
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @DisplayName("Inventory Tests")
 class InventoryTests {
-    val inventory = Inventory(object : ItemRegistry(){
-        init {
-            loadRegistry()
-        }
-    })
+    val inventory = Inventory { JsonIdRegistry() }
 
     @Nested
     @DisplayName("Inventory Item Management Tests")

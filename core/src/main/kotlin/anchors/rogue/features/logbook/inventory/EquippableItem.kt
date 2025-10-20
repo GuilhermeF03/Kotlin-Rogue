@@ -1,9 +1,7 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.features.stats.data.Stats
-import anchors.rogue.utils.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 
 /**

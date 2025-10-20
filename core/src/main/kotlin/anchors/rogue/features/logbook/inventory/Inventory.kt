@@ -1,17 +1,19 @@
 package anchors.rogue.features.logbook.inventory
 
+import anchors.rogue.utils.data.registry.JsonIdRegistry
 import anchors.rogue.utils.signals.OneArgSignal
 import anchors.rogue.utils.signals.SignalVal
 import anchors.rogue.utils.signals.asSignalVal
 import anchors.rogue.utils.signals.createSignal
-import kotlin.reflect.KClass
-import kotlin.reflect.typeOf
+import com.badlogic.gdx.Gdx
 
 class Inventory(
-    private val registry: ItemRegistry = ItemRegistry()
+    registryProvider: () -> JsonIdRegistry<Item> = {
+        JsonIdRegistry<Item>(Gdx.files.internal("data/items")).also { it.loadRegistry()}
+    }
 ) {
     // Amount of gold the player has
-    val gold: SignalVal<Int> = SignalVal(0)
+    val gold: SignalVal<Int> = 0.asSignalVal()
     // Currently equipped items
     var equipment : EquipmentData = EquipmentData()
     // Stored items categorized by their type
@@ -26,6 +28,7 @@ class Inventory(
     val onEquip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>()
     val onUnequip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>()
     val onUseItem : OneArgSignal<Item.Consumable> = createSignal<Item.Consumable>()
+    val registry = registryProvider()
 
     /**
      * Loads inventory data from the provided InventoryData object.
