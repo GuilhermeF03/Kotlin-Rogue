@@ -17,6 +17,16 @@ data class InventoryData(
     val accessories: List<String> = listOf(),
 )
 
+fun InventoryManager.asData() : InventoryData = InventoryData(
+    gold.value,
+    equipment,
+    trinkets.map { it.id },
+    consumables.map { it.id },
+    weapons.map { it.id },
+    armors.map { it.id },
+    accessories.map { it.id }
+)
+
 @Serializable
 data class EquipmentData(
     // Currently equipped weapon

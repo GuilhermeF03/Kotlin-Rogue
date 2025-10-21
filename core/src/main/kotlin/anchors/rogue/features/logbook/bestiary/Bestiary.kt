@@ -16,13 +16,20 @@ class Bestiary (
         IdRegistry<BestiaryEntry>(Gdx.files.internal(BESTIARY_JSON)).also { it.loadRegistry() }
     }
 ){
+    //
     private val registry = registryProvider()
+    private val saveModule = BestiarySaveModule(this)
     // Data
     val discovered = mutableListOf<BestiaryEntry>()
     // Total number of unique entities in the game
     val total: Int = registry.nEntries()
     // Signals
     val onDiscovered = createSignal<BestiaryEntry>()
+
+    init {
+        saveModule.onLoad.connect(::loadData)
+    }
+
     /**
      * Loads bestiary data from the provided BestiaryData object.
      * This method populates the bestiary with discovered entities.

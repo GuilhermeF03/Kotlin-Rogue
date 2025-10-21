@@ -10,7 +10,7 @@ import kotlin.test.Test
 
 @DisplayName("Inventory Tests")
 class InventoryTests {
-    val inventory = Inventory { IdRegistry() }
+    val inventory = InventoryManager { IdRegistry() }
 
     @Nested
     @DisplayName("Inventory Item Management Tests")

@@ -43,6 +43,7 @@ object ManagersRegistry {
     fun teardown() {
         logger.info { "Tearing down managers[registered: ${managers.size}]..." }
         managers.values.forEach { it.teardown() }
+        managers.clear()
     }
 }
 

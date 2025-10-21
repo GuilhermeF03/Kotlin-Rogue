@@ -3,16 +3,16 @@ package anchors.rogue.features.logbook
 import anchors.rogue.ecs.managers.Manager
 import anchors.rogue.features.logbook.bestiary.Bestiary
 import anchors.rogue.features.logbook.bestiary.BestiaryData
-import anchors.rogue.features.logbook.inventory.Inventory
+import anchors.rogue.features.logbook.inventory.InventoryManager
 import anchors.rogue.features.logbook.inventory.InventoryData
 import anchors.rogue.features.logbook.journal.Journal
 
-class LogBookManager : Manager() {
+class LogbookManager : Manager() {
 
     /**
      * Player's inventory containing items, equipment, and gold.
      */
-    val inventory = Inventory()
+    val inventory = InventoryManager()
     val bestiary = Bestiary()
     val journal = Journal()
 

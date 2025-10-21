@@ -12,11 +12,11 @@ import com.badlogic.gdx.Gdx
 
 const val ITEMS_JSON = "data/items"
 
-class Inventory(
+class InventoryManager(
     registryProvider: () -> IdRegistry<Item> = {
         IdRegistry<Item>(Gdx.files.internal(ITEMS_JSON)).also { it.loadRegistry()}
     }
-) {
+){
     // Amount of gold the player has
     val gold: SignalVal<Int> = 0.asSignalVal()
     // Currently equipped items
@@ -33,7 +33,13 @@ class Inventory(
     val onEquip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>()
     val onUnequip : OneArgSignal<EquippableItem> = createSignal<EquippableItem>()
     val onUseItem : OneArgSignal<Item.Consumable> = createSignal<Item.Consumable>()
-    val registry = registryProvider()
+    // Registry for mapping ids
+    private val registry = registryProvider()
+    private val saveModule = InventorySaveModule(this)
+
+    init {
+        saveModule.onLoad.connect(::loadData)
+    }
 
     /**
      * Loads inventory data from the provided InventoryData object.

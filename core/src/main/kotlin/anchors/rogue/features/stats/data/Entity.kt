@@ -1,7 +1,7 @@
 package anchors.rogue.features.stats.data
 
 import anchors.rogue.features.combat.Skill
-import anchors.rogue.features.logbook.inventory.Inventory
+import anchors.rogue.features.logbook.inventory.InventoryManager
 
 data class Entity(
     val name: String,
@@ -10,7 +10,7 @@ data class Entity(
     val skillPoints: Int = 0,
     val equippedSkills: List<Skill> = listOf(),
     val skills: List<Skill> = listOf(),
-    val inventory: Inventory,
+    val inventory: InventoryManager,
 ) {
     val health: Int
         get() = race.stats.vitality
