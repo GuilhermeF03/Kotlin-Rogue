@@ -1,5 +1,6 @@
 package anchors.rogue.features.logbook.bestiary
 
+import anchors.rogue.features.saving.registerSaveModule
 import anchors.rogue.utils.data.registry.IdRegistry
 import anchors.rogue.utils.signals.createSignal
 import com.badlogic.gdx.Gdx
@@ -12,13 +13,9 @@ const val BESTIARY_JSON = "data/bestiary.json"
  * @param total Total number of unique entities in the game.
  */
 class Bestiary (
-    registryProvider : () -> IdRegistry<BestiaryEntry> = {
+    private val registry: IdRegistry<BestiaryEntry> =
         IdRegistry<BestiaryEntry>(Gdx.files.internal(BESTIARY_JSON)).also { it.loadRegistry() }
-    }
 ){
-    //
-    private val registry = registryProvider()
-    private val saveModule = BestiarySaveModule(this)
     // Data
     val discovered = mutableListOf<BestiaryEntry>()
     // Total number of unique entities in the game
@@ -27,16 +24,20 @@ class Bestiary (
     val onDiscovered = createSignal<BestiaryEntry>()
 
     init {
-        saveModule.onLoad.connect(::loadData)
+        registerSaveModule<BestiarySaveData>(
+            "bestiary",
+            serializer = BestiarySaveData.serializer(),
+            onSave = {this.asData()},
+            onLoad = ::loadData,
+        )
     }
-
     /**
      * Loads bestiary data from the provided BestiaryData object.
      * This method populates the bestiary with discovered entities.
      * Used when loading a saved game.
      * @param data The BestiaryData object containing the bestiary information to load.
      */
-    fun loadData(data: BestiaryData) {
+    fun loadData(data: BestiarySaveData) {
         discovered.clear()
         discovered += registry.mapIds(data.discovered)
     }

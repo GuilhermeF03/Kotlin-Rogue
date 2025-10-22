@@ -12,7 +12,7 @@ import kotlin.test.assertContentEquals
 class ItemRegistryTests {
     val sword = EquippableItem.Weapon(name = "sword", maxDamage = 3)
     val armor = EquippableItem.Armor(name = "armor", sellValue = 10)
-    val consumable = Item.Consumable(name = "consumable", description = "abc")
+    val consumable = Item.Consumable(name = "consumable", description = "abc", quantity = 3)
 
     val registry : IdRegistry<Item> = IdRegistry()
 

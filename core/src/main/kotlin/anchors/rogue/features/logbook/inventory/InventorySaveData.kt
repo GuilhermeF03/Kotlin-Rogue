@@ -4,7 +4,7 @@ import anchors.rogue.items.EquippableItem
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class InventoryData(
+data class InventorySaveData(
     // Current gold amount
     val gold: Int = 0,
     // Currently equipped items
@@ -20,7 +20,7 @@ data class InventoryData(
 @Serializable
 data class InventoryEntry(val id : String, val quantity : Int)
 
-fun InventoryManager.asData() : InventoryData = InventoryData(
+fun Inventory.asData() : InventorySaveData = InventorySaveData(
     gold.value,
     equipment,
     trinkets.map { InventoryEntry(it.id, it.quantity) },

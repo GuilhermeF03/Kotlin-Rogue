@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class JournalEntry(
     override val name: String = "",
     val type : JournalEntryType = JournalEntryType.DEFAULT,
-    val content: String = ""
+    val lore: String = ""
 ) : IdEntry { override val domain = "journal"}
 
 enum class JournalEntryType {

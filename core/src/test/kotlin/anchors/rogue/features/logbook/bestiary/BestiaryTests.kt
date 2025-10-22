@@ -3,14 +3,12 @@ package anchors.rogue.features.logbook.bestiary
 import anchors.rogue.ecs.managers.ManagersRegistry
 import anchors.rogue.features.saving.SaveManager
 import anchors.rogue.utils.data.registry.IdRegistry
-import com.badlogic.gdx.files.FileHandle
 import org.junit.jupiter.api.BeforeAll
-import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BestiaryTests {
-    val bestiary by lazy {  Bestiary { IdRegistry() } }
+    val bestiary by lazy {  Bestiary(IdRegistry()) }
 
     companion object{
         val saveManager = SaveManager()

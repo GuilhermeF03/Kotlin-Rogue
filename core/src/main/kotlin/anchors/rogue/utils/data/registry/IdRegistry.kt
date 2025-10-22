@@ -58,13 +58,13 @@ class IdRegistry<T : IdEntry>(
         } ?: emptyList()
     }
 
-    inline fun <reified R : T> mapIds(ids: List<String>): List<R> {
+    inline fun <reified R : T> mapIds(ids: List<String>, updateHandler : R.() -> Unit = {}): List<R> {
         if (ids.isEmpty()) return emptyList()
         return ids.map { id ->
-            val item = map[id] ?: throw IllegalArgumentException(
+            val item = map[id] as? R ?: throw IllegalArgumentException(
                 "Id '$id' not found in registry '${R::class.simpleName}'"
             )
-            item as R
+            item.apply(updateHandler)
         }
     }
 }

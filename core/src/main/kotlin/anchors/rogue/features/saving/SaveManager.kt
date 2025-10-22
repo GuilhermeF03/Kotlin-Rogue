@@ -7,9 +7,9 @@ import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.serializerOrNull
-import java.io.File
 
 const val SAVE_LOCATION = "saves"
 
@@ -68,13 +68,5 @@ class SaveManager(
                 module.loadFromJson(element)
             }
         }
-    }
-
-    // -------------------------------
-    // GET DATA
-    // -------------------------------
-    inline fun <reified T : @Serializable Any> loadData(id: String): T {
-        return dataRegistry[id] as? T
-            ?: error("No data found for id: $id or type mismatch.")
     }
 }

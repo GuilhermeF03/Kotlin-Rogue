@@ -1,7 +1,7 @@
 package anchors.rogue.utils.data.parsers
 
-import anchors.rogue.features.saving.SaveModule
 import com.badlogic.gdx.files.FileHandle
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -13,6 +13,7 @@ import kotlinx.serialization.modules.SerializersModule
  */
 object JsonParser {
 
+    @OptIn(ExperimentalSerializationApi::class)
     fun createJson(module: SerializersModule? = null) = Json {
         if (module != null) serializersModule = module
         classDiscriminator = "type"

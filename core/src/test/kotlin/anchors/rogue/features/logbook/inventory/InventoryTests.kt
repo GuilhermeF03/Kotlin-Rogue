@@ -13,7 +13,7 @@ import kotlin.test.Test
 
 @DisplayName("Inventory Tests")
 class InventoryTests {
-    val inventory by lazy { InventoryManager { IdRegistry() } }
+    val inventory by lazy { Inventory( IdRegistry()) }
 
     companion object{
         val saveManager = SaveManager()
@@ -36,13 +36,13 @@ class InventoryTests {
             )
             var signalEmitted = false
 
-            inventory.onPickItem.connect { item ->
+            inventory.onItemPick.connect { item ->
                 signalEmitted = true
                 assert(item == sword)
             }
 
             inventory.weapons.add(sword)
-            inventory.onPickItem.emit(sword)
+            inventory.onItemPick.emit(sword)
 
             assert(inventory.weapons.contains(sword))
             assert(signalEmitted)
@@ -62,7 +62,7 @@ class InventoryTests {
                 goldSignalEmitted = true
                 assert(newGold == 50)
             }
-            inventory.onSellItem.connect { item ->
+            inventory.onItemSold.connect { item ->
                 sellSignalEmitted = true
                 assert(item == shield)
             }

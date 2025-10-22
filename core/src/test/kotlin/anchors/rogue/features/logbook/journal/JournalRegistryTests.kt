@@ -1,6 +1,5 @@
 package anchors.rogue.features.logbook.journal
 
-import anchors.rogue.features.logbook.bestiary.BestiaryEntry
 import anchors.rogue.utils.data.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
