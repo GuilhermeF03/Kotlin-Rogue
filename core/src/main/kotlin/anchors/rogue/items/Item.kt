@@ -11,11 +11,11 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed interface Item : IdEntry {
-    override val id : String
     override val name: String
     val description : String
     val rank: ItemRank
     val sellValue : Int
+    val quantity : Int
 
     /**
      * Trinket items are special items that do not have stats but can be sold for gold.
@@ -23,11 +23,11 @@ sealed interface Item : IdEntry {
      */
     @Serializable
     data class Trinket(
-        override val id : String = "trinket:",
         override val name: String,
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
         override val sellValue: Int = 0, // Trinkets can be sold for gold
+        override val quantity: Int = 1
     ) : Item {
         override val domain = "trinket"
     }
@@ -38,11 +38,11 @@ sealed interface Item : IdEntry {
      */
     @Serializable
     data class Consumable( // Não sei se vamos conseguir meter logo um sistema de ‘items’ em batalha, mas podemos ver
-        override val id : String = "consumable:",
         override val name: String,
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
         override val sellValue: Int = 0,
+        override val quantity: Int = 1,
         val effect: String = "", // Descrição do efeito do consumível -≥ mudar para objeto Effect mais tarde
     ) : Item {
         override val domain = "consumable"

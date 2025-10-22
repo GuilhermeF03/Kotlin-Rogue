@@ -1,8 +1,11 @@
 package anchors.rogue.features.logbook.inventory
 
+import anchors.rogue.ecs.managers.ManagersRegistry
+import anchors.rogue.features.saving.SaveManager
 import anchors.rogue.features.stats.data.Stats
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.utils.data.registry.IdRegistry
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
@@ -10,7 +13,17 @@ import kotlin.test.Test
 
 @DisplayName("Inventory Tests")
 class InventoryTests {
-    val inventory = InventoryManager { IdRegistry() }
+    val inventory by lazy { InventoryManager { IdRegistry() } }
+
+    companion object{
+        val saveManager = SaveManager()
+
+        @JvmStatic
+        @BeforeAll
+        fun setup(){
+            ManagersRegistry.register(saveManager)
+        }
+    }
 
     @Nested
     @DisplayName("Inventory Item Management Tests")

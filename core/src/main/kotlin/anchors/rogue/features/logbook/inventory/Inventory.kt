@@ -54,19 +54,19 @@ class InventoryManager(
         equipment = data.equipment
 
         trinkets.clear()
-        trinkets += registry.mapIds( data.trinkets)
+        trinkets += registry.mapIds( data.trinkets.map { it.id })
 
         consumables.clear()
-        consumables += registry.mapIds(data.consumables)
+        consumables += registry.mapIds(data.consumables.map { it.id })
 
         weapons.clear()
-        weapons += registry.mapIds(data.weapons)
+        weapons += registry.mapIds(data.weapons.map { it.id })
 
         armors.clear()
-        armors += registry.mapIds(data.armors)
+        armors += registry.mapIds(data.armors.map { it.id })
 
         accessories.clear()
-        accessories += registry.mapIds(data.accessories)
+        accessories += registry.mapIds(data.accessories.map { it.id })
     }
 
     /**

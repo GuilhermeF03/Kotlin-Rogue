@@ -51,7 +51,6 @@ class SaveManagerTests {
             override val serializer: KSerializer<String> = String.serializer()
             override fun save(): String = "abc"
         }
-
         // Act
         saveManager.save(0)
         // Assert
@@ -61,5 +60,4 @@ class SaveManagerTests {
         assertEquals(5, intData)
         assertEquals("abc", stringData)
     }
-
 }

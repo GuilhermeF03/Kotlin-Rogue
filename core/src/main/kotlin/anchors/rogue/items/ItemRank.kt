@@ -9,10 +9,10 @@ package anchors.rogue.items
  * - EPIC: High-quality items with powerful attributes and effects.
  * - LEGENDARY: The best items available, often with unique abilities and the highest stats
  */
-enum class ItemRank(val rankValue: Int) {
-    COMMON(1),
-    UNCOMMON(2),
-    RARE(3),
-    EPIC(4),
-    LEGENDARY(5)
+enum class ItemRank {
+    COMMON,
+    UNCOMMON,
+    RARE,
+    EPIC,
+    LEGENDARY
 }

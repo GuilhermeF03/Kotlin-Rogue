@@ -10,21 +10,24 @@ data class InventoryData(
     // Currently equipped items
     val equipment : EquipmentData = EquipmentData(),
     // Stored items categorized by their type
-    val trinkets: List<String> = listOf(),
-    val consumables: List<String> = listOf(),
-    val weapons: List<String> = listOf(),
-    val armors: List<String> = listOf(),
-    val accessories: List<String> = listOf(),
+    val trinkets: List<InventoryEntry> = listOf(),
+    val consumables: List<InventoryEntry> = listOf(),
+    val weapons: List<InventoryEntry> = listOf(),
+    val armors: List<InventoryEntry> = listOf(),
+    val accessories: List<InventoryEntry> = listOf(),
 )
+
+@Serializable
+data class InventoryEntry(val id : String, val quantity : Int)
 
 fun InventoryManager.asData() : InventoryData = InventoryData(
     gold.value,
     equipment,
-    trinkets.map { it.id },
-    consumables.map { it.id },
-    weapons.map { it.id },
-    armors.map { it.id },
-    accessories.map { it.id }
+    trinkets.map { InventoryEntry(it.id, it.quantity) },
+    consumables.map { InventoryEntry(it.id, it.quantity) },
+    weapons.map { InventoryEntry(it.id, it.quantity) },
+    armors.map { InventoryEntry(it.id, it.quantity) },
+    accessories.map { InventoryEntry(it.id, it.quantity) }
 )
 
 @Serializable
