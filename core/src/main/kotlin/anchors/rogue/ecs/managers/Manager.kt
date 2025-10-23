@@ -10,11 +10,13 @@ import ktx.log.logger
 abstract class Manager {
     // Logger instance for logging messages related to the Manager
     open val logger = logger<Manager>()
+
     /**
      * Initializes the manager, setting up necessary resources or configurations.
      * This method is called when the manager is first created or activated.
      */
-    open fun setup() = logger.info {  "Running setup..." }
+    open fun setup() = logger.info { "Running setup..." }
+
     /**
      * Cleans up resources or configurations used by the manager.
      * This method is called when the manager is no longer needed or is being deactivated.

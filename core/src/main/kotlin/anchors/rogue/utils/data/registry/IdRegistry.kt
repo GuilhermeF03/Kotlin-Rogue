@@ -8,38 +8,38 @@ import com.badlogic.gdx.files.FileHandle
  * Useful for mapping ids into concrete objects
  */
 class IdRegistry<T : IdEntry>(
-    private val source : FileHandle? = null // null for tests
+    private val source: FileHandle? = null, // null for tests
 ) {
     /**
      * Maps a class / subclass of T to an id-map
      */
-    val map : MutableMap<String, T> = mutableMapOf()
+    val map: MutableMap<String, T> = mutableMapOf()
 
-    init{
-        if(source != null) check(source.exists()) {"'${source.path()}' not found!"}
+    init {
+        if (source != null) check(source.exists()) { "'${source.path()}' not found!" }
     }
 
-    fun nEntries() : Int = map.size
+    fun nEntries(): Int = map.size
 
     /**
      * Loads registry - either by passing a list of items,
      * or passing **null** if to load from 'source' field of the repository
      */
-    fun loadRegistry(registryItems: List<T>? = null){
-        if(registryItems != null){
+    fun loadRegistry(registryItems: List<T>? = null) {
+        if (registryItems != null) {
             addItemsToRegistry(registryItems)
             return
         }
 
-        check(source != null) {"No registry items passed - source shouldn't be null!"}
-        val jsonFiles = if( source.isDirectory) collectJsonFiles(source) else listOf(source)
+        check(source != null) { "No registry items passed - source shouldn't be null!" }
+        val jsonFiles = if (source.isDirectory) collectJsonFiles(source) else listOf(source)
 
         jsonFiles
             .filter { it.extension() == "json" }
             .forEach { file ->
-            val items: List<T> = JsonParser.parseFile(file)
-            addItemsToRegistry(items)
-        }
+                val items: List<T> = JsonParser.parseFile(file)
+                addItemsToRegistry(items)
+            }
     }
 
     private fun addItemsToRegistry(items: List<T>) {
@@ -48,22 +48,25 @@ class IdRegistry<T : IdEntry>(
         }
     }
 
-    private fun collectJsonFiles(dir: FileHandle): List<FileHandle> {
-        return dir.list()?.flatMap { file ->
+    private fun collectJsonFiles(dir: FileHandle): List<FileHandle> =
+        dir.list()?.flatMap { file ->
             when {
                 file.isDirectory -> collectJsonFiles(file) // recurse into subfolders
                 file.extension() == "json" -> listOf(file)
                 else -> emptyList()
             }
         } ?: emptyList()
-    }
 
-    inline fun <reified R : T> mapIds(ids: List<String>, updateHandler : R.() -> Unit = {}): List<R> {
+    inline fun <reified R : T> mapIds(
+        ids: List<String>,
+        updateHandler: R.() -> Unit = {},
+    ): List<R> {
         if (ids.isEmpty()) return emptyList()
         return ids.map { id ->
-            val item = map[id] as? R ?: throw IllegalArgumentException(
-                "Id '$id' not found in registry '${R::class.simpleName}'"
-            )
+            val item =
+                map[id] as? R ?: throw IllegalArgumentException(
+                    "Id '$id' not found in registry '${R::class.simpleName}'",
+                )
             item.apply(updateHandler)
         }
     }

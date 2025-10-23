@@ -4,20 +4,14 @@ import anchors.rogue.ecs.managers.Manager
 import anchors.rogue.utils.data.parsers.JsonParser
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.serializerOrNull
-import java.lang.management.ManagementFactory
 
 const val SAVE_LOCATION = "saves"
 
 class SaveManager(
-   private val saveFileFactory : (slot : Int) -> FileHandle = { Gdx.files.local("$SAVE_LOCATION/user_save_$it.json") }
+    private val saveFileFactory: (slot: Int) -> FileHandle = { Gdx.files.local("$SAVE_LOCATION/user_save_$it.json") },
 ) : Manager() {
     private val dataRegistry = mutableMapOf<SaveModule<*>, @Serializable Any>()
     private val json: Json = Json { prettyPrint = true }
@@ -45,16 +39,16 @@ class SaveManager(
 
     fun save(slot: Int) {
         val saveLocation = saveFileFactory(slot)
-        val jsonMap = buildMap {
-            for (module in dataRegistry.keys) {
-                @Suppress("UNCHECKED_CAST")
-                val typedModule = module as SaveModule<Any>
-                val data = typedModule.onSave()
-                put(typedModule.id, json.encodeToJsonElement(typedModule.serializer, data))
+        val jsonMap =
+            buildMap {
+                for (module in dataRegistry.keys) {
+                    @Suppress("UNCHECKED_CAST")
+                    val typedModule = module as SaveModule<Any>
+                    val data = typedModule.onSave()
+                    put(typedModule.id, json.encodeToJsonElement(typedModule.serializer, data))
+                }
             }
-        }
         val jsonData = JsonObject(jsonMap)
         JsonParser.toFile(jsonData, saveLocation)
     }
 }
-

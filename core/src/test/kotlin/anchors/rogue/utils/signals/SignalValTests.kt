@@ -6,9 +6,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SignalValTests {
-
     @Test
-    fun `test signal val`(){
+    fun `test signal val`() {
         val signalVal = SignalVal(0) // or 0.asSignalVal()
 
         var receivedValue: Int? = null
@@ -22,7 +21,7 @@ class SignalValTests {
     }
 
     @Test
-    fun `test signal val no callback on same value`(){
+    fun `test signal val no callback on same value`() {
         val signalVal = SignalVal(0) // or 0.asSignalVal()
 
         var callCount = 0
@@ -38,7 +37,7 @@ class SignalValTests {
     }
 
     @Test
-    fun `test signal val disconnect`(){
+    fun `test signal val disconnect`() {
         val signalVal = SignalVal(0) // or 0.asSignalVal()
 
         var callCount = 0
@@ -54,7 +53,7 @@ class SignalValTests {
     }
 
     @Test
-    fun `test signal val clear`(){
+    fun `test signal val clear`() {
         val signalVal = SignalVal(0) // or 0.asSignalVal()
 
         var callCount = 0
@@ -70,30 +69,31 @@ class SignalValTests {
     }
 
     @Test
-    fun `test signal val flow`() = runBlocking {
-        val signalVal = SignalVal(0)
+    fun `test signal val flow`() =
+        runBlocking {
+            val signalVal = SignalVal(0)
 
-        val collectedValues = mutableListOf<Int>()
+            val collectedValues = mutableListOf<Int>()
 
-        // Start collecting immediately
-        val job = launch {
-            signalVal.flow.collect {
-                collectedValues.add(it)
-            }
+            // Start collecting immediately
+            val job =
+                launch {
+                    signalVal.flow.collect {
+                        collectedValues.add(it)
+                    }
+                }
+
+            // Update values
+            signalVal.value = 42
+            signalVal.value = 100
+            signalVal.value = 100 // duplicate, should not emit (SharedFlow allows it, duplicates may remain)
+
+            // Give coroutine a chance to collect all
+            kotlinx.coroutines.yield()
+            job.cancel() // Stop collecting
+
+            assertEquals(listOf(0, 42, 100), collectedValues)
         }
-
-        // Update values
-        signalVal.value = 42
-        signalVal.value = 100
-        signalVal.value = 100  // duplicate, should not emit (SharedFlow allows it, duplicates may remain)
-
-        // Give coroutine a chance to collect all
-        kotlinx.coroutines.yield()
-        job.cancel() // Stop collecting
-
-        assertEquals(listOf(0, 42, 100), collectedValues)
-    }
-
 
     @Test
     fun `test signal val unwrapped`() {
@@ -103,6 +103,4 @@ class SignalValTests {
         signalVal.value = 20
         assert(signalVal.unwrapped() == 20) { "Unwrapped value should update with the current value." }
     }
-
-
 }

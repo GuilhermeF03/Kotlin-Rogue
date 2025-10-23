@@ -15,13 +15,14 @@ fun <T : @Serializable Any> registerSaveModule(
     id: String,
     serializer: KSerializer<T>,
     onSave: () -> T,
-    onLoad: (T) -> Unit = {}
+    onLoad: (T) -> Unit = {},
 ) {
-    val saveModule = object : SaveModule<T> {
-        override val id = id
-        override val serializer = serializer
-        override val onSave = onSave
-        override val onLoad = onLoad
-    }
+    val saveModule =
+        object : SaveModule<T> {
+            override val id = id
+            override val serializer = serializer
+            override val onSave = onSave
+            override val onLoad = onLoad
+        }
     ManagersRegistry.get(SaveManager::class).register(saveModule)
 }

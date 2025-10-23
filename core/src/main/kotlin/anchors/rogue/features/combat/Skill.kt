@@ -11,7 +11,7 @@ data class Skill(
     val category: SkillCategory,
     val effect: SkillEffect,
     val basePower: Int = 0,
-    val cost: Int = 0
+    val cost: Int = 0,
 )
 
 @Serializable
@@ -21,7 +21,7 @@ enum class SkillType {
     ICE,
     LIGHTNING,
     POISON,
-    HOLY
+    HOLY,
 }
 
 @Serializable
@@ -29,14 +29,14 @@ enum class SkillCategory {
     PHYSICAL,
     MAGIC,
     BUFF,
-    DEBUFF
+    DEBUFF,
 }
 
 @Serializable
 data class SkillEffect(
     val type: EffectType,
     val multiplier: Double = 0.0,
-    val duration: Int = 0
+    val duration: Int = 0,
 )
 
 @Serializable

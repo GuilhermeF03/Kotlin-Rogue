@@ -17,9 +17,9 @@ import com.github.quillraven.fleks.World
  * @return The created entity with the specified components and configurations.
  */
 fun World.sprite2D(
-    image : Texture,
-    position : Vector2 = Vector2(0f,0f),
-    block: EntityUpdateContext.(Entity) -> Unit = {} // For further configuration
+    image: Texture,
+    position: Vector2 = Vector2(0f, 0f),
+    block: EntityUpdateContext.(Entity) -> Unit = {}, // For further configuration
 ) = entity {
     it += SpriteComponent(Sprite(image))
     it[SpriteComponent].image.translate(position.x, position.y)

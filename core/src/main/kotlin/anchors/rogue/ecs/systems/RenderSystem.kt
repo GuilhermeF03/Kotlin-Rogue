@@ -18,24 +18,25 @@ import ktx.log.logger
 class RenderSystem(
     private val stage: Stage = inject(),
 ) : IteratingSystem(
-    family { any(SpriteComponent) },
-    compareEntity { e1, e2 ->
-        e1[SpriteComponent].image.y compareTo e2[SpriteComponent].image.y
-    }
-) {
+        family { any(SpriteComponent) },
+        compareEntity { e1, e2 ->
+            e1[SpriteComponent].image.y compareTo e2[SpriteComponent].image.y
+        },
+    ) {
     override fun onInit() {
         super.onInit()
         logger.info { "Render system bootstrapped!" }
     }
 
     override fun onUpdate() {
-        with(stage){
+        with(stage) {
             viewport.apply()
             batch.use { super.onUpdate() }
             act(deltaTime)
             draw()
         }
     }
+
     override fun onTickEntity(entity: Entity) {
         val sprite = entity[SpriteComponent].image
 
@@ -44,7 +45,7 @@ class RenderSystem(
         stage.addActor(imageActor)
     }
 
-    companion object{
+    companion object {
         val logger = logger<RenderSystem>()
     }
 }

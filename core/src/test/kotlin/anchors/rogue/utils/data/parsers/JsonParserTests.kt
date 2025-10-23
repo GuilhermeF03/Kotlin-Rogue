@@ -12,11 +12,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class JsonParserTests {
-
     @Serializable
     data class SimpleData(
         val id: Int,
-        val name: String
+        val name: String,
     )
 
     @Serializable
@@ -24,10 +23,15 @@ class JsonParserTests {
 
     @Serializable
     @SerialName("ImplementationA")
-    data class ImplementationA(val valueA: String) : BaseType
+    data class ImplementationA(
+        val valueA: String,
+    ) : BaseType
+
     @Serializable
     @SerialName("ImplementationB")
-    data class ImplementationB(val valueB: Int) : BaseType
+    data class ImplementationB(
+        val valueB: Int,
+    ) : BaseType
 
     @Nested
     @DisplayName("Simple tests for JsonParser")
@@ -61,21 +65,23 @@ class JsonParserTests {
     @Nested
     @DisplayName("Parsing with polymorphic types")
     inner class PolymorphicJsonParserTests {
-
-        val module = SerializersModule {
-            polymorphic(BaseType::class) {
-                subclass(ImplementationA::class)
-                subclass(ImplementationB::class)
+        val module =
+            SerializersModule {
+                polymorphic(BaseType::class) {
+                    subclass(ImplementationA::class)
+                    subclass(ImplementationB::class)
+                }
             }
-        }
 
         @Test
         fun `should parse polymorphic JSON string into correct subclass`() {
-            val jsonStringA = """{
-                "type": "ImplementationA",
-                "valueA": "Hello"
-            }
-            """.trimIndent()
+            val jsonStringA =
+                """
+                {
+                    "type": "ImplementationA",
+                    "valueA": "Hello"
+                }
+                """.trimIndent()
             val parsedA = JsonParser.parseString<BaseType>(jsonStringA, module)
             assert(parsedA is ImplementationA)
             assert((parsedA as ImplementationA).valueA == "Hello")

@@ -11,7 +11,8 @@ interface Level {
      * Called when the level is initialized.
      * @param world The game world context in which the level is initialized.
      */
-    fun setup(world : World)
+    fun setup(world: World)
+
     /**
      * Called when the level is disposed of.
      * This method should handle any necessary cleanup of resources.

@@ -13,14 +13,14 @@ import kotlin.test.Test
 
 @DisplayName("Inventory Tests")
 class InventoryTests {
-    val inventory by lazy { Inventory( IdRegistry()) }
+    val inventory by lazy { Inventory(IdRegistry()) }
 
-    companion object{
+    companion object {
         val saveManager = SaveManager()
 
         @JvmStatic
         @BeforeAll
-        fun setup(){
+        fun setup() {
             ManagersRegistry.register(saveManager)
         }
     }
@@ -30,10 +30,11 @@ class InventoryTests {
     inner class ItemManagementTests {
         @Test
         fun `picking an item should add it to inventory and emit signal`() {
-            val sword = EquippableItem.Weapon(
-                name = "Sword",
-                stats = Stats(),
-            )
+            val sword =
+                EquippableItem.Weapon(
+                    name = "Sword",
+                    stats = Stats(),
+                )
             var signalEmitted = false
 
             inventory.onItemPick.connect { item ->
@@ -50,11 +51,12 @@ class InventoryTests {
 
         @Test
         fun `selling an item should remove it from inventory, add gold, and emit signal`() {
-            val shield = EquippableItem.Armor(
-                name = "Shield",
-                stats = Stats(),
-                sellValue = 50
-            )
+            val shield =
+                EquippableItem.Armor(
+                    name = "Shield",
+                    stats = Stats(),
+                    sellValue = 50,
+                )
             inventory.armors.add(shield)
             var goldSignalEmitted = false
             var sellSignalEmitted = false
@@ -118,11 +120,12 @@ class InventoryTests {
 
         @Test
         fun `selling an item not in inventory should throw a illegal state exception`() {
-            val ring = EquippableItem.Accessory(
-                name = "Ring",
-                stats = Stats(),
-                sellValue = 30
-            )
+            val ring =
+                EquippableItem.Accessory(
+                    name = "Ring",
+                    stats = Stats(),
+                    sellValue = 30,
+                )
             assertThrows<IllegalStateException> { inventory.sellItem(ring) }
         }
     }
@@ -132,10 +135,11 @@ class InventoryTests {
     inner class EquipmentManagementTests {
         @Test
         fun `equipping a weapon should update current weapon and emit signal`() {
-            val sword = EquippableItem.Weapon(
-                name = "Sword",
-                stats = Stats(),
-            )
+            val sword =
+                EquippableItem.Weapon(
+                    name = "Sword",
+                    stats = Stats(),
+                )
             var signalEmitted = false
             inventory.onEquip.connect { item ->
                 signalEmitted = true
@@ -148,12 +152,14 @@ class InventoryTests {
             assert(inventory.equipment.currWeapon == sword)
             assert(signalEmitted)
         }
+
         @Test
         fun `equipping an armor should update current armor and emit signal`() {
-            val shield = EquippableItem.Armor(
-                name = "Shield",
-                stats = Stats(),
-            )
+            val shield =
+                EquippableItem.Armor(
+                    name = "Shield",
+                    stats = Stats(),
+                )
             var signalEmitted = false
             inventory.onEquip.connect { item ->
                 signalEmitted = true
@@ -166,12 +172,14 @@ class InventoryTests {
             assert(inventory.equipment.currArmor == shield)
             assert(signalEmitted)
         }
+
         @Test
         fun `unequipping an accessory should clear current accessory and emit signal`() {
-            val ring = EquippableItem.Accessory(
-                name = "Ring",
-                stats = Stats(),
-            )
+            val ring =
+                EquippableItem.Accessory(
+                    name = "Ring",
+                    stats = Stats(),
+                )
             inventory.accessories.add(ring)
             inventory.equipItem(ring)
 
@@ -189,10 +197,11 @@ class InventoryTests {
 
         @Test
         fun `equipping an item not in inventory should throw an illegal state exception`() {
-            val axe = EquippableItem.Weapon(
-                name = "Axe",
-                stats = Stats(),
-            )
+            val axe =
+                EquippableItem.Weapon(
+                    name = "Axe",
+                    stats = Stats(),
+                )
             assertThrows<IllegalStateException> { inventory.equipItem(axe) }
         }
 

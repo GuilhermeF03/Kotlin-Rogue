@@ -22,7 +22,8 @@ data class Entity(
         get() = race.stats
 
     val statusWindow: String
-        get() = """
+        get() =
+            """
             Name: $name
             Race: $race
             Class: ${archetype.name} (Level ${archetype.level})
@@ -31,5 +32,5 @@ data class Entity(
             Stats: $stats
             Skill Points: $skillPoints
             Equipped Skills:\n${equippedSkills.joinToString { "- ${it.name}\n" }}
-        """.trimIndent()
+            """.trimIndent()
 }

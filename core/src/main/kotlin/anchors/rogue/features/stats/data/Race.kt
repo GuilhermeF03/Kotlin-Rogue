@@ -19,7 +19,7 @@ data class Race(
     val stats: Stats,
     val blessing: Skill,
     val curse: Skill,
-    val description: String
+    val description: String,
 ) : IdEntry {
     override val domain = "race"
 }

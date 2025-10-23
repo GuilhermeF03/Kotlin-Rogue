@@ -8,7 +8,7 @@ data class InventorySaveData(
     // Current gold amount
     val gold: Int = 0,
     // Currently equipped items
-    val equipment : EquipmentData = EquipmentData(),
+    val equipment: EquipmentData = EquipmentData(),
     // Stored items categorized by their type
     val trinkets: List<InventoryEntry> = listOf(),
     val consumables: List<InventoryEntry> = listOf(),
@@ -18,17 +18,21 @@ data class InventorySaveData(
 )
 
 @Serializable
-data class InventoryEntry(val id : String, val quantity : Int)
-
-fun Inventory.asData() : InventorySaveData = InventorySaveData(
-    gold.value,
-    equipment,
-    trinkets.map { InventoryEntry(it.id, it.quantity) },
-    consumables.map { InventoryEntry(it.id, it.quantity) },
-    weapons.map { InventoryEntry(it.id, it.quantity) },
-    armors.map { InventoryEntry(it.id, it.quantity) },
-    accessories.map { InventoryEntry(it.id, it.quantity) }
+data class InventoryEntry(
+    val id: String,
+    val quantity: Int,
 )
+
+fun Inventory.asData(): InventorySaveData =
+    InventorySaveData(
+        gold.value,
+        equipment,
+        trinkets.map { InventoryEntry(it.id, it.quantity) },
+        consumables.map { InventoryEntry(it.id, it.quantity) },
+        weapons.map { InventoryEntry(it.id, it.quantity) },
+        armors.map { InventoryEntry(it.id, it.quantity) },
+        accessories.map { InventoryEntry(it.id, it.quantity) },
+    )
 
 @Serializable
 data class EquipmentData(

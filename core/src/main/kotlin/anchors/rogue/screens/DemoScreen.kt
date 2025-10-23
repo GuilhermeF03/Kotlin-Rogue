@@ -15,24 +15,28 @@ class DemoScreen : KtxScreen {
     private val world: World = coreWorld()
 
     // Screen resources
-    val image = Texture("logo.png".toInternalFile(), true).apply {
-        setFilter(Linear, Linear)
-    }
-    // Entities
-    val renderableLogo = world.sprite2D(image,Vector2(100f, 100f)){
-        // Additional configuration can be done here if needed
-        it[SpriteComponent].apply {
-            //image.translate(100f, 100f) // Move the logo by (100,100)
-            image
+    val image =
+        Texture("logo.png".toInternalFile(), true).apply {
+            setFilter(Linear, Linear)
         }
-    }
+
+    // Entities
+    val renderableLogo =
+        world.sprite2D(image, Vector2(100f, 100f)) {
+            // Additional configuration can be done here if needed
+            it[SpriteComponent].apply {
+                // image.translate(100f, 100f) // Move the logo by (100,100)
+                image
+            }
+        }
     val a = world.sprite2D(image)
 
     // Similar to "onUpdate" in other engines
     override fun render(delta: Float) {
         super.render(delta)
-       world.update(delta)
+        world.update(delta)
     }
+
     // Clean up resources when the screen is disposed
     override fun dispose() {
         super.dispose()

@@ -8,17 +8,16 @@ import com.github.quillraven.fleks.IntervalSystem
 import com.github.quillraven.fleks.configureWorld
 
 fun coreWorld(
-    injectables : List<Any> = listOf(),
-    systems : List<IntervalSystem> = listOf()
+    injectables: List<Any> = listOf(),
+    systems: List<IntervalSystem> = listOf(),
 ) = configureWorld {
-        injectables {
-            add(ManagersRegistry) // Inject the ManagersRegistry
-            add(Stage(ScreenViewport()))
-            injectables.forEach { add(it) }
-        }
-        systems {
-           add(RenderSystem())
-           systems.forEach { add(it) }
-        }
+    injectables {
+        add(ManagersRegistry) // Inject the ManagersRegistry
+        add(Stage(ScreenViewport()))
+        injectables.forEach { add(it) }
+    }
+    systems {
+        add(RenderSystem())
+        systems.forEach { add(it) }
+    }
 }
-

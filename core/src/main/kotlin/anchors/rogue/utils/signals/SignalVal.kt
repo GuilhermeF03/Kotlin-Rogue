@@ -12,7 +12,9 @@ import kotlin.properties.Delegates
  * @property flow A StateFlow that emits the current value and updates on changes.
  * Useful for data binding and reactive programming.
  */
-class SignalVal<T>(initial: T) {
+class SignalVal<T>(
+    initial: T,
+) {
     private val _valueChanged = createSignal<T>()
     private val _flow = MutableSharedFlow<T>(replay = 1) // replay last value
     val flow = _flow.asSharedFlow().distinctUntilChanged() // distinct until changed
@@ -29,10 +31,13 @@ class SignalVal<T>(initial: T) {
     }
 
     infix fun connect(listener: (T) -> Unit) = _valueChanged connect listener
+
     infix fun disconnect(listener: (T) -> Unit) = _valueChanged disconnect listener
+
     fun clear() = _valueChanged.clear()
 }
 
 // Convenience functions to create SignalVal instances
 fun <T> T.asSignalVal() = SignalVal(this)
+
 fun <T> SignalVal<T>.unwrapped() = value

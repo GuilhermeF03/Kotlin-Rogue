@@ -14,7 +14,7 @@ data class Archetype(
     override val name: String,
     val level: Int = 0,
     val passives: List<Skill>,
-    val skillTree: List<Skill>
+    val skillTree: List<Skill>,
 ) : IdEntry {
     override val domain = "archetype"
 }

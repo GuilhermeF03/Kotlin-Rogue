@@ -8,21 +8,21 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BestiaryTests {
-    val bestiary by lazy {  Bestiary(IdRegistry()) }
+    val bestiary by lazy { Bestiary(IdRegistry()) }
 
-    companion object{
+    companion object {
         val saveManager = SaveManager()
 
         @JvmStatic
         @BeforeAll
-        fun setup(){
+        fun setup() {
             ManagersRegistry.register(saveManager)
         }
     }
 
     @Test
-    fun `should add entry and notify`(){
-        bestiary.addEntry(BestiaryEntry(name="dog"))
+    fun `should add entry and notify`() {
+        bestiary.addEntry(BestiaryEntry(name = "dog"))
         assertEquals(1, bestiary.discovered.size)
     }
 }

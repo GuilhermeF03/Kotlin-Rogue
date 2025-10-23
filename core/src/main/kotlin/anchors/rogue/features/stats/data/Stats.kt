@@ -20,12 +20,13 @@ data class Stats(
     val luck: Int = 1,
     val intelligence: Int = 1,
 ) {
-    override fun toString(): String = """
+    override fun toString(): String =
+        """
         VIT: $vitality
         STR: $strength
         CON: $constitution
         DEX: $dexterity
         LUCK: $luck
         INT: $intelligence
-    """.trimIndent()
+        """.trimIndent()
 }

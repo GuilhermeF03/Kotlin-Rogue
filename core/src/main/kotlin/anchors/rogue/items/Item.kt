@@ -3,7 +3,6 @@ package anchors.rogue.items
 import anchors.rogue.utils.data.registry.IdEntry
 import kotlinx.serialization.Serializable
 
-
 /**
  * Represents an item in the game with various types such as Trinket, Weapon, Armor, Accessory, and Consumable.
  * Each item has a name, description, stats, and rank.
@@ -12,10 +11,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Item : IdEntry {
     override val name: String
-    val description : String
+    val description: String
     val rank: ItemRank
-    val sellValue : Int
-    val quantity : Int
+    val sellValue: Int
+    val quantity: Int
 
     /**
      * Trinket items are special items that do not have stats but can be sold for gold.
@@ -27,7 +26,7 @@ sealed interface Item : IdEntry {
         override val description: String = "",
         override val rank: ItemRank = ItemRank.COMMON,
         override val sellValue: Int = 0, // Trinkets can be sold for gold
-        override val quantity: Int = 1
+        override val quantity: Int = 1,
     ) : Item {
         override val domain = "trinket"
     }
@@ -48,4 +47,3 @@ sealed interface Item : IdEntry {
         override val domain = "consumable"
     }
 }
-

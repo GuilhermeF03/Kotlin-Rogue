@@ -14,5 +14,5 @@ enum class ItemRank {
     UNCOMMON,
     RARE,
     EPIC,
-    LEGENDARY
+    LEGENDARY,
 }

@@ -8,7 +8,7 @@ class JournalTests {
     val bestiary = Journal(IdRegistry())
 
     @Test
-    fun `should add entry and notify`(){
+    fun `should add entry and notify`() {
         bestiary.addEntry(JournalEntry("dog"))
         assertEquals(1, bestiary.entries.size)
     }

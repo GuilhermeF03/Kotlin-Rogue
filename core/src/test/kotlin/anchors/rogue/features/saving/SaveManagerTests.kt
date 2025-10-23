@@ -10,22 +10,22 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class SaveManagerTests {
-
-    companion object{
-        val saveManager = SaveManager { slot ->
-            val file = File("src/test/output/test-$slot.json")
-            FileHandle(file)
-        }
+    companion object {
+        val saveManager =
+            SaveManager { slot ->
+                val file = File("src/test/output/test-$slot.json")
+                FileHandle(file)
+            }
 
         @JvmStatic
         @BeforeAll
-        fun setup(){
+        fun setup() {
             ManagersRegistry.register(saveManager)
         }
     }
 
     @Test
-    fun `should write empty file`(){
+    fun `should write empty file`() {
         // Act
         saveManager.save(0)
         // Assert
@@ -35,23 +35,23 @@ class SaveManagerTests {
     }
 
     @Test
-    fun `should write data`(){
+    fun `should write data`() {
         // Setup
         var intData = 0
 
         registerSaveModule(
             id = "test-int",
             serializer = Int.serializer(),
-            onSave = {5},
-            onLoad = {intData = it}
+            onSave = { 5 },
+            onLoad = { intData = it },
         )
 
         var stringData = ""
         registerSaveModule(
             id = "test-string",
             serializer = String.serializer(),
-            onSave = {"abc"},
-            onLoad = {stringData = it}
+            onSave = { "abc" },
+            onLoad = { stringData = it },
         )
         // Act
         saveManager.save(0)

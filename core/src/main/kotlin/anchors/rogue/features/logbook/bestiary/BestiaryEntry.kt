@@ -16,7 +16,7 @@ data class BestiaryEntry(
     override val name: String,
     val imagePath: String = "",
     val description: String = "",
-    val lore : String = ""
+    val lore: String = "",
 ) : IdEntry {
     override val domain: String = "beast"
 }
