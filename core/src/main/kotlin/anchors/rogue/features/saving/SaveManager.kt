@@ -8,65 +8,53 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.serializerOrNull
+import java.lang.management.ManagementFactory
 
 const val SAVE_LOCATION = "saves"
 
 class SaveManager(
-    val fileFactory: (slot: Int) -> FileHandle = {
-        Gdx.files.local("$SAVE_LOCATION/user-$it.json")
-    }
+   private val saveFileFactory : (slot : Int) -> FileHandle = { Gdx.files.local("$SAVE_LOCATION/user_save_$it.json") }
 ) : Manager() {
+    private val dataRegistry = mutableMapOf<SaveModule<*>, @Serializable Any>()
+    private val json: Json = Json { prettyPrint = true }
 
-    private val modules: MutableList<SaveModule<*>> = mutableListOf()
-    val dataRegistry: MutableMap<String, @Serializable Any> = mutableMapOf()
-
-    private val json = Json {
-        prettyPrint = true
-        ignoreUnknownKeys = true
-        encodeDefaults = true
+    fun register(module: SaveModule<*>) {
+        dataRegistry[module] = Unit // placeholder
     }
 
-    // -------------------------------
-    // REGISTER MODULE
-    // -------------------------------
-    fun <T : @Serializable Any> register(module: SaveModule<T>) {
-        modules += module
-    }
-
-    // -------------------------------
-    // SAVE
-    // -------------------------------
-    @OptIn(InternalSerializationApi::class)
-    fun save(slot: Int) {
-        // Collect all data from modules
-        modules.forEach { module ->
-            dataRegistry[module.id] = module.save()
-        }
-
-        // Encode all entries safely
-        val root = buildJsonObject {
-            dataRegistry.forEach { (key, value) ->
-                val serializer = value::class.serializerOrNull()
-                    ?: error("No serializer found for class ${value::class.simpleName}")
-                put(key, json.encodeToJsonElement(serializer as KSerializer<Any> , value))
-            }
-        }
-
-        // Save to disk
-        JsonParser.toFile(root, fileFactory(slot))
-    }
-
-    // -------------------------------
-    // LOAD
-    // -------------------------------
     fun load(slot: Int) {
-        val jsonData = JsonParser.rawParseFile(fileFactory(slot))
-        modules.forEach { module ->
-            jsonData[module.id]?.let { element ->
-                module.loadFromJson(element)
+        val fileLocation = saveFileFactory(slot)
+        val jsonData = JsonParser.rawParseFile(fileLocation)
+
+        for ((module, _) in dataRegistry) {
+            val jsonElement = jsonData[module.id] ?: continue
+
+            // Deserialize using correct generic handling
+            @Suppress("UNCHECKED_CAST")
+            val typedModule = module as SaveModule<Any>
+            val decodedData = json.decodeFromJsonElement(typedModule.serializer, jsonElement)
+
+            dataRegistry[typedModule] = decodedData
+            typedModule.onLoad(decodedData)
+        }
+    }
+
+    fun save(slot: Int) {
+        val saveLocation = saveFileFactory(slot)
+        val jsonMap = buildMap {
+            for (module in dataRegistry.keys) {
+                @Suppress("UNCHECKED_CAST")
+                val typedModule = module as SaveModule<Any>
+                val data = typedModule.onSave()
+                put(typedModule.id, json.encodeToJsonElement(typedModule.serializer, data))
             }
         }
+        val jsonData = JsonObject(jsonMap)
+        JsonParser.toFile(jsonData, saveLocation)
     }
 }
+
