@@ -1,5 +1,6 @@
 package anchors.rogue.utils.data.parsers
 
+import anchors.rogue.shared.utils.data.parsers.JsonParser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule

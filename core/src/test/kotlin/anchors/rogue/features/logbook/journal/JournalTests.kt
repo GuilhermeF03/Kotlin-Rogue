@@ -1,6 +1,8 @@
 package anchors.rogue.features.logbook.journal
 
-import anchors.rogue.utils.data.registry.IdRegistry
+import anchors.rogue.features.logbook.journal.data.Journal
+import anchors.rogue.features.logbook.journal.data.JournalEntry
+import anchors.rogue.shared.utils.data.registry.IdRegistry
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

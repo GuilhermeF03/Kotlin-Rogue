@@ -1,6 +1,6 @@
 package anchors.rogue.features.saving
 
-import anchors.rogue.ecs.managers.ManagersRegistry
+import anchors.rogue.shared.ecs.managers.ManagersRegistry
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 

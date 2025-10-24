@@ -1,7 +1,7 @@
 package anchors.rogue.features.saving
 
-import anchors.rogue.ecs.managers.Manager
-import anchors.rogue.utils.data.parsers.JsonParser
+import anchors.rogue.shared.ecs.managers.Manager
+import anchors.rogue.shared.utils.data.parsers.JsonParser
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.Serializable

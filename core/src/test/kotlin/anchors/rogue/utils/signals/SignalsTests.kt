@@ -1,5 +1,6 @@
 package anchors.rogue.utils.signals
 
+import anchors.rogue.shared.utils.signals.createSignal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch

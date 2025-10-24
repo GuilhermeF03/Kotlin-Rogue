@@ -1,9 +1,9 @@
 package anchors.rogue
 
-import anchors.rogue.ecs.managers.ManagersRegistry
 import anchors.rogue.features.logbook.LogbookManager
 import anchors.rogue.features.saving.SaveManager
 import anchors.rogue.screens.DemoScreen
+import anchors.rogue.shared.ecs.managers.ManagersRegistry
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.async.KtxAsync

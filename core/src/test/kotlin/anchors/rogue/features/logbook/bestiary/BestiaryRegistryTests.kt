@@ -1,6 +1,7 @@
 package anchors.rogue.features.logbook.bestiary
 
-import anchors.rogue.utils.data.registry.IdRegistry
+import anchors.rogue.features.logbook.bestiary.data.BestiaryEntry
+import anchors.rogue.shared.utils.data.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test

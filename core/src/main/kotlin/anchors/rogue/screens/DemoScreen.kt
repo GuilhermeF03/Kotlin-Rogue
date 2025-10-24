@@ -1,8 +1,8 @@
 package anchors.rogue.screens
 
-import anchors.rogue.ecs.coreWorld
-import anchors.rogue.ecs.graphics.components.SpriteComponent
-import anchors.rogue.ecs.graphics.entities.sprite2D
+import anchors.rogue.shared.ecs.coreWorld
+import anchors.rogue.shared.ecs.graphics.components.SpriteComponent
+import anchors.rogue.shared.ecs.graphics.entities.sprite2D
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2

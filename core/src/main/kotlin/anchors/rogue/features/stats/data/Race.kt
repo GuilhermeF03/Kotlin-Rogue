@@ -1,7 +1,7 @@
 package anchors.rogue.features.stats.data
 
 import anchors.rogue.features.combat.Skill
-import anchors.rogue.utils.data.registry.IdEntry
+import anchors.rogue.shared.utils.data.registry.IdEntry
 import kotlinx.serialization.Serializable
 
 /**

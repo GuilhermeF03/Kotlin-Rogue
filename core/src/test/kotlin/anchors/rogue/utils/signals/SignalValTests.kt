@@ -1,5 +1,7 @@
 package anchors.rogue.utils.signals
 
+import anchors.rogue.shared.utils.signals.SignalVal
+import anchors.rogue.shared.utils.signals.unwrapped
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test

@@ -1,9 +1,9 @@
 package anchors.rogue.features.logbook
 
-import anchors.rogue.ecs.managers.Manager
-import anchors.rogue.features.logbook.bestiary.Bestiary
-import anchors.rogue.features.logbook.inventory.Inventory
-import anchors.rogue.features.logbook.journal.Journal
+import anchors.rogue.features.logbook.bestiary.data.Bestiary
+import anchors.rogue.features.logbook.inventory.data.Inventory
+import anchors.rogue.features.logbook.journal.data.Journal
+import anchors.rogue.shared.ecs.managers.Manager
 
 class LogbookManager : Manager() {
     /**
