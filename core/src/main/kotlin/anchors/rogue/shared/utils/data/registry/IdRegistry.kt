@@ -8,7 +8,7 @@ import com.badlogic.gdx.files.FileHandle
  * Useful for mapping ids into concrete objects
  */
 class IdRegistry<T : IdEntry>(
-    private val source: FileHandle? = null, // null for tests
+    val source: FileHandle? = null, // null for tests
 ) {
     /**
      * Maps a class / subclass of T to an id-map
@@ -25,7 +25,7 @@ class IdRegistry<T : IdEntry>(
      * Loads registry - either by passing a list of items,
      * or passing **null** if to load from 'source' field of the repository
      */
-    fun loadRegistry(registryItems: List<T>? = null) {
+    inline fun <reified R : T> loadRegistry(registryItems: List<R>? = null) {
         if (registryItems != null) {
             addItemsToRegistry(registryItems)
             return
@@ -37,18 +37,18 @@ class IdRegistry<T : IdEntry>(
         jsonFiles
             .filter { it.extension() == "json" }
             .forEach { file ->
-                val items: List<T> = JsonParser.parseFile(file)
+                val items: List<R> = JsonParser.parseFile(file) // R is reified
                 addItemsToRegistry(items)
             }
     }
 
-    private fun addItemsToRegistry(items: List<T>) {
+    fun addItemsToRegistry(items: List<T>) {
         items.forEach { item ->
             require(map.putIfAbsent(item.id, item) == null) { "Item with duplicate id found: ${item.id}" }
         }
     }
 
-    private fun collectJsonFiles(dir: FileHandle): List<FileHandle> =
+    fun collectJsonFiles(dir: FileHandle): List<FileHandle> =
         dir.list()?.flatMap { file ->
             when {
                 file.isDirectory -> collectJsonFiles(file) // recurse into subfolders

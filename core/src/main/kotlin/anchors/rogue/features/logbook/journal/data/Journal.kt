@@ -5,11 +5,13 @@ import anchors.rogue.shared.utils.data.registry.IdRegistry
 import anchors.rogue.shared.utils.signals.createSignal
 import com.badlogic.gdx.Gdx
 
+const val JOURNAL_LOCATION = "data/logbook/journal/journal.json"
+
 data class Journal(
     private val registry: IdRegistry<JournalEntry> =
         IdRegistry<JournalEntry>(
-            Gdx.files.internal("data/logbook/journal"),
-        ).also { it.loadRegistry() },
+            Gdx.files.internal(JOURNAL_LOCATION),
+        ).also { it.loadRegistry<JournalEntry>() },
 ) {
     // Data
     val entries = mutableListOf<JournalEntry>()

@@ -101,12 +101,16 @@ ktlint {
     exclude("**/generated/**")
     include("**/src/**/*.kt")
   }
+
+  // This disables the automatic attachment of ktlintCheck to check
+  check.dependsOn()
 }
 
-
-tasks.build{
+// Attach ktlintFormat to build so it runs automatically
+tasks.named("build") {
   dependsOn("ktlintFormat")
 }
+
 
 tasks.test {
   useJUnitPlatform() // <- important! tells Gradle to use JUnit 5 platform

@@ -5,7 +5,7 @@ import anchors.rogue.shared.utils.data.registry.IdRegistry
 import anchors.rogue.shared.utils.signals.createSignal
 import com.badlogic.gdx.Gdx
 
-const val BESTIARY_JSON = "data/bestiary.json"
+const val BESTIARY_JSON = "data/logbook/bestiary/bestiary.json"
 
 /**
  * A collection of discovered entities in the game.
@@ -14,7 +14,9 @@ const val BESTIARY_JSON = "data/bestiary.json"
  */
 class Bestiary(
     private val registry: IdRegistry<BestiaryEntry> =
-        IdRegistry<BestiaryEntry>(Gdx.files.internal(BESTIARY_JSON)).also { it.loadRegistry() },
+        IdRegistry<BestiaryEntry>(
+            Gdx.files.internal(BESTIARY_JSON),
+        ).also { it.loadRegistry<BestiaryEntry>() },
 ) {
     // Data
     val discovered = mutableListOf<BestiaryEntry>()

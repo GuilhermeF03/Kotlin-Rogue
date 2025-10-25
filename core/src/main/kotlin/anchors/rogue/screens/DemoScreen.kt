@@ -6,13 +6,16 @@ import anchors.rogue.shared.ecs.graphics.entities.sprite2D
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.github.quillraven.fleks.World
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 import ktx.assets.toInternalFile
 
 class DemoScreen : KtxScreen {
-    private val world: World = coreWorld()
+    val stage = Stage(ScreenViewport())
+    private val world: World = coreWorld(stage)
 
     // Screen resources
     val image =

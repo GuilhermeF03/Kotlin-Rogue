@@ -1,6 +1,6 @@
 package anchors.rogue.shared.ecs.graphics.components
 
-import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.ComponentType
 
@@ -10,7 +10,7 @@ import com.github.quillraven.fleks.ComponentType
  * This component is used for entities that need to be visually represented in the game world.
  */
 data class SpriteComponent(
-    val image: Sprite,
+    val image: Image,
 ) : Component<SpriteComponent> {
     override fun type() = SpriteComponent
 

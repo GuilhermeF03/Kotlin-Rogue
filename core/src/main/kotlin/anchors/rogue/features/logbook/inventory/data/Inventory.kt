@@ -14,7 +14,9 @@ const val ITEMS_JSON = "data/items"
 
 class Inventory(
     private val registry: IdRegistry<Item> =
-        IdRegistry<Item>(Gdx.files.internal(ITEMS_JSON)).also { it.loadRegistry() },
+        IdRegistry<Item>(
+            Gdx.files.internal(ITEMS_JSON),
+        ).also { it.loadRegistry<Item>() },
 ) {
     // Amount of gold the player has
     val gold: SignalVal<Int> = 0.asSignalVal()

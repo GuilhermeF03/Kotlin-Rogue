@@ -12,21 +12,21 @@ class KotlinRogue : KtxGame<KtxScreen>() {
     // ManagersRegistry is a custom class to manage global managers
     // These managers are not tied to the ECS world lifecycle
     // They can be used across different worlds and screens
-    private val managersRegistry =
-        ManagersRegistry.apply {
-            register(LogbookManager())
-            register(SaveManager())
-        }
 
     override fun create() {
         KtxAsync.initiate()
+
+        ManagersRegistry.apply {
+            register(SaveManager())
+            register(LogbookManager())
+        }
         // Register and setup global managers - these are not tied to the ECS world lifecycle
-        managersRegistry.setup()
+        ManagersRegistry.setup()
         addScreen(DemoScreen())
         setScreen<DemoScreen>()
     }
 
     override fun dispose() {
-        managersRegistry.teardown()
+        ManagersRegistry.teardown()
     }
 }
