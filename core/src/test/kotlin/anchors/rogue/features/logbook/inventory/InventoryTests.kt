@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.features.logbook.inventory.data.Inventory
@@ -6,11 +8,9 @@ import anchors.rogue.features.stats.data.Stats
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.shared.ecs.managers.ManagersRegistry
 import anchors.rogue.shared.utils.data.registry.IdRegistry
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @DisplayName("Inventory Tests")
 class InventoryTests {
@@ -142,15 +142,12 @@ class InventoryTests {
                     stats = Stats(),
                 )
             var signalEmitted = false
-            inventory.onEquip.connect { item ->
-                signalEmitted = true
-                assert(item == sword)
-            }
+            inventory.currWeapon connect { signalEmitted = true }
 
             inventory.weapons.add(sword)
             inventory.equipItem(sword)
 
-            assert(inventory.equipment.currWeapon == sword)
+            assertEquals(sword, inventory.currWeapon.value)
             assert(signalEmitted)
         }
 
@@ -162,15 +159,12 @@ class InventoryTests {
                     stats = Stats(),
                 )
             var signalEmitted = false
-            inventory.onEquip.connect { item ->
-                signalEmitted = true
-                assert(item == shield)
-            }
+            inventory.currArmor.connect { signalEmitted = true }
 
             inventory.armors.add(shield)
             inventory.equipItem(shield)
 
-            assert(inventory.equipment.currArmor == shield)
+            assertEquals(shield, inventory.currArmor.value)
             assert(signalEmitted)
         }
 
@@ -185,14 +179,11 @@ class InventoryTests {
             inventory.equipItem(ring)
 
             var signalEmitted = false
-            inventory.onUnequip.connect { item ->
-                signalEmitted = true
-                assert(item == ring)
-            }
+            inventory.currAccessory.connect { signalEmitted = true }
 
-            inventory.unequipItem<EquippableItem.Accessory>()
+            inventory.unequipItem(EquippableItem.Accessory::class)
 
-            assert(inventory.equipment.currAccessory == null)
+            assertNull(inventory.currAccessory.value)
             assert(signalEmitted)
         }
 
@@ -208,7 +199,7 @@ class InventoryTests {
 
         @Test
         fun `unequipping an item when none is equipped should throw an illegal state exception`() {
-            assertThrows<IllegalStateException> { inventory.unequipItem<EquippableItem.Weapon>() }
+            assertThrows<IllegalStateException> { inventory.unequipItem(EquippableItem.Weapon::class) }
         }
     }
 }

@@ -1,11 +1,11 @@
 package anchors.rogue.utils.signals
 
 import anchors.rogue.shared.utils.signals.SignalVal
-import anchors.rogue.shared.utils.signals.unwrapped
+import anchors.rogue.shared.utils.signals.asSignalVal
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class SignalValTests {
     @Test
@@ -99,10 +99,10 @@ class SignalValTests {
 
     @Test
     fun `test signal val unwrapped`() {
-        val signalVal = SignalVal(10)
-        assert(signalVal.unwrapped() == 10) { "Unwrapped value should match the current value." }
+        val signalVal = 10.asSignalVal()
+        assertEquals(10, signalVal.value) { "Unwrapped value should match the current value." }
 
         signalVal.value = 20
-        assert(signalVal.unwrapped() == 20) { "Unwrapped value should update with the current value." }
+        assertEquals(20, signalVal.value) { "Unwrapped value should update with the current value." }
     }
 }

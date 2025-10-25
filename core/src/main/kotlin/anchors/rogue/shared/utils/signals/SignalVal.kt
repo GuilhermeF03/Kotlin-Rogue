@@ -39,5 +39,3 @@ class SignalVal<T>(
 
 // Convenience functions to create SignalVal instances
 fun <T> T.asSignalVal() = SignalVal(this)
-
-fun <T> SignalVal<T>.unwrapped() = value

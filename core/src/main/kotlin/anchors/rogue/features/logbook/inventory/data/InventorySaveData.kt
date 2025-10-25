@@ -26,7 +26,7 @@ data class InventoryEntry(
 fun Inventory.asData(): InventorySaveData =
     InventorySaveData(
         gold.value,
-        equipment,
+        EquipmentData(currWeapon.value, currArmor.value, currAccessory.value),
         trinkets.map { InventoryEntry(it.id, it.quantity) },
         consumables.map { InventoryEntry(it.id, it.quantity) },
         weapons.map { InventoryEntry(it.id, it.quantity) },

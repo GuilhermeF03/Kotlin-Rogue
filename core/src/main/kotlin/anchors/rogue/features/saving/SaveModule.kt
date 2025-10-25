@@ -4,6 +4,9 @@ import anchors.rogue.shared.ecs.managers.ManagersRegistry
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
+/**
+ * Represents a module of the persisted data.
+ */
 interface SaveModule<T : @Serializable Any> {
     val id: String
     val serializer: KSerializer<T>

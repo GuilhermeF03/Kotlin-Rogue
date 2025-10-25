@@ -2,8 +2,10 @@ package anchors.rogue.shared.utils.data.parsers
 
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerializersModule
 
@@ -12,6 +14,8 @@ import kotlinx.serialization.modules.SerializersModule
  * Supports custom serializers modules for polymorphic data.
  */
 object JsonParser {
+    val simpleJson = createJson()
+
     @OptIn(ExperimentalSerializationApi::class)
     fun createJson(module: SerializersModule? = null) =
         Json {
@@ -71,8 +75,16 @@ object JsonParser {
         module: SerializersModule? = null,
     ) {
         val jsonString = toString(obj, module)
-        val writer = file.writer(false)
-        writer.write(jsonString)
-        writer.flush()
+        file.writeString(jsonString, false)
     }
+
+    inline fun <reified T> decodeJsonElement(
+        serializer: KSerializer<T>,
+        element: JsonElement,
+    ): T = simpleJson.decodeFromJsonElement(serializer, element)
+
+    inline fun <reified T> encodeJsonElement(
+        serializer: KSerializer<T>,
+        data: T,
+    ): JsonElement = simpleJson.encodeToJsonElement(serializer, data)
 }

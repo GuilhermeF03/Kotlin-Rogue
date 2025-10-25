@@ -3,7 +3,8 @@ package anchors.rogue.features.logbook.bestiary.data
 import kotlinx.serialization.Serializable
 
 /**
- *
+ * Data parsed from save file - ids correspond to bestiary entries
+ * @see BestiaryEntry
  */
 @Serializable
 data class BestiarySaveData(
