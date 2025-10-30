@@ -13,14 +13,14 @@ import kotlin.test.assertSame
 class NodeTests {
     @Test
     fun `structure should pass`() {
-        val root = Node2D("test-node")
+        val root = Node("test-node")
 
         val scene =
             scene(root) {
-                Node("child-a")
+                Node2D("child-a")
 
-                Node("child-b") {
-                    Node("child-c")
+                Node2D("child-b") {
+                    Node2D("child-c")
                 }
             }
 
@@ -39,8 +39,8 @@ class NodeTests {
         // Behavior factory lambda
         val behaviour =
             behavior { node ->
-                object : Behavior<Node2D>(node) {
-                    override fun ready() {
+                object : Behavior<Node>(node) {
+                    override fun onReady() {
                         val parent = node.parent ?: return
                         childCount.merge(parent.name, 1) { old, new -> old + new }
                         if (node.name !in childCount) {
@@ -50,11 +50,11 @@ class NodeTests {
                 }
             }
         // Build scene
-        scene(Node2D("Test 2")) {
-            Node("child-a", behaviour) // pass node
+        scene(Node("Test 2")) {
+            Node2D("child-a", behaviour) // pass node
 
-            Node("child-b", behaviour) {
-                Node("child-c", behaviour) // pass node
+            Node2D("child-b", behaviour) {
+                Node2D("child-c", behaviour) // pass node
             }
         }
         assertEquals(

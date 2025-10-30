@@ -5,9 +5,9 @@ annotation class SceneDSL
 
 @SceneDSL
 class NodeBuilder(
-    private val node: Node2D,
+    private val node: Node,
 ) {
-    fun <T : Node2D> add(
+    fun <T : Node> add(
         child: T,
         block: NodeBuilder.() -> Unit = {},
     ) {
@@ -18,9 +18,9 @@ class NodeBuilder(
 }
 
 fun scene(
-    root: Node2D,
+    root: Node,
     block: NodeBuilder.() -> Unit = {},
-): Node2D {
+): Node {
     val builder = NodeBuilder(root)
     builder.block()
     root.onReady()
