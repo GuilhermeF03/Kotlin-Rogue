@@ -4,6 +4,7 @@ import anchors.rogue.features.logbook.LogbookManager
 import anchors.rogue.features.saving.SaveManager
 import anchors.rogue.screens.DemoScreen
 import anchors.rogue.shared.ecs.managers.ManagersRegistry
+import anchors.rogue.shared.utils.nodes.SceneManager
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.async.KtxAsync
@@ -19,6 +20,7 @@ class KotlinRogue : KtxGame<KtxScreen>() {
         ManagersRegistry.apply {
             register(SaveManager())
             register(LogbookManager())
+            register(SceneManager())
         }
         // Register and setup global managers - these are not tied to the ECS world lifecycle
         ManagersRegistry.setup()

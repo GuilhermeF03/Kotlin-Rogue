@@ -2,10 +2,7 @@ package anchors.rogue.utils.nodes
 
 import anchors.rogue.shared.utils.nodes.Behavior
 import anchors.rogue.shared.utils.nodes.Node
-import anchors.rogue.shared.utils.nodes.Node2D
 import anchors.rogue.shared.utils.nodes.behavior
-import anchors.rogue.shared.utils.nodes.scene
-import kotlin.collections.mapOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -16,13 +13,15 @@ class NodeTests {
         val root = Node("test-node")
 
         val scene =
-            scene(root) {
-                Node2D("child-a")
+            Node("root") {
+                Node("child-a")
 
-                Node2D("child-b") {
-                    Node2D("child-c")
+                Node("child-b") {
+                    Node("child-c")
                 }
             }
+
+        scene.buildTree()
 
         assertSame(2, scene.children.size)
         assertSame(scene, scene.getNode("child-b")?.parent)
@@ -50,13 +49,14 @@ class NodeTests {
                 }
             }
         // Build scene
-        scene(Node("Test 2")) {
-            Node2D("child-a", behaviour) // pass node
+        Node("Test 2") {
+            Node("child-a", behaviour) // pass node
 
-            Node2D("child-b", behaviour) {
-                Node2D("child-c", behaviour) // pass node
+            Node("child-b", behaviour) {
+                Node("child-c", behaviour) // pass node
             }
-        }
+        }.buildTree()
+
         assertEquals(
             mapOf(
                 "Test 2" to 2,
@@ -65,6 +65,37 @@ class NodeTests {
                 "child-c" to 0,
             ),
             childCount,
+        )
+    }
+
+    @Test
+    fun `ready should execute on correct order`() {
+        val callOrder = mutableListOf<String>()
+        val behaviour =
+            behavior { node ->
+                object : Behavior<Node>(node) {
+                    override fun onReady() {
+                        callOrder += node.name
+                    }
+                }
+            }
+        // Build scene
+        Node("Test 2", behaviour) {
+            Node("child-a", behaviour) // pass node
+
+            Node("child-b", behaviour) {
+                Node("child-c", behaviour) // pass node
+            }
+        }.buildTree()
+
+        assertEquals(
+            listOf(
+                "child-a",
+                "child-c",
+                "child-b",
+                "Test 2",
+            ),
+            callOrder,
         )
     }
 }

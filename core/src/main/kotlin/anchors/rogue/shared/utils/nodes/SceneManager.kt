@@ -2,22 +2,39 @@ package anchors.rogue.shared.utils.nodes
 
 import anchors.rogue.shared.ecs.managers.Manager
 
-typealias GlobalSystem = Behavior<Node>
+class SceneManager : Manager() {
+    /**
+     * Root of current scene
+     */
+    var currScene: Node? = null
 
-class SceneTreeManager : Manager() {
-    lateinit var currScene: Node
-    private val systems: MutableList<GlobalSystem> = mutableListOf()
+    /**
+     * List of global systems
+     */
+    private val systems: MutableList<GlobalNodeSystem> = mutableListOf()
 
-    fun registerSystem(system: GlobalSystem) {
+    fun registerSystem(system: GlobalNodeSystem) {
         systems += system
     }
 
-    fun unregisterSystem(system: GlobalSystem) {
+    fun unregisterSystem(system: GlobalNodeSystem) {
         systems -= system
     }
 
-    fun ready(){
-
+    fun ready() {
     }
-
 }
+
+/**
+ * GOAL:
+ *
+ * [ktx.app.KtxScreen]
+ *
+ * val scene = scene(EmptyNode()){
+ *      PlayerScene()
+ * }
+ *
+ * SceneManager.currScene = scene <- clean old tree, initialize new tree, sets up lifecycle methods,
+ * registers lists for global systems
+ *
+ */
