@@ -1,5 +1,6 @@
 package anchors.rogue.shared.utils.nodes
 
+import anchors.rogue.shared.utils.input.InputEvent
 import com.badlogic.gdx.math.Vector2
 import ktx.math.plus
 
@@ -8,24 +9,58 @@ annotation class SceneDSL
 
 @SceneDSL
 open class Node(
+    /**
+     * Node name
+     */
     val name: String,
     script: Behavior.Factory<Node, Behavior<Node>>? = null,
-    var position: Vector2 = Vector2.Zero.cpy(),
+    /**
+     * Node position in 2D coordinates
+     */
+    var position: Vector2 = Vector2.Zero,
+    /**
+     * Node scale, in 2D space
+     */
     var scale: Vector2 = Vector2(1f, 1f),
+    /**
+     * Node rotation in rads
+     */
     var rotation: Float = 0f,
     block: Node.() -> Unit = {},
 ) {
+    /**
+     * Script for custom behavior
+     */
     private val script = script?.create(this)
 
-    var parent: Node? = null
-        private set
-    val children: MutableMap<String, Node> = mutableMapOf()
+    private var _parent: Node? = null
 
+    /**
+     * Node parent
+     */
+    val parent get() = _parent
+
+    private val _children: MutableMap<String, Node> = mutableMapOf()
+
+    /**
+     * Node children
+     */
+    val children : Map<String, Node> get() = _children
+
+    /**
+     * Global space position
+     */
     val globalPosition: Vector2
         get() = position + (parent?.globalPosition ?: Vector2.Zero)
+
+    /**
+     * Global space rotation
+     */
     val globalRotation: Float
         get() = rotation + (parent?.globalRotation ?: 0f)
 
+
+    // DSL Helpers - allows structures to be built by using class constructors
     companion object {
         private val currentParent = ThreadLocal.withInitial<Node?> { null }
     }
@@ -42,17 +77,31 @@ open class Node(
         currentParent.set(oldParent)
     }
 
+    // ==================================================
+    //                  NODE OPERATIONS
+    // ==================================================
+
     private fun addChildInternal(child: Node) {
         check(child.name !in children) { "Child with name '${child.name}' already exists" }
-        children[child.name] = child
-        child.parent = this
+        _children[child.name] = child
+        child._parent = this
     }
 
-    fun buildTree() {
-        enterTree() // top→down attach event
-        ready() // bottom→up initialization
+    /**
+     * Add child node
+     */
+    fun addChild(child: Node) {
+        check(child.parent == null) { "Node '${child.name}' already has a parent!" }
+        addChildInternal(child)
+
+        // Runtime attach lifecycle
+        child.enterTree()
+        child.ready()
     }
 
+    /**
+     * Gets node, based on provided path
+     */
     fun getNode(path: String): Node? {
         val parts = path.split("/")
         var current: Node = this
@@ -62,29 +111,114 @@ open class Node(
         return current
     }
 
-    // Lifecycle methods
+    /**
+     * Remove child node
+     */
+    fun removeChild(child: Node) {
+        check(child.parent == this) { "Node '${child.name}' is not a child of '${name}'!" }
+
+        // Call lifecycle teardown before removal
+        child.exitTree()
+
+        _children.remove(child.name)
+        child._parent = null
+    }
+
+    /**
+     * Remove child through its path
+     */
+    fun removeChild(path: String) {
+        val child = getNode(path)
+        checkNotNull(child) { "Node at path $path not found" }
+        removeChild(child)
+    }
+
+    /**
+     * Self remove node from tree
+     */
+    fun queueFree() {
+        val parent = parent ?: return
+        parent.removeChild(this)
+    }
+
+    /**
+     * Reparents nodes on another node inside the tree
+     */
+    fun reparent(child : Node, newParent : Node){
+        removeChild(child)
+        newParent.addChild(child)
+    }
+
+    // ================================
+    //        Lifecycle operations
+    // ================================
+
+    /**
+     * Called after the initial tree structure was defined - calls setup methods
+     */
+    fun buildTree() {
+        enterTree() // top→down attach event
+        ready() // bottom→up initialization
+    }
+
+    // ===================
+    //  Lifecycle methods
+    // ===================
+
+    /**
+     * Method called after node entered tree, and all its children have been set up
+     */
     internal fun ready() {
         children.values.forEach { it.ready() }
         script?.onReady()
     }
 
+    /**
+     * Method called when node enters tree
+     */
     internal fun enterTree() {
         script?.onEnterTree()
         children.values.forEach { it.enterTree() }
     }
 
+    /**
+     * Method called when tree exits tree
+     */
     internal fun exitTree() {
         children.values.forEach { it.exitTree() }
         script?.onExitTree()
     }
 
+    /**
+     * Normal update method - time between calls is based on machine frame rate
+     *
+     * Useful for rendering and operations where frame rate stability is not important
+     */
     internal fun update(delta: Float) {
         children.values.forEach { it.update(delta) }
         script?.onUpdate(delta)
     }
 
+    /**
+     * Physics update method - time between calls is stable
+     *
+     * Useful for physics and operations where frame rate stability matters
+     */
     internal fun physicsUpdate(delta: Float) {
         children.values.forEach { it.physicsUpdate(delta) }
         script?.onPhysicsUpdate(delta)
+    }
+
+    /**
+     * Called on an executed input event
+     */
+    internal fun input(event : InputEvent){
+        if(event.isHandled) return
+        script?.onInput(event)
+
+        if(event.isHandled) return
+
+        // Propagate
+        children.values.forEach { it.input(event)}
     }
 }
