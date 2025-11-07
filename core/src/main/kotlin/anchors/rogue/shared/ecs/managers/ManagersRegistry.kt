@@ -30,7 +30,8 @@ object ManagersRegistry {
      * @return The manager instance of the specified type.
      * @throws NoSuchElementException if no manager of the specified type is registered.
      */
-    fun <T : Manager> get(clazz: KClass<T>): T = managers.getValue(clazz) as T
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Manager> get(clazz: KClass<T>): T = managers[clazz] as T
 
     /**
      * Sets up all registered managers by invoking their setup methods.

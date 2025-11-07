@@ -5,24 +5,30 @@ import anchors.rogue.features.saving.SaveManager
 import anchors.rogue.screens.DemoScreen
 import anchors.rogue.shared.ecs.managers.ManagersRegistry
 import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.systems.RenderSystem
+import anchors.rogue.systems.TestGlobalSystem
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.async.KtxAsync
 
 class KotlinRogue : KtxGame<KtxScreen>() {
-    // ManagersRegistry is a custom class to manage global managers
-    // These managers are not tied to the ECS world lifecycle
-    // They can be used across different worlds and screens
 
     override fun create() {
         KtxAsync.initiate()
 
+        // Register global systems here
+        val sceneManager = SceneManager{
+            addSystem(TestGlobalSystem())
+            addSystem(RenderSystem())
+        }
+
+
         ManagersRegistry.apply {
             register(SaveManager())
             register(LogbookManager())
-            register(SceneManager())
+            register(sceneManager)
         }
-        // Register and setup global managers - these are not tied to the ECS world lifecycle
+        // Register and setup global managers - global access to data across screens and nodes
         ManagersRegistry.setup()
         addScreen(DemoScreen())
         setScreen<DemoScreen>()

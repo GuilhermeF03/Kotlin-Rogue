@@ -1,33 +1,38 @@
 package anchors.rogue.utils.nodes
 
-import anchors.rogue.shared.utils.nodes.Behavior
-import anchors.rogue.shared.utils.nodes.Node
-import anchors.rogue.shared.utils.nodes.behavior
-import kotlinx.coroutines.MainScope
+import anchors.rogue.shared.ecs.managers.ManagersRegistry
+import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.shared.utils.nodes.core.behavior
+import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.TimeUnit
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertSame
-import kotlin.test.assertTrue
-import kotlin.time.Duration
+import org.junit.jupiter.api.BeforeAll
+import kotlin.test.*
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class NodeTests {
+
+
+    companion object{
+        @BeforeAll
+        @JvmStatic
+        fun setup(){
+            ManagersRegistry.register(SceneManager())
+        }
+    }
+
+
     @Test
     fun `structure should pass`() {
-        val root = Node("test-node")
+        val root = EmptyNode("test-node")
 
-        val scene = Node("root") {
-            Node("child-a")
+        val scene = EmptyNode("root") {
+            EmptyNode("child-a")
 
-            Node("child-b") {
-                Node("child-c")
+            EmptyNode("child-b") {
+                EmptyNode("child-c")
             }
         }
 
@@ -46,7 +51,7 @@ class NodeTests {
         val childCount: MutableMap<String, Int> = mutableMapOf()
 
         // Behavior factory lambda
-        val behaviour = behavior<Node>(
+        val behaviour = behavior<EmptyNode>(
             onReady = {
                 val parent = parent ?: return@behavior
                 childCount.merge(parent.name, 1) { old, new -> old + new }
@@ -57,11 +62,11 @@ class NodeTests {
         )
 
         // Build scene
-        Node("Test 2") {
-            Node("child-a", behaviour) // pass node
+        EmptyNode("Test 2") {
+            EmptyNode("child-a", behaviour) // pass node
 
-            Node("child-b", behaviour) {
-                Node("child-c", behaviour) // pass node
+            EmptyNode("child-b", behaviour) {
+                EmptyNode("child-c", behaviour) // pass node
             }
         }.buildTree()
 
@@ -79,18 +84,18 @@ class NodeTests {
     @Test
     fun `ready should execute on correct order`() {
         val callOrder = mutableListOf<String>()
-        val behaviour = behavior<Node>(
+        val behaviour = behavior<EmptyNode>(
             onReady = {
                 callOrder += name
             }
         )
 
         // Build scene
-        Node("Test 2", behaviour) {
-            Node("child-a", behaviour) // pass node
+        EmptyNode("Test 2", behaviour) {
+            EmptyNode("child-a", behaviour) // pass node
 
-            Node("child-b", behaviour) {
-                Node("child-c", behaviour) // pass node
+            EmptyNode("child-b", behaviour) {
+                EmptyNode("child-c", behaviour) // pass node
             }
         }.buildTree()
 
@@ -110,7 +115,7 @@ class NodeTests {
         var nTicks = 0
         var nPhysicsTicks = 0
 
-        val behavior = behavior<Node>(
+        val behavior = behavior<EmptyNode>(
             onUpdate = {
                 nTicks ++
             },
@@ -119,7 +124,7 @@ class NodeTests {
             }
         )
 
-        val tree = Node("root", behavior)
+        val tree = EmptyNode("root", behavior)
         tree.buildTree()
 
         launch {
@@ -139,16 +144,16 @@ class NodeTests {
     @Test
     fun `adding should call ready on child node`(){
         var wasCalled = false
-        val behavior = behavior<Node>(
+        val behavior = behavior<EmptyNode>(
             onReady = { wasCalled = true }
         )
 
-        val root = Node("root")
+        val root = EmptyNode("root")
         root.buildTree()
 
         assertFalse(wasCalled)
 
-        root.addChild(Node("child", behavior))
+        root.addChild(EmptyNode("child", behavior))
 
         assertTrue(wasCalled)
     }
@@ -156,12 +161,12 @@ class NodeTests {
     @Test
     fun `removing node should call onExitTree`(){
         var wasCalled = false
-        val behavior = behavior<Node>(
+        val behavior = behavior<EmptyNode>(
             onExitTree = { wasCalled = true }
         )
 
-        val tree = Node("root"){
-            Node("child", behavior)
+        val tree = EmptyNode("root"){
+            EmptyNode("child", behavior)
         }
 
         assertFalse(wasCalled)
@@ -172,8 +177,8 @@ class NodeTests {
 
     @Test
     fun `queue free should delete node`(){
-        val tree = Node("root"){
-            Node("child")
+        val tree = EmptyNode("root"){
+            EmptyNode("child")
         }
         tree.buildTree()
 
@@ -184,7 +189,4 @@ class NodeTests {
 
         assertEquals(0, tree.children.size)
     }
-
-
-
 }

@@ -1,16 +1,16 @@
-package anchors.rogue.shared.utils.nodes
+package anchors.rogue.shared.utils.nodes.core
 
 import anchors.rogue.shared.utils.input.InputEvent
 
 /**
  * Represents a custom behavior that can be attached to a Node
- * @see Node
+ * @see anchors.rogue.shared.utils.nodes.Node
  */
-abstract class Behavior<T : Node>(
+abstract class Behavior<N : Node<N>>(
     /**
      * Holds reference for the node the behavior is attached to.
      */
-    private val node: T? = null,
+    private val node: N? = null,
 ) {
     constructor() : this(null)
 
@@ -48,26 +48,28 @@ abstract class Behavior<T : Node>(
      */
     open fun onInput(event : InputEvent) = Unit
 
-    interface Factory<T : Node, B : Behavior<T>> {
-        fun create(node: T): B
-    }
+//    interface Factory<T : Node, B : Behavior<T>> {
+//        fun create(node: T): B
+//    }
 }
 
 /**
  * Helper method for creating lambda behaviors
  */
-fun <T : Node> behavior(
-    onEnterTree: T.() -> Unit = {},
-    onReady: T.() -> Unit = {},
-    onExitTree: T.() -> Unit = {},
-    onUpdate: T.(delta: Float) -> Unit = {},
-    onPhysicsUpdate: T.(delta: Float) -> Unit = {}
-) = object : Behavior.Factory<T, Behavior<T>> {
-        override fun create(node: T): Behavior<T> = object : Behavior<T>() {
-            override fun onEnterTree() = super.onEnterTree().also { onEnterTree(node) }
-            override fun onReady() = super.onReady().also { onReady(node) }
-            override fun onExitTree() = super.onExitTree().also { onExitTree(node) }
-            override fun onUpdate(delta: Float) = super.onUpdate(delta).also { onUpdate(node,delta) }
-            override fun onPhysicsUpdate(delta: Float) = super.onPhysicsUpdate(delta).also { onPhysicsUpdate(node,delta) }
+fun <N : Node<N>> behavior(
+    onEnterTree: N.() -> Unit = {},
+    onReady: N.() -> Unit = {},
+    onExitTree: N.() -> Unit = {},
+    onUpdate: N.(delta: Float) -> Unit = {},
+    onPhysicsUpdate: N.(delta: Float) -> Unit = {}
+) : (node : N) -> Behavior<N> = { node ->
+    object : Behavior<N>(node) {
+        override fun onEnterTree() = super.onEnterTree().also { onEnterTree(node) }
+        override fun onReady() = super.onReady().also { onReady(node) }
+        override fun onExitTree() = super.onExitTree().also { onExitTree(node) }
+        override fun onUpdate(delta: Float) = super.onUpdate(delta).also { onUpdate(node, delta) }
+        override fun onPhysicsUpdate(delta: Float) = super.onPhysicsUpdate(delta).also {
+            onPhysicsUpdate(node, delta)
         }
     }
+}
