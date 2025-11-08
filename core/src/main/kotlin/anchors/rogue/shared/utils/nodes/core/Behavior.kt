@@ -2,74 +2,121 @@ package anchors.rogue.shared.utils.nodes.core
 
 import anchors.rogue.shared.utils.input.InputEvent
 
+// ===============================
+//       NODE BEHAVIOR BASE
+// ===============================
+
 /**
- * Represents a custom behavior that can be attached to a Node
- * @see anchors.rogue.shared.utils.nodes.Node
+ * Represents a custom behavior attached to a [Node].
+ *
+ * Behaviors allow modular logic to run on nodes without subclassing the node itself.
+ *
+ * @param N Type of the Node this behavior is attached to.
+ * @property node Optional reference to the node. Can be null if detached.
  */
 abstract class Behavior<N : Node<N>>(
-    /**
-     * Holds reference for the node the behavior is attached to.
-     */
     private val node: N? = null,
 ) {
+    /** Secondary constructor for convenience */
     constructor() : this(null)
 
-    /**
-     * Method called when node enters tree
-     */
+    // ===============================
+    //        LIFECYCLE METHODS
+    // ===============================
+
+    /** Called when the node enters the tree */
     open fun onEnterTree() = Unit
 
-    /**
-     * Method called after node entered tree, and all its children have been set up
-     */
+    /** Called after the node and all its children have been initialized */
     open fun onReady() = Unit
 
-    /**
-     * Method called when tree exits tree
-     */
+    /** Called when the node exits the tree */
     open fun onExitTree() = Unit
 
+    // ===============================
+    //           UPDATES
+    // ===============================
+
     /**
-     * Normal update method - time between calls is based on machine frame rate
-     *
-     * Useful for rendering and operations where frame rate stability is not important
+     * Called every frame.
+     * Use for rendering or non-physics logic.
      */
     open fun onUpdate(delta: Float) = Unit
 
     /**
-     * Physics update method - time between calls is stable
-     *
-     * Useful for physics and operations where frame rate stability matters
+     * Called on each physics tick.
+     * Use for deterministic physics calculations.
      */
     open fun onPhysicsUpdate(delta: Float) = Unit
 
-    /**
-     * Called on an executed input event
-     */
-    open fun onInput(event : InputEvent) = Unit
+    // ===============================
+    //           INPUT
+    // ===============================
 
+    /** Called when an input event occurs on the node */
+    open fun onInput(event: InputEvent) = Unit
+
+    // Uncomment if factory pattern is needed in the future
 //    interface Factory<T : Node, B : Behavior<T>> {
 //        fun create(node: T): B
 //    }
 }
 
+// ===============================
+//     LAMBDA BEHAVIOR HELPER
+// ===============================
+
 /**
- * Helper method for creating lambda behaviors
+ * Convenience helper to define behaviors via lambdas instead of subclassing [Behavior].
+ *
+ * Example usage:
+ * ```
+ * val myBehavior = behavior<MyNode>(
+ *     onEnterTree = { println("Node entered tree!") },
+ *     onUpdate = { delta -> println("Updating with delta $delta") }
+ * )
+ * ```
+ *
+ * @param N Node type
+ * @param onEnterTree Lambda called when the node enters the tree
+ * @param onReady Lambda called when the node and children are ready
+ * @param onExitTree Lambda called when the node exits the tree
+ * @param onUpdate Lambda called every frame
+ * @param onPhysicsUpdate Lambda called on physics tick
+ * @return Lambda that creates a [Behavior] instance for a node
  */
 fun <N : Node<N>> behavior(
     onEnterTree: N.() -> Unit = {},
     onReady: N.() -> Unit = {},
     onExitTree: N.() -> Unit = {},
     onUpdate: N.(delta: Float) -> Unit = {},
-    onPhysicsUpdate: N.(delta: Float) -> Unit = {}
-) : (node : N) -> Behavior<N> = { node ->
-    object : Behavior<N>(node) {
-        override fun onEnterTree() = super.onEnterTree().also { onEnterTree(node) }
-        override fun onReady() = super.onReady().also { onReady(node) }
-        override fun onExitTree() = super.onExitTree().also { onExitTree(node) }
-        override fun onUpdate(delta: Float) = super.onUpdate(delta).also { onUpdate(node, delta) }
-        override fun onPhysicsUpdate(delta: Float) = super.onPhysicsUpdate(delta).also {
-            onPhysicsUpdate(node, delta)
+    onPhysicsUpdate: N.(delta: Float) -> Unit = {},
+): (node: N) -> Behavior<N> =
+    { node ->
+        object : Behavior<N>(node) {
+            override fun onEnterTree() {
+                super.onEnterTree()
+                onEnterTree(node)
+            }
+
+            override fun onReady() {
+                super.onReady()
+                onReady(node)
+            }
+
+            override fun onExitTree() {
+                super.onExitTree()
+                onExitTree(node)
+            }
+
+            override fun onUpdate(delta: Float) {
+                super.onUpdate(delta)
+                onUpdate(node, delta)
+            }
+
+            override fun onPhysicsUpdate(delta: Float) {
+                super.onPhysicsUpdate(delta)
+                onPhysicsUpdate(node, delta)
+            }
         }
     }
-}

@@ -1,4 +1,4 @@
-package anchors.rogue.shared.ecs.managers
+package anchors.rogue.shared.managers
 
 import ktx.log.logger
 import kotlin.reflect.KClass
@@ -23,6 +23,8 @@ object ManagersRegistry {
     fun <T : Manager> register(manager: T) {
         managers[manager::class] = manager
     }
+
+    fun <T : Manager> has(clazz: KClass<T>) = clazz in managers
 
     /**
      * Retrieves a registered manager instance by its class type.

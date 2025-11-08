@@ -1,174 +1,232 @@
 package anchors.rogue.shared.utils.nodes
 
-import anchors.rogue.shared.ecs.managers.Manager
+import anchors.rogue.shared.managers.Manager
 import anchors.rogue.shared.utils.nodes.core.GlobalNodeSystem
 import anchors.rogue.shared.utils.nodes.core.Node
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase
-import kotlin.collections.plusAssign
+import anchors.rogue.shared.utils.signals.createSignal
 import kotlin.reflect.KClass
 
-
+/**
+ * SceneManager is responsible for managing a scene tree, global systems, and groups.
+ *
+ * It handles:
+ * - Scene replacement and lifecycle
+ * - Fixed-step physics updates
+ * - Global node systems execution
+ * - Node grouping and signals
+ */
 class SceneManager(
-    private var physicsStep : Float = 1F / 60F, // Default physics step
-    block : SceneManager.() -> Unit = {}
+    private var physicsStep: Float = 1F / 60F, // Default physics step
+    block: SceneManager.() -> Unit = {},
 ) : Manager() {
+    // ===============================
+    //         SIGNALS
+    // ===============================
 
-    init { block(this) }
+    /** Emitted when the window or viewport is resized */
+    val onResize = createSignal<Int, Int>()
 
-    /**
-     * Root of current scene
-     */
-    private var _currScene : Node<*>? = null
+    // ===============================
+    //       SCENE & TREE STATE
+    // ===============================
 
-    var currScene : Node<*>?
+    /** Current root scene */
+    private var _currScene: Node<*>? = null
+
+    /** Public accessor for the current scene; automatically replaces scene on set */
+    var currScene: Node<*>?
         get() = _currScene
         set(value) = replaceScene(value)
 
-    /**
-     *
-     */
+    /** Accumulator for fixed-step physics */
     private var physicsAccumulator = 0F
 
-    /**
-     * Register a global system
-     */
-    fun addSystem(system: GlobalNodeSystem) {
-        systems[system.phase]?.add(system)
+    // ===============================
+    //           SYSTEMS
+    // ===============================
 
-        // Index by required types
-        system.requiredTypes.forEach { type ->
-            systemsByType.computeIfAbsent(type) { mutableListOf() }.add(system)
-        }
+    /** All global systems organized by update phase */
+    private val systems: Map<UpdatePhase, MutableList<GlobalNodeSystem>> =
+        mapOf(
+            UpdatePhase.FrameBeforeScene to mutableListOf(),
+            UpdatePhase.FrameAfterScene to mutableListOf(),
+            UpdatePhase.PhysicsBeforeScene to mutableListOf(),
+            UpdatePhase.PhysicsAfterScene to mutableListOf(),
+        )
+
+    /** Maps node types to systems requiring them for faster registration */
+    private val systemsByType = mutableMapOf<KClass<out Node<*>>, MutableList<GlobalNodeSystem>>()
+
+    // ===============================
+    //            GROUPS
+    // ===============================
+
+    /** Tracks nodes belonging to groups */
+    val groups: MutableMap<String, MutableList<Node<*>>> = mutableMapOf()
+
+    // ===============================
+    //            INIT
+    // ===============================
+
+    init {
+        block(this)
     }
 
-    /**
-     * Unregister a global system
-     */
-    fun removeSystem(system: GlobalNodeSystem) {
-        systems[system.phase]?.remove(system)
-    }
+    // ===============================
+    //        SCENE MANAGEMENT
+    // ===============================
 
-    /**
-     * Called when a node (or subtree) enters the tree
-     */
-    internal fun registerSubtree(root: Node<*>? = currScene) {
-        if(root == null) return
-        traverseNodes(root) { node ->
-            val typeMatches = systemsByType[node::class]
-            typeMatches?.forEach { sys ->
-                sys.register(node)
-            }
-        }
-    }
+    /** Replace the current scene with a new root node */
+    private fun replaceScene(newScene: Node<*>?) {
+        val oldScene = _currScene
 
-    /**
-     * Called when a node (or subtree) exits the tree
-     */
-    internal fun unregisterSubtree(root: Node<*>? = currScene) {
-        if(root == null) return
-        traverseNodes(root) { node ->
-            val typeMatches = systemsByType[node::class]
-            typeMatches?.forEach { sys ->
-                sys.unregister(node)
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    private fun traverseNodes(node: Node<*>, action: (Node<*>) -> Unit) {
-        action(node)
-        node.children.values.forEach { child -> traverseNodes(child, action) }
-    }
-
-    /**
-     *
-     */
-    fun tick(delta: Float) {
-        val state = currScene ?: return
-
-        // Fixed physics step
-       if(isPhysicsFrame(delta)) {
-            systems[UpdatePhase.PhysicsBeforeScene]?.forEach { it.tick(physicsStep) }
-            state.physicsUpdate(physicsStep)
-            systems[UpdatePhase.PhysicsAfterScene]?.forEach { it.tick(physicsStep) }
-        }
-
-        // Variable update
-        systems[UpdatePhase.FrameBeforeScene]?.forEach { it.tick(delta) }
-        state.update(delta)
-        systems[UpdatePhase.FrameAfterScene]?.forEach { it.tick(delta) }
-    }
-
-    /**
-     *
-     */
-    private fun replaceScene(newScene : Node<*>?){
-        val treeState = _currScene
         // Clean old tree
-        if(treeState != null){
-            treeState.exitTree()
-            unregisterSubtree(treeState)
+        oldScene?.let {
+            it.exitTree()
+            unregisterSubtree(it)
         }
 
         _currScene = newScene
 
         // Set up new tree
-        if(newScene != null){
-            registerSubtree(newScene)
-            newScene.buildTree()
+        newScene?.let {
+            registerSubtree(it)
+            it.buildTree()
         }
     }
 
     /**
-     *
+     * Register a node and all its children to appropriate systems
+     * @param root Node subtree root. Defaults to the current scene root.
      */
-    private fun isPhysicsFrame(delta : Float) : Boolean {
+    internal fun registerSubtree(root: Node<*>? = currScene) {
+        root ?: return
+        traverseNodes(root) { node ->
+            systemsByType[node::class]?.forEach { sys -> sys.register(node) }
+        }
+    }
+
+    /**
+     * Unregister a node and all its children from systems
+     * @param root Node subtree root. Defaults to the current scene root.
+     */
+    internal fun unregisterSubtree(root: Node<*>? = currScene) {
+        root ?: return
+        traverseNodes(root) { node ->
+            systemsByType[node::class]?.forEach { sys -> sys.unregister(node) }
+        }
+    }
+
+    /** Helper to traverse all nodes recursively */
+    private fun traverseNodes(
+        node: Node<*>,
+        action: (Node<*>) -> Unit,
+    ) {
+        action(node)
+        node.children.values.forEach { traverseNodes(it, action) }
+    }
+
+    // ===============================
+    //       SYSTEM MANAGEMENT
+    // ===============================
+
+    /** Register a global system */
+    fun addSystem(system: GlobalNodeSystem) {
+        systems[system.phase]?.add(system)
+        system.requiredTypes.forEach { type ->
+            systemsByType.computeIfAbsent(type) { mutableListOf() }.add(system)
+        }
+    }
+
+    /** Remove a global system */
+    fun removeSystem(system: GlobalNodeSystem) {
+        systems[system.phase]?.remove(system)
+        // Optional: remove from type mapping if needed
+    }
+
+    // ===============================
+    //         GROUP MANAGEMENT
+    // ===============================
+
+    /** Add a node to a group */
+    fun addToGroup(
+        group: String,
+        node: Node<*>,
+    ) {
+        val groupNodes = groups.computeIfAbsent(group) { mutableListOf() }
+        groupNodes += node
+    }
+
+    /** Remove a node from a group */
+    fun removeFromGroup(
+        group: String,
+        node: Node<*>,
+    ) {
+        val groupNodes = groups[group] ?: error("Group $group does not exist")
+        groupNodes -= node
+    }
+
+    /** Invoke a callback for all nodes in a group */
+    fun signalGroup(
+        group: String,
+        callback: (node: Node<*>) -> Unit,
+    ) {
+        val groupNodes = groups[group] ?: error("Group $group does not exist")
+        groupNodes.forEach(callback)
+    }
+
+    // ===============================
+    //            TICK
+    // ===============================
+
+    /**
+     * Update the scene tree and all global systems.
+     * Handles fixed-step physics and variable frame updates.
+     */
+    fun tick(delta: Float) {
+        val root = currScene ?: return
+
+        // Fixed-step physics
+        if (isPhysicsFrame(delta)) {
+            systems[UpdatePhase.PhysicsBeforeScene]?.forEach { it.tick(physicsStep) }
+            root.physicsUpdate(physicsStep)
+            systems[UpdatePhase.PhysicsAfterScene]?.forEach { it.tick(physicsStep) }
+        }
+
+        // Variable frame updates
+        systems[UpdatePhase.FrameBeforeScene]?.forEach { it.tick(delta) }
+        root.update(delta)
+        systems[UpdatePhase.FrameAfterScene]?.forEach { it.tick(delta) }
+    }
+
+    /** Handle window resize */
+    fun resize(
+        width: Int,
+        height: Int,
+    ) {
+        onResize.emit(width, height)
+    }
+
+    /** Check if physics should run this frame */
+    private fun isPhysicsFrame(delta: Float): Boolean {
         physicsAccumulator += delta
-        if(physicsAccumulator >= physicsStep) return true.also { physicsAccumulator -= physicsStep }
+        if (physicsAccumulator >= physicsStep) {
+            physicsAccumulator -= physicsStep
+            return true
+        }
         return false
     }
 
+    // ===============================
+    //        LIFECYCLE HOOKS
+    // ===============================
+
     override fun setup() {
-        systems.values.fold(listOf<GlobalNodeSystem>()){ prev, next ->
-            prev + next
-        }.forEach(GlobalNodeSystem::onSystemInit)
+        systems.values.flatten().forEach(GlobalNodeSystem::onSystemInit)
     }
 
     override fun teardown() {
-        systems.values.fold(listOf<GlobalNodeSystem>()){ prev, next ->
-            prev + next
-        }.forEach(GlobalNodeSystem::onSystemClose)
+        systems.values.flatten().forEach(GlobalNodeSystem::onSystemClose)
     }
-
-    companion object{
-        /**
-         *
-         */
-        private val systems = mapOf<UpdatePhase, MutableList<GlobalNodeSystem>>(
-            UpdatePhase.FrameBeforeScene to mutableListOf(),
-            UpdatePhase.FrameAfterScene to mutableListOf(),
-            UpdatePhase.PhysicsBeforeScene to mutableListOf(),
-            UpdatePhase.PhysicsAfterScene to mutableListOf()
-        )
-
-        // Optimization: map types → systems requiring them
-        private val systemsByType = mutableMapOf<KClass<out Node<*>>, MutableList<GlobalNodeSystem>>()
-    }
-
 }
-
-/**
- * GOAL:
- *
- * [ktx.app.KtxScreen]
- *
- * val scene = scene(EmptyNode()){
- *      PlayerScene()
- * }
- *
- * SceneManager.currScene = scene <- clean old tree, initialize new tree, sets up lifecycle methods,
- * registers lists for global systems
- *
- */

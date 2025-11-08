@@ -6,7 +6,7 @@ import anchors.rogue.features.logbook.inventory.data.Inventory
 import anchors.rogue.features.saving.SaveManager
 import anchors.rogue.features.stats.data.Stats
 import anchors.rogue.items.EquippableItem
-import anchors.rogue.shared.ecs.managers.ManagersRegistry
+import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.data.registry.IdRegistry
 import org.junit.jupiter.api.*
 import kotlin.test.Test

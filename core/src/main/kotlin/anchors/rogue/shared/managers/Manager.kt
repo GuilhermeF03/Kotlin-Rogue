@@ -1,4 +1,4 @@
-package anchors.rogue.shared.ecs.managers
+package anchors.rogue.shared.managers
 
 import ktx.log.logger
 

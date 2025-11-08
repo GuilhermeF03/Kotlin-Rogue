@@ -1,60 +1,71 @@
 package anchors.rogue.systems
 
 import anchors.rogue.shared.utils.nodes.core.GlobalNodeSystem
-import anchors.rogue.shared.utils.nodes.core.Node
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.utils.viewport.ScreenViewport
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.utils.viewport.FitViewport
+import ktx.graphics.use
 import ktx.log.logger
-import kotlin.math.ceil
 
-class RenderSystem : GlobalNodeSystem(
-    phase = UpdatePhase.FrameAfterScene,
-    Sprite2D::class
-) {
-    private val stage = Stage(ScreenViewport())
-
+/**
+ * System responsible for rendering all Sprite2D nodes
+ * @see Sprite2D
+ */
+class RenderSystem(
+    width: Float,
+    height: Float,
+) : GlobalNodeSystem(
+        phase = UpdatePhase.FrameAfterScene,
+        Sprite2D::class,
+    ) {
+    private val batch = SpriteBatch()
+    private val camera = OrthographicCamera(width, height)
+    private val viewport = FitViewport(width, height, camera)
     private val logger = logger<RenderSystem>()
 
     override fun onSystemInit() {
-        // Optional: subscribe to resize events
-        stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true)
-    }
-
-    override fun onNodeAdded(node: Node<*>) {
-        val sprite = node as Sprite2D
-        stage.addActor(sprite.image)
-    }
-
-    override fun onNodeRemoved(node: Node<*>) {
-        val sprite = node as Sprite2D
-        sprite.image.remove()
-    }
-
-    override fun processNode(node: Node<*>, delta: Float) {
-        val sprite = node as Sprite2D
-        val transform = sprite.position // however you expose position
-        sprite.image.setPosition(transform.x, transform.y)
-
-        // Optional Z/Y sort behavior
-        sprite.image.zIndex = ((transform.y * 1000) * -1F).coerceAtLeast(0F).toInt()
+        super.onSystemInit()
+        viewport.apply()
+        sceneManager.onResize.connect(::resize)
     }
 
     override fun afterProcess(delta: Float) {
-        logger.info { "Actors info" }
-        stage.actors.forEachIndexed { i, it ->
-            logger.info { "[$i]: [${it.x}, ${it.y}] - ${it.name}" }
-        }
-        with(stage){
-            viewport.apply()
-            act(delta)
-            draw()
+        camera.update()
+
+        batch.projectionMatrix = camera.combined
+        batch.use { batch ->
+            // Y-sort nodes
+            val ySortedNodes = matchingNodes.sortedByDescending { node -> (node as Sprite2D).position.y }
+
+            for (node in ySortedNodes) {
+                val sprite = node as Sprite2D
+                val transform = sprite.globalPosition
+
+                // Draw the sprite (LibGDX texture region)
+                sprite.texture.let { region ->
+                    batch.draw(
+                        region,
+                        transform.x,
+                        transform.y,
+                        region.width.toFloat(),
+                        region.height.toFloat(),
+                    )
+                }
+            }
         }
     }
 
+    fun resize(
+        width: Int,
+        height: Int,
+    ) {
+        logger.info { "Resize: ${width}x$height" }
+        viewport.update(width, height, true)
+    }
+
     override fun onSystemClose() {
-        stage.dispose()
+        batch.dispose()
     }
 }

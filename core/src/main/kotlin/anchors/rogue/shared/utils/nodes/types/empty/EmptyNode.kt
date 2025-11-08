@@ -5,17 +5,17 @@ import anchors.rogue.shared.utils.nodes.core.Node
 import com.badlogic.gdx.math.Vector2
 
 class EmptyNode(
-    name : String,
-    script: (node : EmptyNode) -> Behavior<EmptyNode>? = { null },
+    name: String,
+    script: (node: EmptyNode) -> Behavior<EmptyNode>? = { null },
     position: Vector2 = Vector2.Zero,
     scale: Vector2 = Vector2(1f, 1f),
     rotation: Float = 0f,
     block: Node<*>.() -> Unit = {},
 ) : Node<EmptyNode>(
-    name,
-    script,
-    position,
-    scale,
-    rotation,
-    block
-)
+        name,
+        script,
+        position,
+        scale,
+        rotation,
+        block,
+    )

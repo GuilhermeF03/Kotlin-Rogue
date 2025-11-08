@@ -1,6 +1,6 @@
 package anchors.rogue.features.saving
 
-import anchors.rogue.shared.ecs.managers.Manager
+import anchors.rogue.shared.managers.Manager
 import anchors.rogue.shared.utils.data.parsers.JsonParser
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
