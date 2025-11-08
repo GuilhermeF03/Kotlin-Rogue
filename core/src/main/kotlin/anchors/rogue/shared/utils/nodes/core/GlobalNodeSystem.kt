@@ -12,6 +12,9 @@ import kotlin.reflect.KClass
  * Defines when a global node system should be executed.
  */
 enum class UpdatePhase {
+    // Runs before any event
+    Input,
+
     /** Runs before physics is processed for the scene */
     PhysicsBeforeScene,
 
@@ -32,11 +35,10 @@ enum class UpdatePhase {
 /**
  * Base class for systems operating on all nodes of a scene that match certain types.
  *
- * @param phase Determines when this system is executed during the update cycle.
  * @param requiredTypes The types of nodes this system should operate on.
  */
 abstract class GlobalNodeSystem(
-    val phase: UpdatePhase,
+    internal val phase: UpdatePhase,
     vararg val requiredTypes: KClass<out Node<*>>,
 ) {
     // ===============================

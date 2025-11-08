@@ -4,7 +4,9 @@ import anchors.rogue.features.logbook.LogbookManager
 import anchors.rogue.features.saving.SaveManager
 import anchors.rogue.screens.DemoScreen
 import anchors.rogue.shared.managers.ManagersRegistry
+import anchors.rogue.shared.utils.input.InputManager
 import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.systems.InputSystem
 import anchors.rogue.systems.RenderSystem
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -18,12 +20,16 @@ class KotlinRogue : KtxGame<KtxScreen>() {
         KtxAsync.initiate()
 
         // Register global systems here
+
+        val inputManager = InputManager()
         val sceneManager =
             SceneManager {
+                addSystem(InputSystem(inputManager))
                 addSystem(RenderSystem(GAME_WIDTH, GAME_HEIGHT))
             }
 
         ManagersRegistry.apply {
+            register(inputManager)
             register(SaveManager())
             register(LogbookManager())
             register(sceneManager)

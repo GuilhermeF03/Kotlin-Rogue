@@ -3,27 +3,24 @@ package anchors.rogue.systems
 import anchors.rogue.shared.utils.nodes.core.GlobalNodeSystem
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ktx.graphics.use
 import ktx.log.logger
 
 /**
- * System responsible for rendering all Sprite2D nodes
- * @see Sprite2D
+ * Renders all Sprite2D nodes using the Scene's active Camera2D.
  */
 class RenderSystem(
-    width: Float,
-    height: Float,
+    worldWidth: Float,
+    worldHeight: Float,
 ) : GlobalNodeSystem(
-        phase = UpdatePhase.FrameAfterScene,
+        UpdatePhase.FrameAfterScene,
         Sprite2D::class,
     ) {
     private val batch = SpriteBatch()
-    private val camera = OrthographicCamera(width, height)
-    private val viewport = FitViewport(width, height, camera)
-    private val logger = logger<RenderSystem>()
+    private val viewport = FitViewport(worldWidth, worldHeight)
+    private val log = logger<RenderSystem>()
 
     override fun onSystemInit() {
         super.onSystemInit()
@@ -32,36 +29,38 @@ class RenderSystem(
     }
 
     override fun afterProcess(delta: Float) {
+        val camera =
+            sceneManager.activeCamera?.camera
+                ?: return // No camera → skip rendering
+
         camera.update()
+        viewport.camera = camera
 
         batch.projectionMatrix = camera.combined
-        batch.use { batch ->
-            // Y-sort nodes
-            val ySortedNodes = matchingNodes.sortedByDescending { node -> (node as Sprite2D).position.y }
 
-            for (node in ySortedNodes) {
-                val sprite = node as Sprite2D
-                val transform = sprite.globalPosition
-
-                // Draw the sprite (LibGDX texture region)
-                sprite.texture.let { region ->
-                    batch.draw(
-                        region,
-                        transform.x,
-                        transform.y,
-                        region.width.toFloat(),
-                        region.height.toFloat(),
+        batch.use { b ->
+            matchingNodes
+                .map { it as Sprite2D }
+                .sortedByDescending { it.position.y }
+                .forEach { sprite ->
+                    val pos = sprite.globalPosition
+                    val tex = sprite.texture
+                    b.draw(
+                        tex,
+                        pos.x,
+                        pos.y,
+                        tex.width.toFloat(),
+                        tex.height.toFloat(),
                     )
                 }
-            }
         }
     }
 
-    fun resize(
+    private fun resize(
         width: Int,
         height: Int,
     ) {
-        logger.info { "Resize: ${width}x$height" }
+        log.info { "resize: ${width}x$height" }
         viewport.update(width, height, true)
     }
 

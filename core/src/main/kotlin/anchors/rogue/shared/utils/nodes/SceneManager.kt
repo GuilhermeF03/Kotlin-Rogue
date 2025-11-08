@@ -1,9 +1,11 @@
 package anchors.rogue.shared.utils.nodes
 
 import anchors.rogue.shared.managers.Manager
+import anchors.rogue.shared.utils.input.InputEvent
 import anchors.rogue.shared.utils.nodes.core.GlobalNodeSystem
 import anchors.rogue.shared.utils.nodes.core.Node
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase
+import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.signals.createSignal
 import kotlin.reflect.KClass
 
@@ -19,7 +21,21 @@ import kotlin.reflect.KClass
 class SceneManager(
     private var physicsStep: Float = 1F / 60F, // Default physics step
     block: SceneManager.() -> Unit = {},
-) : Manager() {
+) : Manager {
+    // ==========================
+    //          CAMERA
+    // ==========================
+    var activeCamera: Camera2D? = null
+        private set
+
+    internal fun registerCamera(cam: Camera2D) {
+        activeCamera = cam
+    }
+
+    internal fun unregisterCamera(cam: Camera2D) {
+        if (activeCamera == cam) activeCamera = null
+    }
+
     // ===============================
     //         SIGNALS
     // ===============================
@@ -49,6 +65,7 @@ class SceneManager(
     /** All global systems organized by update phase */
     private val systems: Map<UpdatePhase, MutableList<GlobalNodeSystem>> =
         mapOf(
+            UpdatePhase.Input to mutableListOf(),
             UpdatePhase.FrameBeforeScene to mutableListOf(),
             UpdatePhase.FrameAfterScene to mutableListOf(),
             UpdatePhase.PhysicsBeforeScene to mutableListOf(),
@@ -142,7 +159,6 @@ class SceneManager(
     /** Remove a global system */
     fun removeSystem(system: GlobalNodeSystem) {
         systems[system.phase]?.remove(system)
-        // Optional: remove from type mapping if needed
     }
 
     // ===============================
@@ -187,6 +203,8 @@ class SceneManager(
     fun tick(delta: Float) {
         val root = currScene ?: return
 
+        systems[UpdatePhase.Input]?.forEach { it.tick(delta) }
+
         // Fixed-step physics
         if (isPhysicsFrame(delta)) {
             systems[UpdatePhase.PhysicsBeforeScene]?.forEach { it.tick(physicsStep) }
@@ -228,5 +246,13 @@ class SceneManager(
 
     override fun teardown() {
         systems.values.flatten().forEach(GlobalNodeSystem::onSystemClose)
+    }
+
+    // =================================
+    //             INPUT
+    // =================================
+    fun onInput(event: InputEvent) {
+        val root = currScene ?: return
+        root.input(event) // Dispatch input through tree
     }
 }

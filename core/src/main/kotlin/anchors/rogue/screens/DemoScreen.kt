@@ -2,6 +2,7 @@ package anchors.rogue.screens
 
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
 import com.badlogic.gdx.graphics.Texture
@@ -35,6 +36,7 @@ class DemoScreen : KtxScreen {
 
         sceneManager.currScene =
             EmptyNode("root") {
+                Camera2D("camera")
                 Sprite2D(
                     "logo-1",
                     position = Vector2(100F, 200F),

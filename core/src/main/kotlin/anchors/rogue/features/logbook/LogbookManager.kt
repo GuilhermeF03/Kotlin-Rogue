@@ -13,7 +13,7 @@ import anchors.rogue.shared.managers.Manager
  * * Bestiary - registers info about discovered enemies
  * * Journal - registers info about the world, such as areas and NPCs
  */
-class LogbookManager : Manager() {
+class LogbookManager : Manager {
     val inventory = Inventory()
     val bestiary = Bestiary()
     val journal = Journal()
