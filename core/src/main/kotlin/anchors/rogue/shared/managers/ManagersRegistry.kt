@@ -1,4 +1,4 @@
-package anchors.rogue.shared.ecs.managers
+package anchors.rogue.shared.managers
 
 import ktx.log.logger
 import kotlin.reflect.KClass
@@ -24,13 +24,16 @@ object ManagersRegistry {
         managers[manager::class] = manager
     }
 
+    fun <T : Manager> has(clazz: KClass<T>) = clazz in managers
+
     /**
      * Retrieves a registered manager instance by its class type.
      * @param clazz The KClass of the manager to retrieve.
      * @return The manager instance of the specified type.
      * @throws NoSuchElementException if no manager of the specified type is registered.
      */
-    fun <T : Manager> get(clazz: KClass<T>): T = managers.getValue(clazz) as T
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Manager> get(clazz: KClass<T>): T = managers[clazz] as T
 
     /**
      * Sets up all registered managers by invoking their setup methods.

@@ -15,6 +15,7 @@ max_line_length = 120
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**
 ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_no-consecutive-comments = disabled
 
 [*.gradle]
 indent_size = 2

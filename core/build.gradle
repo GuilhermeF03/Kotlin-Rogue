@@ -9,6 +9,8 @@ plugins{
 eclipse.project.name = appName + '-core'
 
 dependencies {
+  // REFLECTION
+  implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
   // ECS
   implementation 'io.github.quillraven.fleks:Fleks:2.12'
   // Testing

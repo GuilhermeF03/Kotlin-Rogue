@@ -1,21 +1,27 @@
 package anchors.rogue.screens
 
-import anchors.rogue.shared.ecs.coreWorld
-import anchors.rogue.shared.ecs.graphics.components.SpriteComponent
-import anchors.rogue.shared.ecs.graphics.entities.sprite2D
+import anchors.rogue.shared.managers.ManagersRegistry
+import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
+import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
+import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
-import com.github.quillraven.fleks.World
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 import ktx.assets.toInternalFile
+import ktx.log.logger
 
 class DemoScreen : KtxScreen {
     val stage = Stage(ScreenViewport())
-    private val world: World = coreWorld(stage)
+
+    // private val world: World = coreWorld(stage)
+    private val logger = logger<DemoScreen>()
+
+    private val sceneManager = ManagersRegistry.get(SceneManager::class)
 
     // Screen resources
     val image =
@@ -24,26 +30,31 @@ class DemoScreen : KtxScreen {
         }
 
     // Entities
-    val renderableLogo =
-        world.sprite2D(image, Vector2(100f, 100f)) {
-            // Additional configuration can be done here if needed
-            it[SpriteComponent].apply {
-                // image.translate(100f, 100f) // Move the logo by (100,100)
-                image
+
+    override fun show() {
+        logger.info { "Show" }
+
+        sceneManager.currScene =
+            EmptyNode("root") {
+                Camera2D("camera")
+                Sprite2D(
+                    "logo-1",
+                    position = Vector2(100F, 200F),
+                    texture = image,
+                )
+                Sprite2D("logo-2", texture = image)
             }
-        }
-    val a = world.sprite2D(image)
+    }
 
     // Similar to "onUpdate" in other engines
     override fun render(delta: Float) {
         super.render(delta)
-        world.update(delta)
+        sceneManager.tick(delta)
     }
 
     // Clean up resources when the screen is disposed
     override fun dispose() {
         super.dispose()
         image.disposeSafely()
-        world.dispose()
     }
 }

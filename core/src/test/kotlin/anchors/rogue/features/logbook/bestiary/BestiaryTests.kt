@@ -3,7 +3,7 @@ package anchors.rogue.features.logbook.bestiary
 import anchors.rogue.features.logbook.bestiary.data.Bestiary
 import anchors.rogue.features.logbook.bestiary.data.BestiaryEntry
 import anchors.rogue.features.saving.SaveManager
-import anchors.rogue.shared.ecs.managers.ManagersRegistry
+import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.data.registry.IdRegistry
 import org.junit.jupiter.api.BeforeAll
 import kotlin.test.Test

@@ -1,6 +1,6 @@
 package anchors.rogue.features.saving
 
-import anchors.rogue.shared.ecs.managers.Manager
+import anchors.rogue.shared.managers.Manager
 import anchors.rogue.shared.utils.data.parsers.JsonParser
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
@@ -21,7 +21,7 @@ class SaveManager(
     // Handler for configuring the save file location - used this as opposed to string for testing purposes
     private val saveFileFactory: (slot: Int) -> FileHandle =
         { Gdx.files.local("$SAVE_LOCATION/user_save_$it.json") },
-) : Manager() {
+) : Manager {
     /** Holds module info, and maps to data to be saved */
     private val dataRegistry = mutableMapOf<SaveModule<*>, @Serializable Any>()
 
