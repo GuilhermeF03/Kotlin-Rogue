@@ -6,6 +6,7 @@ import anchors.rogue.screens.DemoScreen
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.input.InputManager
 import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.shared.utils.saving.SaveManager
 import anchors.rogue.systems.InputSystem
 import anchors.rogue.systems.RenderSystem
 import ktx.app.KtxGame

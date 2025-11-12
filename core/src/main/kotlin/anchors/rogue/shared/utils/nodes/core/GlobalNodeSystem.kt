@@ -46,7 +46,7 @@ abstract class GlobalNodeSystem(
     // ===============================
 
     /** Reference to the scene manager (set automatically on init) */
-    internal lateinit var sceneManager: SceneManager
+    protected lateinit var sceneManager: SceneManager
         private set
 
     /** Nodes currently matching the system's type requirements */

@@ -1,9 +1,9 @@
 package anchors.rogue.features.logbook.inventory.data
 
-import anchors.rogue.features.saving.registerSaveModule
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
 import anchors.rogue.shared.utils.data.registry.IdRegistry
+import anchors.rogue.shared.utils.saving.registerSaveModule
 import anchors.rogue.shared.utils.signals.OneArgSignal
 import anchors.rogue.shared.utils.signals.SignalVal
 import anchors.rogue.shared.utils.signals.asSignalVal

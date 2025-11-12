@@ -1,4 +1,4 @@
-package anchors.rogue.features.saving
+package anchors.rogue.shared.utils.saving
 
 import anchors.rogue.shared.managers.ManagersRegistry
 import kotlinx.serialization.KSerializer
