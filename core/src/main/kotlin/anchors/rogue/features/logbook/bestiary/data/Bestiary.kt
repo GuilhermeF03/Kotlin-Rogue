@@ -1,7 +1,7 @@
 package anchors.rogue.features.logbook.bestiary.data
 
-import anchors.rogue.features.saving.registerSaveModule
 import anchors.rogue.shared.utils.data.registry.IdRegistry
+import anchors.rogue.shared.utils.saving.registerSaveModule
 import anchors.rogue.shared.utils.signals.createSignal
 import com.badlogic.gdx.Gdx
 

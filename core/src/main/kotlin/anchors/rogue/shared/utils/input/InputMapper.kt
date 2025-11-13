@@ -2,11 +2,15 @@ package anchors.rogue.shared.utils.input
 
 import anchors.rogue.shared.utils.data.registry.IdRegistry
 import anchors.rogue.shared.utils.saving.registerSaveModule
+import com.badlogic.gdx.Input
+import ktx.log.logger
 
 class InputMapper {
+    private val logger = logger<InputMapper>()
     internal val mappings : MutableMap<String, MutableList<InputBind>> = mutableMapOf()
 
     init {
+        clearMappings()
         registerSaveModule(
             "input",
             InputData.serializer(),
@@ -15,12 +19,24 @@ class InputMapper {
         )
     }
 
-    fun loadData(data : InputData){
+    private fun loadData(data : InputData){
         mappings.clear()
         mappings.putAll(data.mappings.associate { it.name to it.binds.toMutableList() })
     }
 
-    fun mapToAction(bind : InputBind) : List<String>{
+    fun mapToAction(bind : InputBind) : List<String> {
         return mappings.filterValues { bind in it }.keys.toList()
+    }
+
+    fun clearMappings(){
+        mappings.clear()
+    }
+
+    fun mapAction(action : String, newBinds : List<InputBind>, replace : Boolean = true){
+        logger.info { "Mapping action [$action] to: ${newBinds.map { Input.Keys.toString(it.code) }}" }
+
+        val binds = mappings.computeIfAbsent(action) { mutableListOf() }
+        if(replace) binds.clear()
+        binds += newBinds
     }
 }

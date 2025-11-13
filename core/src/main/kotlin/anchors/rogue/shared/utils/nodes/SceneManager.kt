@@ -7,7 +7,12 @@ import anchors.rogue.shared.utils.nodes.core.Node
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase
 import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.signals.createSignal
+import com.badlogic.gdx.Gdx
+import ktx.log.logger
 import kotlin.reflect.KClass
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * SceneManager is responsible for managing a scene tree, global systems, and groups.
@@ -22,6 +27,8 @@ class SceneManager(
     private var physicsStep: Float = 1F / 60F, // Default physics step
     block: SceneManager.() -> Unit = {},
 ) : Manager {
+    private val logger = logger<SceneManager>()
+
     // ==========================
     //          CAMERA
     // ==========================
@@ -202,7 +209,6 @@ class SceneManager(
      */
     fun tick(delta: Float) {
         val root = currScene ?: return
-
         systems[UpdatePhase.Input]?.forEach { it.tick(delta) }
 
         // Fixed-step physics
@@ -253,6 +259,6 @@ class SceneManager(
     // =================================
     fun onInput(event: InputEvent) {
         val root = currScene ?: return
-        root.input(event) // Dispatch input through tree
+        root.input(event)
     }
 }
