@@ -54,7 +54,10 @@ abstract class Behavior<N : Node<N>>(
     // ===============================
 
     /** Called when an input event occurs on the node */
-    open fun onInput(event: InputEvent) = Unit
+    open fun onInput(
+        event: InputEvent,
+        delta: Float = 0F,
+    ) = Unit
 
     // Uncomment if factory pattern is needed in the future
 //    interface Factory<T : Node, B : Behavior<T>> {
@@ -91,6 +94,7 @@ fun <N : Node<N>> behavior(
     onExitTree: N.() -> Unit = {},
     onUpdate: N.(delta: Float) -> Unit = {},
     onPhysicsUpdate: N.(delta: Float) -> Unit = {},
+    onInput: N.(event: InputEvent, delta: Float) -> Unit = { _, _ -> },
 ): (node: N) -> Behavior<N> =
     { node ->
         object : Behavior<N>(node) {
@@ -117,6 +121,14 @@ fun <N : Node<N>> behavior(
             override fun onPhysicsUpdate(delta: Float) {
                 super.onPhysicsUpdate(delta)
                 onPhysicsUpdate(node, delta)
+            }
+
+            override fun onInput(
+                event: InputEvent,
+                delta: Float,
+            ) {
+                super.onInput(event, delta)
+                onInput(node, event, delta)
             }
         }
     }

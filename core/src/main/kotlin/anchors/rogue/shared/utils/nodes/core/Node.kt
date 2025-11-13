@@ -2,6 +2,7 @@ package anchors.rogue.shared.utils.nodes.core
 
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.input.InputEvent
+import anchors.rogue.shared.utils.input.InputSystem
 import anchors.rogue.shared.utils.nodes.SceneManager
 import com.badlogic.gdx.math.Vector2
 import ktx.math.plus
@@ -40,6 +41,10 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
     //        INTERNAL PROPERTIES
     // ===============================
+
+    /** Reference to the scene manager (set automatically on init) */
+    internal val sceneManager: SceneManager by lazy { ManagersRegistry.get(SceneManager::class) }
+    internal val inputManager: InputSystem by lazy { sceneManager.getSystem(InputSystem::class) }
 
     /** Whether this node is a prefab (not active until instantiated) */
     private var isPrefab: Boolean = false
@@ -235,11 +240,14 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
 
     /** Handles input events and propagates to children */
-    open fun input(event: InputEvent) {
+    open fun input(
+        event: InputEvent,
+        delta: Float = 0F,
+    ) {
         if (event.isHandled) return
-        script?.onInput(event)
+        script?.onInput(event, delta)
         if (event.isHandled) return
-
-        children.values.forEach { it.input(event) }
+        // Propagate ito children
+        children.values.forEach { it.input(event, delta) }
     }
 }

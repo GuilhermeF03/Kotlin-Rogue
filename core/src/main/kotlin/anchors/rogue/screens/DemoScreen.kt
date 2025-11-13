@@ -2,6 +2,7 @@ package anchors.rogue.screens
 
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.shared.utils.nodes.core.behavior
 import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
@@ -14,6 +15,9 @@ import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 import ktx.assets.toInternalFile
 import ktx.log.logger
+import ktx.math.minusAssign
+import ktx.math.plusAssign
+import ktx.math.times
 
 class DemoScreen : KtxScreen {
     val stage = Stage(ScreenViewport())
@@ -38,11 +42,25 @@ class DemoScreen : KtxScreen {
             EmptyNode("root") {
                 Camera2D("camera")
                 Sprite2D(
-                    "logo-1",
-                    position = Vector2(100F, 200F),
+                    "logo-2",
                     texture = image,
+                    script =
+                        behavior(
+                            onInput = { event, delta ->
+                                val movement =
+                                    inputManager
+                                        .getInputVector(
+                                            "move-left",
+                                            "move-right",
+                                            "move-down",
+                                            "move-up",
+                                        ).nor() * delta * 100
+
+                                position += movement
+                            },
+                        ),
                 )
-                Sprite2D("logo-2", texture = image)
+                Sprite2D(name = "static", texture = image, position = Vector2(100F, 100F))
             }
     }
 

@@ -4,18 +4,19 @@ import anchors.rogue.shared.utils.data.registry.IdEntry
 import kotlinx.serialization.Serializable
 
 @Serializable
-class InputData(val mappings : List<InputEntry>)
+class InputData(
+    val mappings: List<InputEntry>,
+)
 
 @Serializable
 class InputEntry(
     override val name: String,
-    val binds : List<InputBind>
-): IdEntry{
+    val binds: List<InputBind>,
+) : IdEntry {
     override val domain = "input"
 }
 
-fun InputMapper.asData() : InputData {
-    val entries : List<InputEntry> = mappings.map { (action, binds) -> InputEntry(action, binds) }
+fun InputMapper.asData(): InputData {
+    val entries: List<InputEntry> = mappings.map { (action, binds) -> InputEntry(action, binds) }
     return InputData(entries)
 }
-

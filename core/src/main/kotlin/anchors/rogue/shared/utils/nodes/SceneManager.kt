@@ -7,24 +7,21 @@ import anchors.rogue.shared.utils.nodes.core.Node
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase
 import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.signals.createSignal
-import com.badlogic.gdx.Gdx
 import ktx.log.logger
 import kotlin.reflect.KClass
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 /**
- * SceneManager is responsible for managing a scene tree, global systems, and groups.
+ * SceneManager is responsible for managing a scene tree, systems, groups, and active camera.
  *
- * It handles:
+ * Responsibilities:
  * - Scene replacement and lifecycle
- * - Fixed-step physics updates
- * - Global node systems execution
- * - Node grouping and signals
+ * - Fixed-step physics and frame updates
+ * - Global systems execution
+ * - Node grouping and signaling
+ * - Active camera tracking and resize notifications
  */
 class SceneManager(
-    private var physicsStep: Float = 1F / 60F, // Default physics step
+    private var physicsStep: Float = 1f / 60f,
     block: SceneManager.() -> Unit = {},
 ) : Manager {
     private val logger = logger<SceneManager>()
@@ -35,12 +32,22 @@ class SceneManager(
     var activeCamera: Camera2D? = null
         private set
 
+    /** Emitted whenever the active camera changes */
+    val onCameraChanged = createSignal<Camera2D?>()
+
     internal fun registerCamera(cam: Camera2D) {
+        if (activeCamera == cam) return
         activeCamera = cam
+        logger.debug { "Active camera set to ${cam.name}" }
+        onCameraChanged.emit(cam)
     }
 
     internal fun unregisterCamera(cam: Camera2D) {
-        if (activeCamera == cam) activeCamera = null
+        if (activeCamera == cam) {
+            logger.debug { "Camera ${cam.name} unregistered as active camera" }
+            activeCamera = null
+            onCameraChanged.emit(null)
+        }
     }
 
     // ===============================
@@ -51,25 +58,18 @@ class SceneManager(
     val onResize = createSignal<Int, Int>()
 
     // ===============================
-    //       SCENE & TREE STATE
+    //         SCENE STATE
     // ===============================
-
-    /** Current root scene */
     private var _currScene: Node<*>? = null
-
-    /** Public accessor for the current scene; automatically replaces scene on set */
     var currScene: Node<*>?
         get() = _currScene
         set(value) = replaceScene(value)
 
-    /** Accumulator for fixed-step physics */
-    private var physicsAccumulator = 0F
+    private var physicsAccumulator = 0f
 
     // ===============================
-    //           SYSTEMS
+    //         SYSTEMS
     // ===============================
-
-    /** All global systems organized by update phase */
     private val systems: Map<UpdatePhase, MutableList<GlobalNodeSystem>> =
         mapOf(
             UpdatePhase.Input to mutableListOf(),
@@ -79,51 +79,37 @@ class SceneManager(
             UpdatePhase.PhysicsAfterScene to mutableListOf(),
         )
 
-    /** Maps node types to systems requiring them for faster registration */
     private val systemsByType = mutableMapOf<KClass<out Node<*>>, MutableList<GlobalNodeSystem>>()
 
     // ===============================
-    //            GROUPS
+    //          GROUPS
     // ===============================
-
-    /** Tracks nodes belonging to groups */
     val groups: MutableMap<String, MutableList<Node<*>>> = mutableMapOf()
-
-    // ===============================
-    //            INIT
-    // ===============================
 
     init {
         block(this)
     }
 
     // ===============================
-    //        SCENE MANAGEMENT
+    //      SCENE MANAGEMENT
     // ===============================
-
-    /** Replace the current scene with a new root node */
     private fun replaceScene(newScene: Node<*>?) {
         val oldScene = _currScene
 
-        // Clean old tree
         oldScene?.let {
             it.exitTree()
             unregisterSubtree(it)
         }
 
         _currScene = newScene
+        activeCamera = null // Reset camera on scene change
 
-        // Set up new tree
         newScene?.let {
             registerSubtree(it)
             it.buildTree()
         }
     }
 
-    /**
-     * Register a node and all its children to appropriate systems
-     * @param root Node subtree root. Defaults to the current scene root.
-     */
     internal fun registerSubtree(root: Node<*>? = currScene) {
         root ?: return
         traverseNodes(root) { node ->
@@ -131,10 +117,6 @@ class SceneManager(
         }
     }
 
-    /**
-     * Unregister a node and all its children from systems
-     * @param root Node subtree root. Defaults to the current scene root.
-     */
     internal fun unregisterSubtree(root: Node<*>? = currScene) {
         root ?: return
         traverseNodes(root) { node ->
@@ -142,7 +124,6 @@ class SceneManager(
         }
     }
 
-    /** Helper to traverse all nodes recursively */
     private fun traverseNodes(
         node: Node<*>,
         action: (Node<*>) -> Unit,
@@ -152,10 +133,8 @@ class SceneManager(
     }
 
     // ===============================
-    //       SYSTEM MANAGEMENT
+    //      SYSTEM MANAGEMENT
     // ===============================
-
-    /** Register a global system */
     fun addSystem(system: GlobalNodeSystem) {
         systems[system.phase]?.add(system)
         system.requiredTypes.forEach { type ->
@@ -163,16 +142,17 @@ class SceneManager(
         }
     }
 
-    /** Remove a global system */
     fun removeSystem(system: GlobalNodeSystem) {
         systems[system.phase]?.remove(system)
     }
 
-    // ===============================
-    //         GROUP MANAGEMENT
-    // ===============================
+    @Suppress("UNCHECKED_CAST")
+    fun <T : GlobalNodeSystem> getSystem(clazz: KClass<T>): T =
+        systems.values.flatten().firstOrNull { clazz.isInstance(it) } as T
 
-    /** Add a node to a group */
+    // ===============================
+    //      GROUP MANAGEMENT
+    // ===============================
     fun addToGroup(
         group: String,
         node: Node<*>,
@@ -181,7 +161,6 @@ class SceneManager(
         groupNodes += node
     }
 
-    /** Remove a node from a group */
     fun removeFromGroup(
         group: String,
         node: Node<*>,
@@ -190,7 +169,6 @@ class SceneManager(
         groupNodes -= node
     }
 
-    /** Invoke a callback for all nodes in a group */
     fun signalGroup(
         group: String,
         callback: (node: Node<*>) -> Unit,
@@ -200,31 +178,23 @@ class SceneManager(
     }
 
     // ===============================
-    //            TICK
+    //             TICK
     // ===============================
-
-    /**
-     * Update the scene tree and all global systems.
-     * Handles fixed-step physics and variable frame updates.
-     */
     fun tick(delta: Float) {
         val root = currScene ?: return
         systems[UpdatePhase.Input]?.forEach { it.tick(delta) }
 
-        // Fixed-step physics
         if (isPhysicsFrame(delta)) {
             systems[UpdatePhase.PhysicsBeforeScene]?.forEach { it.tick(physicsStep) }
             root.physicsUpdate(physicsStep)
             systems[UpdatePhase.PhysicsAfterScene]?.forEach { it.tick(physicsStep) }
         }
 
-        // Variable frame updates
         systems[UpdatePhase.FrameBeforeScene]?.forEach { it.tick(delta) }
         root.update(delta)
         systems[UpdatePhase.FrameAfterScene]?.forEach { it.tick(delta) }
     }
 
-    /** Handle window resize */
     fun resize(
         width: Int,
         height: Int,
@@ -232,7 +202,6 @@ class SceneManager(
         onResize.emit(width, height)
     }
 
-    /** Check if physics should run this frame */
     private fun isPhysicsFrame(delta: Float): Boolean {
         physicsAccumulator += delta
         if (physicsAccumulator >= physicsStep) {
@@ -245,7 +214,6 @@ class SceneManager(
     // ===============================
     //        LIFECYCLE HOOKS
     // ===============================
-
     override fun setup() {
         systems.values.flatten().forEach(GlobalNodeSystem::onSystemInit)
     }
@@ -254,11 +222,13 @@ class SceneManager(
         systems.values.flatten().forEach(GlobalNodeSystem::onSystemClose)
     }
 
-    // =================================
+    // ===============================
     //             INPUT
-    // =================================
-    fun onInput(event: InputEvent) {
-        val root = currScene ?: return
-        root.input(event)
+    // ===============================
+    fun onInput(
+        event: InputEvent,
+        delta: Float,
+    ) {
+        currScene?.input(event, delta)
     }
 }

@@ -3,11 +3,11 @@
 package anchors.rogue.features.logbook.inventory
 
 import anchors.rogue.features.logbook.inventory.data.Inventory
-import anchors.rogue.features.saving.SaveManager
 import anchors.rogue.features.stats.data.Stats
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.data.registry.IdRegistry
+import anchors.rogue.shared.utils.saving.SaveManager
 import org.junit.jupiter.api.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

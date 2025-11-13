@@ -14,8 +14,8 @@ class Camera2D(
 ) : Node<Camera2D>(name, block = block) {
     val camera = OrthographicCamera()
     private var target: Node<*>? = null
+    private var isResizing = false
 
-    // Optional world bounds
     var limitLeft: Float? = null
     var limitRight: Float? = null
     var limitTop: Float? = null
@@ -23,7 +23,7 @@ class Camera2D(
 
     override fun enterTree() {
         super.enterTree()
-        manager.registerCamera(this) // Let SceneManager know this is the camera in use
+        manager.registerCamera(this)
     }
 
     override fun exitTree() {
@@ -31,19 +31,17 @@ class Camera2D(
         manager.unregisterCamera(this)
     }
 
-    /**
-     * Smooth camera update (like Godot)
-     */
     override fun update(delta: Float) {
         updateCamera(delta)
     }
 
     private fun updateCamera(delta: Float) {
+        if (isResizing) return // skip smoothing during resize
+
         camera.zoom = zoom
-
         val targetPos = target?.globalPosition ?: globalPosition
-
         val pos = camera.position
+
         if (enableSmoothing) {
             pos.x += (targetPos.x - pos.x) * smoothingSpeed * delta
             pos.y += (targetPos.y - pos.y) * smoothingSpeed * delta
@@ -63,20 +61,14 @@ class Camera2D(
         limitTop?.let { camera.position.y = minOf(camera.position.y, it) }
     }
 
-    /**
-     * Public API — like Godot Camera2D
-     */
     fun setTarget(node: Node<*>) {
-        this.target = node
+        target = node
     }
 
     fun clearTarget() {
         target = null
     }
 
-    /**
-     * Coordinate helpers
-     */
     fun screenToWorld(screen: Vector2): Vector2 {
         camera.unproject(Vector3(screen.x, screen.y, 0f))
         return screen
@@ -85,5 +77,18 @@ class Camera2D(
     fun worldToScreen(world: Vector2): Vector2 {
         camera.project(Vector3(world.x, world.y, 0f))
         return world
+    }
+
+    /** Snap camera to target immediately during resize */
+    fun resize(
+        worldWidth: Float,
+        worldHeight: Float,
+    ) {
+        isResizing = true
+        camera.setToOrtho(false, worldWidth, worldHeight)
+        val targetPos = target?.globalPosition ?: globalPosition
+        camera.position.set(targetPos.x, targetPos.y, 0f)
+        camera.update()
+        isResizing = false
     }
 }

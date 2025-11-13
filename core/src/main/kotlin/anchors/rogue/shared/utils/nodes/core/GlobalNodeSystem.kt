@@ -1,6 +1,7 @@
 package anchors.rogue.shared.utils.nodes.core
 
 import anchors.rogue.shared.managers.ManagersRegistry
+import anchors.rogue.shared.utils.input.InputSystem
 import anchors.rogue.shared.utils.nodes.SceneManager
 import kotlin.reflect.KClass
 
@@ -12,7 +13,7 @@ import kotlin.reflect.KClass
  * Defines when a global node system should be executed.
  */
 enum class UpdatePhase {
-    // Runs before any event
+    /** Runs before any event */
     Input,
 
     /** Runs before physics is processed for the scene */
@@ -46,8 +47,8 @@ abstract class GlobalNodeSystem(
     // ===============================
 
     /** Reference to the scene manager (set automatically on init) */
-    protected lateinit var sceneManager: SceneManager
-        private set
+    protected val sceneManager: SceneManager by lazy { ManagersRegistry.get(SceneManager::class) }
+    protected val inputManager: InputSystem by lazy { sceneManager.getSystem(InputSystem::class) }
 
     /** Nodes currently matching the system's type requirements */
     protected val matchingNodes = mutableListOf<Node<*>>()
@@ -60,9 +61,7 @@ abstract class GlobalNodeSystem(
      * Called once before updates begin.
      * Automatically sets up the scene manager reference.
      */
-    open fun onSystemInit() {
-        sceneManager = ManagersRegistry.get(SceneManager::class)
-    }
+    open fun onSystemInit() {}
 
     /** Called when the system is being closed / disposed. Override if needed. */
     open fun onSystemClose() {}

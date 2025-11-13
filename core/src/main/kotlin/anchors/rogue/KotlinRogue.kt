@@ -34,9 +34,14 @@ class KotlinRogue : KtxGame<KtxScreen>() {
         }
 
         // Register base inputs
-        sceneManager.addSystem(InputSystem(
-            "jump" to listOf(InputBind.keyboardBind(Input.Keys.SPACE))
-        ))
+        sceneManager.addSystem(
+            InputSystem(
+                "move-left" to listOf(InputBind.keyboardBind(Input.Keys.A)),
+                "move-right" to listOf(InputBind.keyboardBind(Input.Keys.D)),
+                "move-up" to listOf(InputBind.keyboardBind(Input.Keys.W)),
+                "move-down" to listOf(InputBind.keyboardBind(Input.Keys.S)),
+            ),
+        )
 
         // Register and setup global managers - global access to data across screens and nodes
         ManagersRegistry.setup()
