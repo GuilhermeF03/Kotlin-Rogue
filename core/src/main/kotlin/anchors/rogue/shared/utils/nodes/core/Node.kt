@@ -5,6 +5,7 @@ import anchors.rogue.shared.utils.input.InputEvent
 import anchors.rogue.shared.utils.input.InputSystem
 import anchors.rogue.shared.utils.nodes.SceneManager
 import com.badlogic.gdx.math.Vector2
+import ktx.log.logger
 import ktx.math.plus
 import kotlin.reflect.KClass
 
@@ -12,14 +13,14 @@ import kotlin.reflect.KClass
  * DSL marker for Scene DSL usage.
  */
 @DslMarker
-annotation class SceneDSL
+annotation class NodeDSL
 
 /**
  * Base node class for 2D scene graph system.
  *
  * @param N Type of the node (for generics / DSL chaining)
  */
-@SceneDSL
+@NodeDSL
 @Suppress("UNCHECKED_CAST")
 abstract class Node<N : Node<N>> internal constructor(
     // ===============================
@@ -28,20 +29,19 @@ abstract class Node<N : Node<N>> internal constructor(
     /** Node name (unique among siblings) */
     val name: String,
     /** Optional behavior script attached to the node */
-    script: (node: N) -> Behavior<N>? = { null },
+    script: (node: N) -> Behavior<N>?,
     /** Local position in 2D space */
-    var position: Vector2 = Vector2.Zero,
+    open var position: Vector2 = Vector2.Zero,
     /** Local scale in 2D space */
-    var scale: Vector2 = Vector2(1f, 1f),
+    open var scale: Vector2 = Vector2(1f, 1f),
     /** Local rotation in radians */
-    var rotation: Float = 0f,
+    open var rotation: Float = 0f,
     /** Optional DSL block for building children inline */
-    block: Node<*>.() -> Unit = {},
+    block: Node<*>.() -> Unit,
 ) {
     // ===============================
     //        INTERNAL PROPERTIES
     // ===============================
-
     /** Reference to the scene manager (set automatically on init) */
     internal val sceneManager: SceneManager by lazy { ManagersRegistry.get(SceneManager::class) }
     internal val inputManager: InputSystem by lazy { sceneManager.getSystem(InputSystem::class) }
@@ -143,12 +143,12 @@ abstract class Node<N : Node<N>> internal constructor(
     }
 
     /** Returns a child node by relative path (e.g., "parent/child") */
-    fun getNode(path: String): Node<*>? {
+    fun <T : Node<T>> getNode(path: String): T? {
         var current: Node<*> = this
         for (part in path.split("/")) {
             current = current.children[part] ?: return null
         }
-        return current
+        return current as? T
     }
 
     /** Marks this node as a prefab (not active until instantiated) */

@@ -15,7 +15,7 @@ import anchors.rogue.shared.utils.input.InputEvent
  * @property node Optional reference to the node. Can be null if detached.
  */
 abstract class Behavior<N : Node<N>>(
-    private val node: N? = null,
+    protected val node: N? = null,
 ) {
     /** Secondary constructor for convenience */
     constructor() : this(null)
@@ -99,27 +99,22 @@ fun <N : Node<N>> behavior(
     { node ->
         object : Behavior<N>(node) {
             override fun onEnterTree() {
-                super.onEnterTree()
                 onEnterTree(node)
             }
 
             override fun onReady() {
-                super.onReady()
                 onReady(node)
             }
 
             override fun onExitTree() {
-                super.onExitTree()
                 onExitTree(node)
             }
 
             override fun onUpdate(delta: Float) {
-                super.onUpdate(delta)
                 onUpdate(node, delta)
             }
 
             override fun onPhysicsUpdate(delta: Float) {
-                super.onPhysicsUpdate(delta)
                 onPhysicsUpdate(node, delta)
             }
 
@@ -127,7 +122,6 @@ fun <N : Node<N>> behavior(
                 event: InputEvent,
                 delta: Float,
             ) {
-                super.onInput(event, delta)
                 onInput(node, event, delta)
             }
         }

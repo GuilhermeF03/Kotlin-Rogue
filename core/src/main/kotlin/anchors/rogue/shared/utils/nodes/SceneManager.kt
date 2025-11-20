@@ -26,6 +26,13 @@ class SceneManager(
 ) : Manager {
     private val logger = logger<SceneManager>()
 
+    // =============================
+    //      Dependency Injection
+    // =============================
+    private val dependenciesMap = mutableMapOf<KClass<*>, () -> Any?>()
+
+    private val flatTree = mutableMapOf<String, Node<*>>()
+
     // ==========================
     //          CAMERA
     // ==========================
@@ -91,6 +98,21 @@ class SceneManager(
     }
 
     // ===============================
+    //      DEPENDENCY INJECTION
+    // ===============================
+    fun <T : Any> registerInjectable(kClass : KClass<T>,injectable: () -> T?) {
+        require(kClass !in dependenciesMap) {}
+        dependenciesMap[kClass] = injectable
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> inject(kClass: KClass<T>): T {
+        val entry = dependenciesMap[kClass]
+        requireNotNull(entry) { "" }
+        return entry() as T
+    }
+
+    // ===============================
     //      SCENE MANAGEMENT
     // ===============================
     private fun replaceScene(newScene: Node<*>?) {
@@ -113,6 +135,7 @@ class SceneManager(
     internal fun registerSubtree(root: Node<*>? = currScene) {
         root ?: return
         traverseNodes(root) { node ->
+            flatTree
             systemsByType[node::class]?.forEach { sys -> sys.register(node) }
         }
     }
@@ -120,6 +143,7 @@ class SceneManager(
     internal fun unregisterSubtree(root: Node<*>? = currScene) {
         root ?: return
         traverseNodes(root) { node ->
+            flatTree.remove(node.name)
             systemsByType[node::class]?.forEach { sys -> sys.unregister(node) }
         }
     }

@@ -1,5 +1,6 @@
 package anchors.rogue.shared.utils.nodes.types.camera
 
+import anchors.rogue.shared.utils.nodes.core.Behavior
 import anchors.rogue.shared.utils.nodes.core.Node
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
@@ -7,13 +8,19 @@ import com.badlogic.gdx.math.Vector3
 
 class Camera2D(
     name: String = "Camera2D",
+    script : (node : Camera2D) -> Behavior<Camera2D>? = { null },
+    private var target: Node<*>? = null,
     var zoom: Float = 1f,
     var enableSmoothing: Boolean = true,
     var smoothingSpeed: Float = 8f,
     block: Node<*>.() -> Unit = {},
-) : Node<Camera2D>(name, block = block) {
+) : Node<Camera2D>(
+    name,
+    script,
+    block = block
+) {
     val camera = OrthographicCamera()
-    private var target: Node<*>? = null
+
     private var isResizing = false
 
     var limitLeft: Float? = null
