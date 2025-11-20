@@ -1,10 +1,16 @@
 package anchors.rogue.screens
 
+import anchors.rogue.entities.player.Player
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.nodes.SceneManager
 import anchors.rogue.shared.utils.nodes.core.behavior
+import anchors.rogue.shared.utils.nodes.systems.PhysicsSystem
 import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
+import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D
+import anchors.rogue.shared.utils.nodes.types.physics.body.StaticBody2D
+import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
+import anchors.rogue.shared.utils.nodes.types.physics.shape.BoxShape2D
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
@@ -37,31 +43,31 @@ class DemoScreen : KtxScreen {
 
     override fun show() {
         logger.info { "Show" }
+        sceneManager.getSystem(PhysicsSystem::class).replaceWorld()
 
-        sceneManager.currScene =
-            EmptyNode("root") {
-                Camera2D("camera")
-                Sprite2D(
-                    "logo-2",
-                    texture = image,
-                    script =
-                        behavior(
-                            onInput = { event, delta ->
-                                val movement =
-                                    inputManager
-                                        .getInputVector(
-                                            "move-left",
-                                            "move-right",
-                                            "move-down",
-                                            "move-up",
-                                        ).nor() * delta * 100
+        val player = Player().asPrefab()
 
-                                position += movement
-                            },
-                        ),
-                )
-                Sprite2D(name = "static", texture = image, position = Vector2(100F, 100F))
+        sceneManager.currScene = EmptyNode("root"){
+            // Camera
+            Camera2D(
+                "camera",
+                target = player
+            )
+            // Player
+            addChild(player)
+
+            // Static Logo
+            StaticBody2D(
+                "static-logo",
+                position = Vector2(-200f, 200f)
+            ){
+//                Collider2D(
+//                    "collider",
+//                    shape = BoxShape2D(200f, 200f)
+//                )
+                Sprite2D("logo-2", texture = image)
             }
+        }
     }
 
     // Similar to "onUpdate" in other engines

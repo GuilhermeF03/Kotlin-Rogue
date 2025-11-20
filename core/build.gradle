@@ -23,6 +23,11 @@ dependencies {
   testImplementation "org.mockito.kotlin:mockito-kotlin:5.1.0"
   testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
   testRuntimeOnly "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+  // Box2D
+  testImplementation("com.badlogicgames.gdx:gdx-box2d:$gdxVersion")
+  testRuntimeOnly("com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop")
+  // Required to load natives in tests
+  testImplementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion")
   // JSON
   implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
   implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3"

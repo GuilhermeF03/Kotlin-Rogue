@@ -1,9 +1,10 @@
-package anchors.rogue.systems
+package anchors.rogue.shared.utils.nodes.systems
 
 import anchors.rogue.shared.utils.nodes.core.GlobalNodeSystem
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase
 import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ktx.graphics.use
@@ -42,10 +43,11 @@ class RenderSystem(
             matchingNodes
                 .map { it as Sprite2D }
                 .sortedByDescending { it.globalPosition.y }
-                .forEach { sprite ->
-                    val pos = sprite.globalPosition
-                    val tex = sprite.texture
-                    b.draw(tex, pos.x, pos.y, tex.width.toFloat(), tex.height.toFloat())
+                .forEach { node ->
+                    val sprite = Sprite(node.texture)
+                    sprite.setCenter(node.globalPosition.x, node.globalPosition.y)
+                    sprite.draw(b)
+                    logger.info { "Sprite position: ${node.globalPosition}" }
                 }
         }
     }

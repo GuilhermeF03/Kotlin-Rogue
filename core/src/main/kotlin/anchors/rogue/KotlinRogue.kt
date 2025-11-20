@@ -6,8 +6,9 @@ import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.input.InputBind
 import anchors.rogue.shared.utils.input.InputSystem
 import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.shared.utils.nodes.systems.PhysicsSystem
+import anchors.rogue.shared.utils.nodes.systems.RenderSystem
 import anchors.rogue.shared.utils.saving.SaveManager
-import anchors.rogue.systems.RenderSystem
 import com.badlogic.gdx.Input
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -22,10 +23,10 @@ class KotlinRogue : KtxGame<KtxScreen>() {
 
         // Register global systems here
 
-        val sceneManager =
-            SceneManager {
-                addSystem(RenderSystem(GAME_WIDTH, GAME_HEIGHT))
-            }
+        val sceneManager = SceneManager {
+            addSystem(RenderSystem(GAME_WIDTH, GAME_HEIGHT))
+            addSystem(PhysicsSystem())
+        }
 
         ManagersRegistry.apply {
             register(SaveManager())
