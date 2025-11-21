@@ -4,7 +4,7 @@ import anchors.rogue.entities.player.Player
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.nodes.SceneManager
 import anchors.rogue.shared.utils.nodes.core.behavior
-import anchors.rogue.shared.utils.nodes.systems.PhysicsSystem
+import anchors.rogue.shared.utils.nodes.systems.physics.PhysicsSystem
 import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
 import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D

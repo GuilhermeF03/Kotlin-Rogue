@@ -47,7 +47,6 @@ class RenderSystem(
                     val sprite = Sprite(node.texture)
                     sprite.setCenter(node.globalPosition.x, node.globalPosition.y)
                     sprite.draw(b)
-                    logger.info { "Sprite position: ${node.globalPosition}" }
                 }
         }
     }

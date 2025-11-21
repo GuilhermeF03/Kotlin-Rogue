@@ -4,6 +4,7 @@ import anchors.rogue.shared.utils.nodes.core.Behavior
 import anchors.rogue.shared.utils.nodes.core.Node
 import anchors.rogue.shared.utils.nodes.types.physics.body.PhysicsBody2D
 import anchors.rogue.shared.utils.nodes.types.physics.shape.PhysicsShape2D
+import anchors.rogue.shared.utils.signals.createSignal
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.Filter
@@ -34,6 +35,12 @@ class Area2D(
     block
 ) {
     private var fixture : Fixture? = null
+
+    // Signals
+    val bodyEntered = createSignal<Collider2D>()
+    val bodyExited = createSignal<Collider2D>()
+    val areaEntered = createSignal<Area2D>()
+    val areaExited = createSignal<Area2D>()
 
     override fun enterTree() {
         val parentBody = (parent as? PhysicsBody2D)?.body ?: return

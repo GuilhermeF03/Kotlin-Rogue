@@ -16,6 +16,6 @@ fun Player() = DynamicBody2D(
     val texture = Texture("logo.png".toInternalFile(), true).apply {
         setFilter(Linear, Linear)
     }
-    Sprite2D("logo-1", texture = texture)
-    Collider2D("collider", shape = BoxShape2D(200f, 200f))
+    Sprite2D("sprite", texture = texture)
+    Collider2D("body", shape = BoxShape2D(200f, 200f))
 }

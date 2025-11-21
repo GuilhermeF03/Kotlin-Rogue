@@ -2,7 +2,7 @@ package anchors.rogue.utils.nodes.types
 
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.nodes.SceneManager
-import anchors.rogue.shared.utils.nodes.systems.PhysicsSystem
+import anchors.rogue.shared.utils.nodes.systems.physics.PhysicsSystem
 import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D
 import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
 import anchors.rogue.shared.utils.nodes.types.physics.body.StaticBody2D

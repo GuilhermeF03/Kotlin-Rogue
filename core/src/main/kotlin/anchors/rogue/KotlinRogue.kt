@@ -6,7 +6,7 @@ import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.input.InputBind
 import anchors.rogue.shared.utils.input.InputSystem
 import anchors.rogue.shared.utils.nodes.SceneManager
-import anchors.rogue.shared.utils.nodes.systems.PhysicsSystem
+import anchors.rogue.shared.utils.nodes.systems.physics.PhysicsSystem
 import anchors.rogue.shared.utils.nodes.systems.RenderSystem
 import anchors.rogue.shared.utils.saving.SaveManager
 import com.badlogic.gdx.Input

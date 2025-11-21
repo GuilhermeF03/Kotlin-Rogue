@@ -143,12 +143,12 @@ abstract class Node<N : Node<N>> internal constructor(
     }
 
     /** Returns a child node by relative path (e.g., "parent/child") */
-    fun <T : Node<T>> getNode(path: String): T? {
+    fun <T : Node<T>> getNode(path: String): T {
         var current: Node<*> = this
         for (part in path.split("/")) {
-            current = current.children[part] ?: return null
+            current = current.children[part] ?: throw IllegalArgumentException("No child found at path: $path")
         }
-        return current as? T
+        return current as T
     }
 
     /** Marks this node as a prefab (not active until instantiated) */
