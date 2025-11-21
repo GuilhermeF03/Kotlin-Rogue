@@ -61,10 +61,10 @@ class DemoScreen : KtxScreen {
                 "static-logo",
                 position = Vector2(-200f, 200f)
             ){
-//                Collider2D(
-//                    "collider",
-//                    shape = BoxShape2D(200f, 200f)
-//                )
+                Collider2D(
+                    "collider",
+                    shape = BoxShape2D(200f, 200f)
+                )
                 Sprite2D("logo-2", texture = image)
             }
         }

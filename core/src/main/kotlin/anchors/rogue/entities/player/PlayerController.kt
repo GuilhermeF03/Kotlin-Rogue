@@ -19,7 +19,7 @@ class PlayerController(node : DynamicBody2D) : Behavior<DynamicBody2D>(node) {
                 "move-right",
                 "move-down",
                 "move-up",
-            ).nor() * delta * 100
+            ).nor() * delta * 200
 
             moveInstant(inputVector.toPixels())
         }

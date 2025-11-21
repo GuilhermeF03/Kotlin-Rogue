@@ -32,17 +32,15 @@ abstract class PhysicsBody2D<T : PhysicsBody2D<T>>(
     private val logger = logger<PhysicsBody2D<T>>()
     private val world = sceneManager.inject(World::class)
     val body = world.body(bodyType) {
-        this.position.set(globalPosition) // This is fine inside the builder
+        this.position.set(globalPosition)
         angle = rotation
     }
 
-    // Only top-level physics bodies sync to nodes
-    override fun physicsUpdate(delta: Float) {
-        super.physicsUpdate(delta)
-        val parentGlobal = parent?.globalPosition ?: Vector2.Zero
-        //position = body.position.toPixels() - parentGlobal
+    override var position
+        get() = if(body == null) super.position else (body.position - (parent?.globalPosition ?: Vector2.Zero))
+        set(_) = throw IllegalAccessException("Manual position override not allowed on physics nodes")
 
-        this.rotation = body.angle
-    }
-
+    override var rotation: Float
+        get() = if(body == null) super.rotation else (body.angle - (parent?.globalRotation ?: 0f))
+        set(_) = throw IllegalAccessException("Manual rotation override not allowed on physics nodes")
 }
