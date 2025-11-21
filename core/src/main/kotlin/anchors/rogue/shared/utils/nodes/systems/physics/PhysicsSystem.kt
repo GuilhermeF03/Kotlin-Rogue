@@ -17,7 +17,6 @@ GlobalNodeSystem(
     private val logger = logger<PhysicsSystem>()
     val debugRenderer = Box2DDebugRenderer()
 
-
     // Physics world
     private var world: World? = null
     private val contactListener = PhysicsContactListener()
@@ -28,8 +27,8 @@ GlobalNodeSystem(
 
     override fun afterProcess(delta: Float) {
         val worldSnapshot = world ?: return
-        debugRenderer.render(world, sceneManager.activeCamera?.camera?.combined)
         worldSnapshot.step(delta, 6, 2)
+        debugRenderer.render(world, sceneManager.activeCamera?.camera?.combined)
     }
 
     fun replaceWorld(gravity: Vector2 = Vector2.Zero) {

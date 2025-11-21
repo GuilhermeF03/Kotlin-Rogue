@@ -3,6 +3,7 @@ package anchors.rogue.entities.player
 import anchors.rogue.shared.utils.misc.toPixels
 import anchors.rogue.shared.utils.nodes.core.Behavior
 import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D
+import anchors.rogue.shared.utils.nodes.types.physics.fixture.Area2D
 import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
 import ktx.log.logger
 import ktx.math.plusAssign
@@ -14,10 +15,12 @@ class PlayerController(node : DynamicBody2D) : Behavior<DynamicBody2D>(node) {
 
     override fun onReady() {
         node?.apply {
-            val collider2D = getNode<Collider2D>("body")
+            val area2D = getNode<Area2D>("body")
 
-            collider2D.bodyEntered.connect { body -> logger.info { "Body entered: $body" } }
-            collider2D.bodyExited.connect { body -> logger.info { "Body exited: $body" } }
+            area2D.areaEntered.connect { body -> logger.info { "Area entered: $body" } }
+            area2D.areaExited.connect { body -> logger.info { "Area exited: $body" } }
+            area2D.bodyEntered.connect { body -> logger.info { "Body entered: $body" } }
+            area2D.bodyExited.connect { body -> logger.info { "Body exited: $body" } }
 
         }
     }

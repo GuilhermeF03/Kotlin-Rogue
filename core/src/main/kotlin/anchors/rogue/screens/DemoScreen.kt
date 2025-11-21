@@ -9,11 +9,14 @@ import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
 import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D
 import anchors.rogue.shared.utils.nodes.types.physics.body.StaticBody2D
+import anchors.rogue.shared.utils.nodes.types.physics.fixture.Area2D
 import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
 import anchors.rogue.shared.utils.nodes.types.physics.shape.BoxShape2D
+import anchors.rogue.shared.utils.nodes.types.physics.shape.CircleShape2D
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
+import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
@@ -58,15 +61,29 @@ class DemoScreen : KtxScreen {
 
             // Static Logo
             StaticBody2D(
-                "static-logo",
+                "static-logo-area",
                 position = Vector2(-200f, 200f)
             ){
-                Collider2D(
+                Area2D(
                     "collider",
-                    shape = BoxShape2D(200f, 200f)
+                    shape = CircleShape2D(100f)
                 )
                 Sprite2D("logo-2", texture = image)
             }
+
+            StaticBody2D(
+                "static-logo-body",
+                position = Vector2(-400f, 200f)
+            ){
+                Collider2D(
+                    "collider",
+                    shape = CircleShape2D(100f)
+                )
+                Sprite2D("logo-2", texture = image)
+            }
+
+
+
         }
     }
 

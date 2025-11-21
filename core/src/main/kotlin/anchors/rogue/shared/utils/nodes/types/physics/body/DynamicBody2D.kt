@@ -40,6 +40,7 @@ class DynamicBody2D(
      * Add smoothing factor if needed.
      */
     fun moveSmooth(force: Vector2) {
+        TODO("NEED TO FIX MOVEMENT")
         body.applyForceToCenter(force, true)
     }
 
@@ -48,6 +49,7 @@ class DynamicBody2D(
      * Good for jumps, dashes, recoil, knockback.
      */
     fun moveImpulse(impulse: Vector2) {
+        TODO("NEED TO FIX MOVEMENT")
         body.applyLinearImpulse(impulse, body.worldCenter, true)
     }
 

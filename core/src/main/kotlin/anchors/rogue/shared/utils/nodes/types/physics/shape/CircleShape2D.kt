@@ -24,7 +24,7 @@ class CircleShape2D(
         filter: Filter,
         isSensor: Boolean
     ) : Fixture = body.circle(
-        radius.toMeters(),
+        radius,
         position    // fixture offset
     ) {
         this.friction = friction
