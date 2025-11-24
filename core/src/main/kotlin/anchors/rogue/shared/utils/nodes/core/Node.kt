@@ -1,11 +1,11 @@
 package anchors.rogue.shared.utils.nodes.core
 
 import anchors.rogue.shared.managers.ManagersRegistry
+import anchors.rogue.shared.utils.data.assets.AssetsManager
 import anchors.rogue.shared.utils.input.InputEvent
 import anchors.rogue.shared.utils.input.InputSystem
 import anchors.rogue.shared.utils.nodes.SceneManager
 import com.badlogic.gdx.math.Vector2
-import ktx.log.logger
 import ktx.math.plus
 import kotlin.reflect.KClass
 
@@ -45,6 +45,7 @@ abstract class Node<N : Node<N>> internal constructor(
     /** Reference to the scene manager (set automatically on init) */
     internal val sceneManager: SceneManager by lazy { ManagersRegistry.get(SceneManager::class) }
     internal val inputManager: InputSystem by lazy { sceneManager.getSystem(InputSystem::class) }
+    internal val assetsManager: AssetsManager by lazy { ManagersRegistry.get(AssetsManager::class) }
 
     /** Whether this node is a prefab (not active until instantiated) */
     private var isPrefab: Boolean = false
@@ -120,7 +121,7 @@ abstract class Node<N : Node<N>> internal constructor(
 
         // Lifecycle setup for runtime node
         child.enterTree()
-        child.ready()
+        child.nodeReady()
     }
 
     /** Removes a child node */
@@ -133,6 +134,11 @@ abstract class Node<N : Node<N>> internal constructor(
         child._parent = null
 
         manager.unregisterSubtree(this)
+
+        // CLEANUP
+        child.children.values
+            .toList()
+            .forEach { child.removeChild(it) }
     }
 
     /** Removes a child node by path */
@@ -194,7 +200,7 @@ abstract class Node<N : Node<N>> internal constructor(
     /** Builds the tree and calls lifecycle methods */
     fun buildTree() {
         enterTree() // top-down attach
-        ready() // bottom-up initialization
+        nodeReady() // bottom-up initialization
     }
 
     // ===============================
@@ -202,8 +208,8 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
 
     /** Called after the node and its children are fully initialized */
-    open fun ready() {
-        children.values.forEach { it.ready() }
+    open fun nodeReady() {
+        children.values.forEach { it.nodeReady() }
         script?.onReady()
     }
 
@@ -224,14 +230,14 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
 
     /** Called every frame */
-    open fun update(delta: Float) {
-        children.values.forEach { it.update(delta) }
+    open fun nodeUpdate(delta: Float) {
+        children.values.forEach { it.nodeUpdate(delta) }
         script?.onUpdate(delta)
     }
 
     /** Called every physics tick */
-    open fun physicsUpdate(delta: Float) {
-        children.values.forEach { it.physicsUpdate(delta) }
+    open fun nodePhysicsUpdate(delta: Float) {
+        children.values.forEach { it.nodePhysicsUpdate(delta) }
         script?.onPhysicsUpdate(delta)
     }
 
@@ -240,7 +246,7 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
 
     /** Handles input events and propagates to children */
-    open fun input(
+    open fun nodeInput(
         event: InputEvent,
         delta: Float = 0F,
     ) {
@@ -248,6 +254,6 @@ abstract class Node<N : Node<N>> internal constructor(
         script?.onInput(event, delta)
         if (event.isHandled) return
         // Propagate ito children
-        children.values.forEach { it.input(event, delta) }
+        children.values.forEach { it.nodeInput(event, delta) }
     }
 }

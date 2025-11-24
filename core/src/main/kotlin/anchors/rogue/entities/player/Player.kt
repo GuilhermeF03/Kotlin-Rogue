@@ -1,22 +1,35 @@
 package anchors.rogue.entities.player
 
+import anchors.rogue.shared.utils.data.assets.FileSource
+import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D
-import anchors.rogue.shared.utils.nodes.types.physics.fixture.Area2D
 import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
-import anchors.rogue.shared.utils.nodes.types.physics.shape.BoxShape2D
+import anchors.rogue.shared.utils.nodes.types.physics.shape.CircleShape2D
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
-import ktx.assets.toInternalFile
+import com.badlogic.gdx.math.Vector2
 
-
-fun Player() = DynamicBody2D(
+@Suppress("ktlint:standard:function-naming")
+fun Player(
+    position: Vector2 = Vector2.Zero,
+    scale: Vector2 = Vector2(1f, 1f),
+    rotation: Float = 0f,
+    options: DynamicBody2D.() -> Unit = {},
+) = DynamicBody2D(
     "player",
-    script = { node -> PlayerController(node) }
-){
-    val texture = Texture("logo.png".toInternalFile(), true).apply {
-        setFilter(Linear, Linear)
-    }
+    script = { node -> PlayerController(node) },
+    position,
+    scale,
+    rotation,
+) {
+    val texture =
+        assetsManager.loadTexture("logo.png", source = FileSource.Internal) {
+            setFilter(Linear, Linear)
+        }
+
+    Camera2D("camera", target = this)
     Sprite2D("sprite", texture = texture)
-    Area2D("body", shape = BoxShape2D(200f, 200f))
+    Collider2D("body", shape = CircleShape2D(200f))
+
+    options(this as DynamicBody2D)
 }

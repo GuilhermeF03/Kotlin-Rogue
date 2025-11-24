@@ -2,7 +2,6 @@ package anchors.rogue.shared.utils.nodes.types.visual
 
 import anchors.rogue.shared.utils.nodes.core.Behavior
 import anchors.rogue.shared.utils.nodes.core.Node
-import anchors.rogue.shared.utils.nodes.core.NodeDSL
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
 
@@ -18,10 +17,10 @@ class Sprite2D(
     // DSL
     block: Node<*>.() -> Unit = {},
 ) : Node<Sprite2D>(
-    name,
-    script,
-    position,
-    scale,
-    rotation,
-    block = block,
-)
+        name,
+        script,
+        position,
+        scale,
+        rotation,
+        block = block,
+    )

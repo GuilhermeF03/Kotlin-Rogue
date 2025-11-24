@@ -100,7 +100,10 @@ class SceneManager(
     // ===============================
     //      DEPENDENCY INJECTION
     // ===============================
-    fun <T : Any> registerInjectable(kClass : KClass<T>,injectable: () -> T?) {
+    fun <T : Any> registerInjectable(
+        kClass: KClass<T>,
+        injectable: () -> T?,
+    ) {
         require(kClass !in dependenciesMap) {}
         dependenciesMap[kClass] = injectable
     }
@@ -210,12 +213,12 @@ class SceneManager(
 
         if (isPhysicsFrame(delta)) {
             systems[UpdatePhase.PhysicsBeforeScene]?.forEach { it.tick(physicsStep) }
-            root.physicsUpdate(physicsStep)
+            root.nodePhysicsUpdate(physicsStep)
             systems[UpdatePhase.PhysicsAfterScene]?.forEach { it.tick(physicsStep) }
         }
 
         systems[UpdatePhase.FrameBeforeScene]?.forEach { it.tick(delta) }
-        root.update(delta)
+        root.nodeUpdate(delta)
         systems[UpdatePhase.FrameAfterScene]?.forEach { it.tick(delta) }
     }
 
@@ -253,6 +256,6 @@ class SceneManager(
         event: InputEvent,
         delta: Float,
     ) {
-        currScene?.input(event, delta)
+        currScene?.nodeInput(event, delta)
     }
 }

@@ -1,4 +1,4 @@
-package anchors.rogue.shared.utils.nodes.systems
+package anchors.rogue.shared.systems
 
 import anchors.rogue.shared.utils.nodes.core.GlobalNodeSystem
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase

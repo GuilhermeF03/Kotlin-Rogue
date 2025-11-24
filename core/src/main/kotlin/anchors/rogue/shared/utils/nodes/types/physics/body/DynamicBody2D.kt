@@ -2,7 +2,6 @@ package anchors.rogue.shared.utils.nodes.types.physics.body
 
 import anchors.rogue.shared.utils.nodes.core.Behavior
 import anchors.rogue.shared.utils.nodes.core.Node
-import anchors.rogue.shared.utils.nodes.core.NodeDSL
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 
@@ -14,15 +13,14 @@ class DynamicBody2D(
     rotation: Float = 0F,
     block: Node<*>.() -> Unit = {},
 ) : PhysicsBody2D<DynamicBody2D>(
-    name,
-    script,
-    position,
-    scale,
-    rotation,
-    bodyType = BodyDef.BodyType.DynamicBody,
-    block
-) {
-
+        name,
+        script,
+        position,
+        scale,
+        rotation,
+        bodyType = BodyDef.BodyType.DynamicBody,
+        block,
+    ) {
     /**
      * ⚡ Instant velocity movement (teleports velocity, not the body).
      * Good for direct controller movement.

@@ -1,21 +1,21 @@
-package anchors.rogue.shared.utils.nodes.systems.physics
+package anchors.rogue.shared.systems.physics
 
 import anchors.rogue.shared.utils.nodes.core.GlobalNodeSystem
+import anchors.rogue.shared.utils.nodes.core.Node
 import anchors.rogue.shared.utils.nodes.core.UpdatePhase
 import anchors.rogue.shared.utils.nodes.types.physics.body.PhysicsBody2D
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import ktx.box2d.createWorld
 import ktx.log.logger
 
 class PhysicsSystem :
-GlobalNodeSystem(
-    phase = UpdatePhase.PhysicsBeforeScene,
-    PhysicsBody2D::class,
-) {
+    GlobalNodeSystem(
+        phase = UpdatePhase.PhysicsBeforeScene,
+        PhysicsBody2D::class,
+    ) {
     private val logger = logger<PhysicsSystem>()
-    val debugRenderer = Box2DDebugRenderer()
+    // val debugRenderer = Box2DDebugRenderer()
 
     // Physics world
     private var world: World? = null
@@ -28,14 +28,19 @@ GlobalNodeSystem(
     override fun afterProcess(delta: Float) {
         val worldSnapshot = world ?: return
         worldSnapshot.step(delta, 6, 2)
-        debugRenderer.render(world, sceneManager.activeCamera?.camera?.combined)
+        // debugRenderer.render(world, sceneManager.activeCamera?.camera?.combined)
+    }
+
+    override fun onNodeRemoved(node: Node<*>) {
+        world?.destroyBody((node as PhysicsBody2D).body)
     }
 
     fun replaceWorld(gravity: Vector2 = Vector2.Zero) {
         world?.dispose()
-        world = createWorld(gravity).apply {
-            // Contact callbacks
-            setContactListener(contactListener)
-        }
+        world =
+            createWorld(gravity).apply {
+                // Contact callbacks
+                setContactListener(contactListener)
+            }
     }
 }

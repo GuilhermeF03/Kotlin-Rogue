@@ -6,35 +6,30 @@ import anchors.rogue.shared.utils.nodes.types.physics.body.PhysicsBody2D
 import anchors.rogue.shared.utils.nodes.types.physics.shape.PhysicsShape2D
 import anchors.rogue.shared.utils.signals.createSignal
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.Filter
 import com.badlogic.gdx.physics.box2d.Fixture
-import com.badlogic.gdx.physics.box2d.Shape
-import ktx.box2d.fixture
 
 class Area2D(
     // Base props
-    name : String,
-    script : (node : Area2D) -> Behavior<Area2D>? = { null },
-    position : Vector2 = Vector2.Zero,
-    scale : Vector2 = Vector2(1f, 1f),
-    rotation : Float = 0f,
-
+    name: String,
+    script: (node: Area2D) -> Behavior<Area2D>? = { null },
+    position: Vector2 = Vector2.Zero,
+    scale: Vector2 = Vector2(1f, 1f),
+    rotation: Float = 0f,
     // Specific props
-    var shape : PhysicsShape2D,
-    val angle : Float = 0f,
+    var shape: PhysicsShape2D,
+    val angle: Float = 0f,
     val filter: Filter = Filter(),
-
-    block : Node<*>.() -> Unit = {}
+    block: Node<*>.() -> Unit = {},
 ) : Node<Area2D>(
-    name,
-    script,
-    position,
-    scale,
-    rotation,
-    block
-) {
-    private var fixture : Fixture? = null
+        name,
+        script,
+        position,
+        scale,
+        rotation,
+        block,
+    ) {
+    private var fixture: Fixture? = null
 
     // Signals
     val bodyEntered = createSignal<Collider2D>()
@@ -44,17 +39,18 @@ class Area2D(
 
     override fun enterTree() {
         val parentBody = (parent as? PhysicsBody2D)?.body ?: return
-        fixture  = shape.shapeFactory(
-            this,
-            parentBody,
-            position,
-            angle,
-            0f,
-            0f,
-            0f,
-            filter,
-            true
-        )
+        fixture =
+            shape.shapeFactory(
+                this,
+                parentBody,
+                position,
+                angle,
+                0f,
+                0f,
+                0f,
+                filter,
+                true,
+            )
     }
 
     override fun exitTree() {
@@ -62,6 +58,4 @@ class Area2D(
         val fixtureSnapshot = fixture ?: return
         parentBody.destroyFixture(fixtureSnapshot)
     }
-
-
 }

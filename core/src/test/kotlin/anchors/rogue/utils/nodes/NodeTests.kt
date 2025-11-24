@@ -132,10 +132,10 @@ class NodeTests {
             launch {
                 repeat(2) { i ->
                     if (nTicks % (i + 1) == 0) {
-                        tree.physicsUpdate(0f)
+                        tree.nodePhysicsUpdate(0f)
                     }
 
-                    tree.update(0f)
+                    tree.nodeUpdate(0f)
                     delay(20.toDuration(DurationUnit.MILLISECONDS))
                 }
             }.join()

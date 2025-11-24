@@ -1,7 +1,6 @@
-package anchors.rogue.shared.utils.nodes.systems.physics
+package anchors.rogue.shared.systems.physics
 
 import anchors.rogue.shared.utils.nodes.core.Node
-import anchors.rogue.shared.utils.nodes.types.physics.body.PhysicsBody2D
 import anchors.rogue.shared.utils.nodes.types.physics.fixture.Area2D
 import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
 import com.badlogic.gdx.physics.box2d.Contact
@@ -18,7 +17,7 @@ class PhysicsContactListener : ContactListener {
         val nodeB = fixtureB.userData as? Node<*>
 
         // Process callback
-        if(nodeA == null || nodeB == null) return
+        if (nodeA == null || nodeB == null) return
 
         when {
             nodeA is Collider2D && nodeB is Collider2D -> {
@@ -26,7 +25,7 @@ class PhysicsContactListener : ContactListener {
                 nodeB.bodyEntered.emit(nodeA)
             }
 
-            nodeA is Area2D  && nodeB is Collider2D -> nodeA.bodyEntered.emit(nodeB)
+            nodeA is Area2D && nodeB is Collider2D -> nodeA.bodyEntered.emit(nodeB)
             nodeB is Area2D && nodeA is Collider2D -> nodeB.bodyEntered.emit(nodeA)
 
             nodeA is Area2D && nodeB is Area2D -> {
@@ -44,7 +43,7 @@ class PhysicsContactListener : ContactListener {
         val nodeB = fixtureB.userData as? Node<*>
 
         // Process callback
-        if(nodeA == null || nodeB == null) return
+        if (nodeA == null || nodeB == null) return
 
         when {
             nodeA is Collider2D && nodeB is Collider2D -> {
@@ -52,7 +51,7 @@ class PhysicsContactListener : ContactListener {
                 nodeB.bodyExited.emit(nodeA)
             }
 
-            nodeA is Area2D  && nodeB is Collider2D -> nodeA.bodyExited.emit(nodeB)
+            nodeA is Area2D && nodeB is Collider2D -> nodeA.bodyExited.emit(nodeB)
             nodeB is Area2D && nodeA is Collider2D -> nodeB.bodyExited.emit(nodeA)
 
             nodeA is Area2D && nodeB is Area2D -> {
@@ -66,13 +65,13 @@ class PhysicsContactListener : ContactListener {
         contact: Contact?,
         oldManifold: Manifold?,
     ) {
-        return //TODO("Not yet implemented")
+        return // TODO("Not yet implemented")
     }
 
     override fun postSolve(
         contact: Contact?,
         impulse: ContactImpulse?,
     ) {
-        return //TODO("Not yet implemented")
+        return // TODO("Not yet implemented")
     }
 }
