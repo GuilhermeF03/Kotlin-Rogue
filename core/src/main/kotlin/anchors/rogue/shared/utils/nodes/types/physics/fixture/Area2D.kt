@@ -16,6 +16,7 @@ class Area2D(
     position: Vector2 = Vector2.Zero,
     scale: Vector2 = Vector2(1f, 1f),
     rotation: Float = 0f,
+    groups: MutableList<String> = mutableListOf(),
     // Specific props
     var shape: PhysicsShape2D,
     val angle: Float = 0f,
@@ -27,6 +28,7 @@ class Area2D(
         position,
         scale,
         rotation,
+        groups,
         block,
     ) {
     private var fixture: Fixture? = null

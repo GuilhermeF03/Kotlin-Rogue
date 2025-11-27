@@ -2,22 +2,32 @@ package anchors.rogue.shared.utils.nodes.types.camera
 
 import anchors.rogue.shared.utils.nodes.core.Behavior
 import anchors.rogue.shared.utils.nodes.core.Node
+import anchors.rogue.shared.utils.nodes.core.NodeRef
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 
 class Camera2D(
+    // Base props
     name: String = "Camera2D",
     script: (node: Camera2D) -> Behavior<Camera2D>? = { null },
-    private var target: Node<*>? = null,
+    position: Vector2 = Vector2.Zero,
+    scale: Vector2 = Vector2.Zero,
+    rotation: Float = 0f,
+    groups: MutableList<String> = mutableListOf(),
+    private var targetRef: NodeRef<*>? = null,
     var zoom: Float = 1f,
     var enableSmoothing: Boolean = true,
     var smoothingSpeed: Float = 8f,
-    block: Node<*>.() -> Unit = {},
+    block: Camera2D.() -> Unit = {},
 ) : Node<Camera2D>(
         name,
         script,
-        block = block,
+        position,
+        scale,
+        rotation,
+        groups,
+        block,
     ) {
     val camera = OrthographicCamera()
 
@@ -30,12 +40,12 @@ class Camera2D(
 
     override fun enterTree() {
         super.enterTree()
-        manager.registerCamera(this)
+        sceneManager.registerCamera(this)
     }
 
     override fun exitTree() {
         super.exitTree()
-        manager.unregisterCamera(this)
+        sceneManager.unregisterCamera(this)
     }
 
     override fun nodeUpdate(delta: Float) {
@@ -45,8 +55,10 @@ class Camera2D(
     private fun updateCamera(delta: Float) {
         if (isResizing) return // skip smoothing during resize
 
+        val targetNode = targetRef?.get(this)
+
         camera.zoom = zoom
-        val targetPos = target?.globalPosition ?: globalPosition
+        val targetPos = targetNode?.globalPosition ?: globalPosition
         val pos = camera.position
 
         if (enableSmoothing) {
@@ -68,14 +80,6 @@ class Camera2D(
         limitTop?.let { camera.position.y = minOf(camera.position.y, it) }
     }
 
-    fun setTarget(node: Node<*>) {
-        target = node
-    }
-
-    fun clearTarget() {
-        target = null
-    }
-
     fun screenToWorld(screen: Vector2): Vector2 {
         camera.unproject(Vector3(screen.x, screen.y, 0f))
         return screen
@@ -93,7 +97,10 @@ class Camera2D(
     ) {
         isResizing = true
         camera.setToOrtho(false, worldWidth, worldHeight)
-        val targetPos = target?.globalPosition ?: globalPosition
+
+        val targetNode = targetRef?.get(this)
+
+        val targetPos = targetNode?.globalPosition ?: globalPosition
         camera.position.set(targetPos.x, targetPos.y, 0f)
         camera.update()
         isResizing = false

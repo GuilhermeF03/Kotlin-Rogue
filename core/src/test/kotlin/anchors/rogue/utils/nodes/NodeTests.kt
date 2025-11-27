@@ -37,10 +37,10 @@ class NodeTests {
         scene.buildTree()
 
         assertSame(2, scene.children.size)
-        assertSame(scene, scene.getNode("child-b")?.parent)
+        assertSame(scene, scene.getNode("child-b").parent)
         assertSame(
             scene.getNode("child-b"),
-            scene.getNode("child-b/child-c")?.parent,
+            scene.getNode("child-b/child-c").parent,
         )
     }
 

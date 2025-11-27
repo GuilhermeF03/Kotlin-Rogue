@@ -1,7 +1,6 @@
 package anchors.rogue.shared.utils.nodes.types.physics.body
 
 import anchors.rogue.shared.utils.nodes.core.Behavior
-import anchors.rogue.shared.utils.nodes.core.Node
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 
@@ -11,7 +10,8 @@ class DynamicBody2D(
     position: Vector2 = Vector2.Zero,
     scale: Vector2 = Vector2(1F, 1F),
     rotation: Float = 0F,
-    block: Node<*>.() -> Unit = {},
+    groups: MutableList<String> = mutableListOf(),
+    block: DynamicBody2D.() -> Unit = {},
 ) : PhysicsBody2D<DynamicBody2D>(
         name,
         script,
@@ -19,6 +19,7 @@ class DynamicBody2D(
         scale,
         rotation,
         bodyType = BodyDef.BodyType.DynamicBody,
+        groups,
         block,
     ) {
     /**

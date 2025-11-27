@@ -18,13 +18,15 @@ abstract class PhysicsBody2D<T : PhysicsBody2D<T>>(
     rotation: Float = 0F,
     // Specific props
     val bodyType: BodyDef.BodyType,
-    block: Node<*>.() -> Unit = {},
+    groups: MutableList<String>,
+    block: T.() -> Unit = {},
 ) : Node<T>(
         name,
         script,
         position,
         scale,
         rotation,
+        groups,
         block,
     ) {
     private val logger = logger<PhysicsBody2D<T>>()

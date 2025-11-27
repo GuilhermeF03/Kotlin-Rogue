@@ -5,9 +5,18 @@ package anchors.rogue.lwjgl3
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import anchors.rogue.KotlinRogue
+import anchors.rogue.shared.managers.ExecutionMode
+import anchors.rogue.shared.managers.GameManager
+import anchors.rogue.shared.managers.ManagersRegistry
 
 /** Launches the desktop (LWJGL3) application. */
-fun main() {
+fun main(args: Array<String>) {
+
+    // Set debug mode
+    if(args.contains("--debug")){
+        GameManager.executionMode = ExecutionMode.Debug
+    }
+
     // This handles macOS support and helps on Windows.
     if (StartupHelper.startNewJvmIfRequired())
       return

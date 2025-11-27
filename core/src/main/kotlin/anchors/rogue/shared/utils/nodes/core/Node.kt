@@ -36,8 +36,9 @@ abstract class Node<N : Node<N>> internal constructor(
     open var scale: Vector2 = Vector2(1f, 1f),
     /** Local rotation in radians */
     open var rotation: Float = 0f,
+    val groups: MutableList<String> = mutableListOf(),
     /** Optional DSL block for building children inline */
-    block: Node<*>.() -> Unit,
+    block: N.() -> Unit,
 ) {
     // ===============================
     //        INTERNAL PROPERTIES
@@ -49,12 +50,6 @@ abstract class Node<N : Node<N>> internal constructor(
 
     /** Whether this node is a prefab (not active until instantiated) */
     private var isPrefab: Boolean = false
-
-    /** Reference to the scene manager */
-    internal val manager: SceneManager = ManagersRegistry.get(SceneManager::class)
-
-    /** Groups this node belongs to */
-    private val groups: MutableList<String> = mutableListOf()
 
     /** Behavior script instance */
     private val script: Behavior<N>? = script(this as N)
@@ -97,7 +92,7 @@ abstract class Node<N : Node<N>> internal constructor(
 
         val oldParent = currentParent.get()
         currentParent.set(this)
-        this.block()
+        block(this as N)
         currentParent.set(oldParent)
     }
 
@@ -109,7 +104,7 @@ abstract class Node<N : Node<N>> internal constructor(
         check(child.name !in children) { "Child with name '${child.name}' already exists" }
         _children[child.name] = child
         child._parent = this
-        manager.registerSubtree(child)
+        sceneManager.registerSubtree(child)
     }
 
     /** Adds a child node at runtime */
@@ -133,7 +128,7 @@ abstract class Node<N : Node<N>> internal constructor(
         _children.remove(child.name)
         child._parent = null
 
-        manager.unregisterSubtree(this)
+        sceneManager.unregisterSubtree(this)
 
         // CLEANUP
         child.children.values
@@ -144,17 +139,53 @@ abstract class Node<N : Node<N>> internal constructor(
     /** Removes a child node by path */
     fun removeChild(path: String) {
         val child = getNode(path)
-        checkNotNull(child) { "Node at path $path not found" }
         removeChild(child)
     }
 
     /** Returns a child node by relative path (e.g., "parent/child") */
+    @Suppress("UNCHECKED_CAST")
     fun <T : Node<T>> getNode(path: String): T {
-        var current: Node<*> = this
-        for (part in path.split("/")) {
-            current = current.children[part] ?: throw IllegalArgumentException("No child found at path: $path")
+        val parts = path.split("/")
+
+        // Node is direct child -> get it
+        if (parts.size == 1) return this.children[parts[0]] as T
+
+        var current: Node<*>? =
+            when (parts.first()) {
+                "$" -> sceneManager.currScene
+                "", "." -> this
+                else -> this
+            }
+        val searchParts =
+            if (
+                parts.first() in listOf("$", ".") ||
+                path.startsWith("/")
+            ) {
+                parts.drop(1)
+            } else {
+                parts
+            }
+
+        // Skip the first part (we already processed it)
+        for (part in searchParts) {
+            when (part) {
+                "", "." -> { /* stay on current */ }
+                ".." -> {
+                    current = current?.parent ?: throw IllegalArgumentException("No parent for path: $path")
+                }
+
+                else -> {
+                    val child = current?.children[part]
+                    current = child ?: throw IllegalArgumentException(
+                        "No child '$part' under '${current?.name}' for path '$path'",
+                    )
+                }
+            }
         }
-        return current as T
+
+        return current as? T ?: throw IllegalArgumentException(
+            "Node at path '$path' is not of expected type",
+        )
     }
 
     /** Marks this node as a prefab (not active until instantiated) */
@@ -188,10 +219,10 @@ abstract class Node<N : Node<N>> internal constructor(
     fun inGroup(group: String) = group in groups
 
     /** Adds the node to a group */
-    fun addGroup(group: String) = groups.add(group).also { manager.addToGroup(group, this) }
+    fun addGroup(group: String) = groups.add(group).also { sceneManager.addToGroup(group, this) }
 
     /** Removes the node from a group */
-    fun removeGroup(group: String) = groups.remove(group).also { manager.removeFromGroup(group, this) }
+    fun removeGroup(group: String) = groups.remove(group).also { sceneManager.removeFromGroup(group, this) }
 
     // ===============================
     //       SCENE TREE BUILDING
@@ -215,6 +246,9 @@ abstract class Node<N : Node<N>> internal constructor(
 
     /** Called when node enters the tree */
     open fun enterTree() {
+        // Update initial groups
+        groups.forEach { sceneManager.addToGroup(it, this) }
+        // Traverse tree
         script?.onEnterTree()
         children.values.forEach { it.enterTree() }
     }

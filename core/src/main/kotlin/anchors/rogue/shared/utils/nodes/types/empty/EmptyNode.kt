@@ -10,12 +10,14 @@ class EmptyNode(
     position: Vector2 = Vector2.Zero,
     scale: Vector2 = Vector2(1f, 1f),
     rotation: Float = 0f,
-    block: Node<*>.() -> Unit = {},
+    groups: MutableList<String> = mutableListOf(),
+    block: EmptyNode.() -> Unit = {},
 ) : Node<EmptyNode>(
         name,
         script,
         position,
         scale,
         rotation,
+        groups,
         block,
     )
