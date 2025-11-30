@@ -99,7 +99,6 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
     //          CHILD MANAGEMENT
     // ===============================
-
     private fun addChildInternal(child: Node<*>) {
         check(child.name !in children) { "Child with name '${child.name}' already exists" }
         _children[child.name] = child
@@ -157,10 +156,7 @@ abstract class Node<N : Node<N>> internal constructor(
                 else -> this
             }
         val searchParts =
-            if (
-                parts.first() in listOf("$", ".") ||
-                path.startsWith("/")
-            ) {
+            if (parts.first() in listOf("$", ".") || path.startsWith("/")) {
                 parts.drop(1)
             } else {
                 parts
@@ -170,6 +166,7 @@ abstract class Node<N : Node<N>> internal constructor(
         for (part in searchParts) {
             when (part) {
                 "", "." -> { /* stay on current */ }
+
                 ".." -> {
                     current = current?.parent ?: throw IllegalArgumentException("No parent for path: $path")
                 }

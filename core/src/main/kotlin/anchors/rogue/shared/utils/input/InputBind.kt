@@ -8,9 +8,6 @@ data class InputBind(
     private val type: InputBindType,
     val code: Int,
 ) {
-    /**
-     *
-     */
     fun isBeingPressed() =
         when (type) {
             InputBindType.KeyBind -> Gdx.input.isKeyPressed(code)

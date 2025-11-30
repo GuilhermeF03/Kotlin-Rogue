@@ -10,6 +10,7 @@ import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 
+@Suppress("ktlint:standard:function-naming")
 fun Player(
     position: Vector2 = Vector2.Zero,
     scale: Vector2 = Vector2(1f, 1f),
