@@ -1,18 +1,22 @@
 package anchors.rogue.screens
 
+import anchors.rogue.entities.player.Player
 import anchors.rogue.shared.managers.ManagersRegistry
+import anchors.rogue.shared.systems.physics.PhysicsSystem
+import anchors.rogue.shared.utils.data.assets.AssetsManager
+import anchors.rogue.shared.utils.data.assets.FileSource
 import anchors.rogue.shared.utils.nodes.SceneManager
-import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
 import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
+import anchors.rogue.shared.utils.nodes.types.physics.body.StaticBody2D
+import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
+import anchors.rogue.shared.utils.nodes.types.physics.shape.CircleShape2D
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
-import ktx.assets.toInternalFile
 import ktx.log.logger
 
 class DemoScreen : KtxScreen {
@@ -22,10 +26,12 @@ class DemoScreen : KtxScreen {
     private val logger = logger<DemoScreen>()
 
     private val sceneManager = ManagersRegistry.get(SceneManager::class)
+    private val assetsManager = ManagersRegistry.get(AssetsManager::class)
+    private val physicsSystem = sceneManager.getSystem(PhysicsSystem::class)
 
     // Screen resources
     val image =
-        Texture("logo.png".toInternalFile(), true).apply {
+        assetsManager.loadTexture("logo.png", FileSource.Internal) {
             setFilter(Linear, Linear)
         }
 
@@ -33,16 +39,35 @@ class DemoScreen : KtxScreen {
 
     override fun show() {
         logger.info { "Show" }
+        physicsSystem.replaceWorld()
 
         sceneManager.currScene =
             EmptyNode("root") {
-                Camera2D("camera")
-                Sprite2D(
-                    "logo-1",
-                    position = Vector2(100F, 200F),
-                    texture = image,
-                )
-                Sprite2D("logo-2", texture = image)
+                // Player
+                Player(position = Vector2(10f, 10f))
+
+                // Static Logo
+                StaticBody2D(
+                    "static-logo-area",
+                    position = Vector2(-200f, 200f),
+                ) {
+                    Collider2D(
+                        "collider",
+                        shape = CircleShape2D(50f),
+                    )
+                    Sprite2D("logo-2", texture = image)
+                }
+
+                StaticBody2D(
+                    "static-logo-body",
+                    position = Vector2(-400f, 200f),
+                ) {
+                    Collider2D(
+                        "collider",
+                        shape = CircleShape2D(100f),
+                    )
+                    Sprite2D("logo-2", texture = image)
+                }
             }
     }
 

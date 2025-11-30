@@ -15,7 +15,7 @@ import anchors.rogue.shared.utils.input.InputEvent
  * @property node Optional reference to the node. Can be null if detached.
  */
 abstract class Behavior<N : Node<N>>(
-    private val node: N? = null,
+    protected val node: N? = null,
 ) {
     /** Secondary constructor for convenience */
     constructor() : this(null)
@@ -54,7 +54,10 @@ abstract class Behavior<N : Node<N>>(
     // ===============================
 
     /** Called when an input event occurs on the node */
-    open fun onInput(event: InputEvent) = Unit
+    open fun onInput(
+        event: InputEvent,
+        delta: Float = 0F,
+    ) = Unit
 
     // Uncomment if factory pattern is needed in the future
 //    interface Factory<T : Node, B : Behavior<T>> {
@@ -91,32 +94,35 @@ fun <N : Node<N>> behavior(
     onExitTree: N.() -> Unit = {},
     onUpdate: N.(delta: Float) -> Unit = {},
     onPhysicsUpdate: N.(delta: Float) -> Unit = {},
+    onInput: N.(event: InputEvent, delta: Float) -> Unit = { _, _ -> },
 ): (node: N) -> Behavior<N> =
     { node ->
         object : Behavior<N>(node) {
             override fun onEnterTree() {
-                super.onEnterTree()
                 onEnterTree(node)
             }
 
             override fun onReady() {
-                super.onReady()
                 onReady(node)
             }
 
             override fun onExitTree() {
-                super.onExitTree()
                 onExitTree(node)
             }
 
             override fun onUpdate(delta: Float) {
-                super.onUpdate(delta)
                 onUpdate(node, delta)
             }
 
             override fun onPhysicsUpdate(delta: Float) {
-                super.onPhysicsUpdate(delta)
                 onPhysicsUpdate(node, delta)
+            }
+
+            override fun onInput(
+                event: InputEvent,
+                delta: Float,
+            ) {
+                onInput(node, event, delta)
             }
         }
     }

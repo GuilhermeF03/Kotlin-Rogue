@@ -1,6 +1,8 @@
 package anchors.rogue.features.saving
 
 import anchors.rogue.shared.managers.ManagersRegistry
+import anchors.rogue.shared.utils.saving.SaveManager
+import anchors.rogue.shared.utils.saving.registerSaveModule
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.builtins.serializer
 import org.junit.jupiter.api.BeforeAll

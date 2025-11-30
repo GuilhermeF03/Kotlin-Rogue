@@ -37,10 +37,10 @@ class NodeTests {
         scene.buildTree()
 
         assertSame(2, scene.children.size)
-        assertSame(scene, scene.getNode("child-b")?.parent)
+        assertSame(scene, scene.getNode("child-b").parent)
         assertSame(
             scene.getNode("child-b"),
-            scene.getNode("child-b/child-c")?.parent,
+            scene.getNode("child-b/child-c").parent,
         )
     }
 
@@ -132,10 +132,10 @@ class NodeTests {
             launch {
                 repeat(2) { i ->
                     if (nTicks % (i + 1) == 0) {
-                        tree.physicsUpdate(0f)
+                        tree.nodePhysicsUpdate(0f)
                     }
 
-                    tree.update(0f)
+                    tree.nodeUpdate(0f)
                     delay(20.toDuration(DurationUnit.MILLISECONDS))
                 }
             }.join()

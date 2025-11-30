@@ -1,21 +1,38 @@
 package anchors.rogue.shared.utils.nodes.types.camera
 
+import anchors.rogue.shared.utils.nodes.core.Behavior
 import anchors.rogue.shared.utils.nodes.core.Node
+import anchors.rogue.shared.utils.nodes.core.NodeRef
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 
 class Camera2D(
+    // Base props
     name: String = "Camera2D",
+    script: (node: Camera2D) -> Behavior<Camera2D>? = { null },
+    position: Vector2 = Vector2.Zero,
+    scale: Vector2 = Vector2.Zero,
+    rotation: Float = 0f,
+    groups: MutableList<String> = mutableListOf(),
+    private var targetRef: NodeRef<*>? = null,
     var zoom: Float = 1f,
     var enableSmoothing: Boolean = true,
     var smoothingSpeed: Float = 8f,
-    block: Node<*>.() -> Unit = {},
-) : Node<Camera2D>(name, block = block) {
+    block: Camera2D.() -> Unit = {},
+) : Node<Camera2D>(
+        name,
+        script,
+        position,
+        scale,
+        rotation,
+        groups,
+        block,
+    ) {
     val camera = OrthographicCamera()
-    private var target: Node<*>? = null
 
-    // Optional world bounds
+    private var isResizing = false
+
     var limitLeft: Float? = null
     var limitRight: Float? = null
     var limitTop: Float? = null
@@ -23,27 +40,27 @@ class Camera2D(
 
     override fun enterTree() {
         super.enterTree()
-        manager.registerCamera(this) // Let SceneManager know this is the camera in use
+        sceneManager.registerCamera(this)
     }
 
     override fun exitTree() {
         super.exitTree()
-        manager.unregisterCamera(this)
+        sceneManager.unregisterCamera(this)
     }
 
-    /**
-     * Smooth camera update (like Godot)
-     */
-    override fun update(delta: Float) {
+    override fun nodeUpdate(delta: Float) {
         updateCamera(delta)
     }
 
     private fun updateCamera(delta: Float) {
+        if (isResizing) return // skip smoothing during resize
+
+        val targetNode = targetRef?.get(this)
+
         camera.zoom = zoom
-
-        val targetPos = target?.globalPosition ?: globalPosition
-
+        val targetPos = targetNode?.globalPosition ?: globalPosition
         val pos = camera.position
+
         if (enableSmoothing) {
             pos.x += (targetPos.x - pos.x) * smoothingSpeed * delta
             pos.y += (targetPos.y - pos.y) * smoothingSpeed * delta
@@ -63,20 +80,6 @@ class Camera2D(
         limitTop?.let { camera.position.y = minOf(camera.position.y, it) }
     }
 
-    /**
-     * Public API — like Godot Camera2D
-     */
-    fun setTarget(node: Node<*>) {
-        this.target = node
-    }
-
-    fun clearTarget() {
-        target = null
-    }
-
-    /**
-     * Coordinate helpers
-     */
     fun screenToWorld(screen: Vector2): Vector2 {
         camera.unproject(Vector3(screen.x, screen.y, 0f))
         return screen
@@ -85,5 +88,21 @@ class Camera2D(
     fun worldToScreen(world: Vector2): Vector2 {
         camera.project(Vector3(world.x, world.y, 0f))
         return world
+    }
+
+    /** Snap camera to target immediately during resize */
+    fun resize(
+        worldWidth: Float,
+        worldHeight: Float,
+    ) {
+        isResizing = true
+        camera.setToOrtho(false, worldWidth, worldHeight)
+
+        val targetNode = targetRef?.get(this)
+
+        val targetPos = targetNode?.globalPosition ?: globalPosition
+        camera.position.set(targetPos.x, targetPos.y, 0f)
+        camera.update()
+        isResizing = false
     }
 }

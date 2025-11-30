@@ -1,7 +1,9 @@
 package anchors.rogue.shared.utils.nodes.core
 
 import anchors.rogue.shared.managers.ManagersRegistry
+import anchors.rogue.shared.utils.data.assets.AssetsManager
 import anchors.rogue.shared.utils.input.InputEvent
+import anchors.rogue.shared.utils.input.InputSystem
 import anchors.rogue.shared.utils.nodes.SceneManager
 import com.badlogic.gdx.math.Vector2
 import ktx.math.plus
@@ -11,14 +13,14 @@ import kotlin.reflect.KClass
  * DSL marker for Scene DSL usage.
  */
 @DslMarker
-annotation class SceneDSL
+annotation class NodeDSL
 
 /**
  * Base node class for 2D scene graph system.
  *
  * @param N Type of the node (for generics / DSL chaining)
  */
-@SceneDSL
+@NodeDSL
 @Suppress("UNCHECKED_CAST")
 abstract class Node<N : Node<N>> internal constructor(
     // ===============================
@@ -27,28 +29,27 @@ abstract class Node<N : Node<N>> internal constructor(
     /** Node name (unique among siblings) */
     val name: String,
     /** Optional behavior script attached to the node */
-    script: (node: N) -> Behavior<N>? = { null },
+    script: (node: N) -> Behavior<N>?,
     /** Local position in 2D space */
-    var position: Vector2 = Vector2.Zero,
+    open var position: Vector2 = Vector2.Zero,
     /** Local scale in 2D space */
-    var scale: Vector2 = Vector2(1f, 1f),
+    open var scale: Vector2 = Vector2(1f, 1f),
     /** Local rotation in radians */
-    var rotation: Float = 0f,
+    open var rotation: Float = 0f,
+    val groups: MutableList<String> = mutableListOf(),
     /** Optional DSL block for building children inline */
-    block: Node<*>.() -> Unit = {},
+    block: N.() -> Unit,
 ) {
     // ===============================
     //        INTERNAL PROPERTIES
     // ===============================
+    /** Reference to the scene manager (set automatically on init) */
+    internal val sceneManager: SceneManager by lazy { ManagersRegistry.get(SceneManager::class) }
+    internal val inputManager: InputSystem by lazy { sceneManager.getSystem(InputSystem::class) }
+    internal val assetsManager: AssetsManager by lazy { ManagersRegistry.get(AssetsManager::class) }
 
     /** Whether this node is a prefab (not active until instantiated) */
     private var isPrefab: Boolean = false
-
-    /** Reference to the scene manager */
-    internal val manager: SceneManager = ManagersRegistry.get(SceneManager::class)
-
-    /** Groups this node belongs to */
-    private val groups: MutableList<String> = mutableListOf()
 
     /** Behavior script instance */
     private val script: Behavior<N>? = script(this as N)
@@ -91,19 +92,18 @@ abstract class Node<N : Node<N>> internal constructor(
 
         val oldParent = currentParent.get()
         currentParent.set(this)
-        this.block()
+        block(this as N)
         currentParent.set(oldParent)
     }
 
     // ===============================
     //          CHILD MANAGEMENT
     // ===============================
-
     private fun addChildInternal(child: Node<*>) {
         check(child.name !in children) { "Child with name '${child.name}' already exists" }
         _children[child.name] = child
         child._parent = this
-        manager.registerSubtree(child)
+        sceneManager.registerSubtree(child)
     }
 
     /** Adds a child node at runtime */
@@ -115,7 +115,7 @@ abstract class Node<N : Node<N>> internal constructor(
 
         // Lifecycle setup for runtime node
         child.enterTree()
-        child.ready()
+        child.nodeReady()
     }
 
     /** Removes a child node */
@@ -127,23 +127,62 @@ abstract class Node<N : Node<N>> internal constructor(
         _children.remove(child.name)
         child._parent = null
 
-        manager.unregisterSubtree(this)
+        sceneManager.unregisterSubtree(this)
+
+        // CLEANUP
+        child.children.values
+            .toList()
+            .forEach { child.removeChild(it) }
     }
 
     /** Removes a child node by path */
     fun removeChild(path: String) {
         val child = getNode(path)
-        checkNotNull(child) { "Node at path $path not found" }
         removeChild(child)
     }
 
     /** Returns a child node by relative path (e.g., "parent/child") */
-    fun getNode(path: String): Node<*>? {
-        var current: Node<*> = this
-        for (part in path.split("/")) {
-            current = current.children[part] ?: return null
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Node<T>> getNode(path: String): T {
+        val parts = path.split("/")
+
+        // Node is direct child -> get it
+        if (parts.size == 1) return this.children[parts[0]] as T
+
+        var current: Node<*>? =
+            when (parts.first()) {
+                "$" -> sceneManager.currScene
+                "", "." -> this
+                else -> this
+            }
+        val searchParts =
+            if (parts.first() in listOf("$", ".") || path.startsWith("/")) {
+                parts.drop(1)
+            } else {
+                parts
+            }
+
+        // Skip the first part (we already processed it)
+        for (part in searchParts) {
+            when (part) {
+                "", "." -> { /* stay on current */ }
+
+                ".." -> {
+                    current = current?.parent ?: throw IllegalArgumentException("No parent for path: $path")
+                }
+
+                else -> {
+                    val child = current?.children[part]
+                    current = child ?: throw IllegalArgumentException(
+                        "No child '$part' under '${current?.name}' for path '$path'",
+                    )
+                }
+            }
         }
-        return current
+
+        return current as? T ?: throw IllegalArgumentException(
+            "Node at path '$path' is not of expected type",
+        )
     }
 
     /** Marks this node as a prefab (not active until instantiated) */
@@ -177,10 +216,10 @@ abstract class Node<N : Node<N>> internal constructor(
     fun inGroup(group: String) = group in groups
 
     /** Adds the node to a group */
-    fun addGroup(group: String) = groups.add(group).also { manager.addToGroup(group, this) }
+    fun addGroup(group: String) = groups.add(group).also { sceneManager.addToGroup(group, this) }
 
     /** Removes the node from a group */
-    fun removeGroup(group: String) = groups.remove(group).also { manager.removeFromGroup(group, this) }
+    fun removeGroup(group: String) = groups.remove(group).also { sceneManager.removeFromGroup(group, this) }
 
     // ===============================
     //       SCENE TREE BUILDING
@@ -189,7 +228,7 @@ abstract class Node<N : Node<N>> internal constructor(
     /** Builds the tree and calls lifecycle methods */
     fun buildTree() {
         enterTree() // top-down attach
-        ready() // bottom-up initialization
+        nodeReady() // bottom-up initialization
     }
 
     // ===============================
@@ -197,13 +236,16 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
 
     /** Called after the node and its children are fully initialized */
-    open fun ready() {
-        children.values.forEach { it.ready() }
+    open fun nodeReady() {
+        children.values.forEach { it.nodeReady() }
         script?.onReady()
     }
 
     /** Called when node enters the tree */
     open fun enterTree() {
+        // Update initial groups
+        groups.forEach { sceneManager.addToGroup(it, this) }
+        // Traverse tree
         script?.onEnterTree()
         children.values.forEach { it.enterTree() }
     }
@@ -219,14 +261,14 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
 
     /** Called every frame */
-    open fun update(delta: Float) {
-        children.values.forEach { it.update(delta) }
+    open fun nodeUpdate(delta: Float) {
+        children.values.forEach { it.nodeUpdate(delta) }
         script?.onUpdate(delta)
     }
 
     /** Called every physics tick */
-    open fun physicsUpdate(delta: Float) {
-        children.values.forEach { it.physicsUpdate(delta) }
+    open fun nodePhysicsUpdate(delta: Float) {
+        children.values.forEach { it.nodePhysicsUpdate(delta) }
         script?.onPhysicsUpdate(delta)
     }
 
@@ -235,11 +277,14 @@ abstract class Node<N : Node<N>> internal constructor(
     // ===============================
 
     /** Handles input events and propagates to children */
-    open fun input(event: InputEvent) {
+    open fun nodeInput(
+        event: InputEvent,
+        delta: Float = 0F,
+    ) {
         if (event.isHandled) return
-        script?.onInput(event)
+        script?.onInput(event, delta)
         if (event.isHandled) return
-
-        children.values.forEach { it.input(event) }
+        // Propagate ito children
+        children.values.forEach { it.nodeInput(event, delta) }
     }
 }

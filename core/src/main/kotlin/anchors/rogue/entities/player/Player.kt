@@ -1,36 +1,38 @@
 package anchors.rogue.entities.player
 
-class Player
-/**
- *
- * fun Player(data...) = CharacterBody2D("player", script=PlayerController::class){
- *      //Combat
- *      Area2D("hurtbox", data...)
- *
- *      // Item collect
- *      Area2D("collect", data...)
- *      Area2D("trigger", data...)
- *
- *      // Timers
- *      Timer("dodgeTimer", data...)
- *
- *      // UI
- *      Inventory() <-- Nested scene
- *      HUD() <-- Nested scene
- *
- *      // Controllers
- *      EmptyNode("weapon", script = WeaponController::class)
- *      EmptyNode("tools", script = ToolsController::class)
- *      EmptyNode("movement", script = MovementController::class)
- *      EmptyNode("status, script = StatusController::class)
- *
- *      // Misc
- *      Camera()
- *      AnimationPlayer()
- *      Sprite2D()
- *      CollisionShape2D()
- * }
- *
- *
- *
- */
+import anchors.rogue.shared.utils.data.assets.FileSource
+import anchors.rogue.shared.utils.nodes.core.nodeRef
+import anchors.rogue.shared.utils.nodes.types.camera.Camera2D
+import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D
+import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
+import anchors.rogue.shared.utils.nodes.types.physics.shape.CircleShape2D
+import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
+import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
+import com.badlogic.gdx.math.Vector2
+
+@Suppress("ktlint:standard:function-naming")
+fun Player(
+    position: Vector2 = Vector2.Zero,
+    scale: Vector2 = Vector2(1f, 1f),
+    rotation: Float = 0f,
+    options: DynamicBody2D.() -> Unit = {},
+    groups: MutableList<String> = mutableListOf(),
+) = DynamicBody2D(
+    "player",
+    script = { node -> PlayerController(node) },
+    position,
+    scale,
+    rotation,
+    groups,
+) {
+    val texture =
+        assetsManager.loadTexture("logo.png", source = FileSource.Internal) {
+            setFilter(Linear, Linear)
+        }
+
+    Camera2D("camera", targetRef = nodeRef(this))
+    Sprite2D("sprite", texture = texture)
+    Collider2D("body", shape = CircleShape2D(200f))
+
+    options(this)
+}

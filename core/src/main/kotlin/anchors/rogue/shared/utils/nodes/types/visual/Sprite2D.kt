@@ -12,6 +12,7 @@ class Sprite2D(
     position: Vector2 = Vector2.Zero,
     scale: Vector2 = Vector2(1f, 1f),
     rotation: Float = 0f,
+    groups: MutableList<String> = mutableListOf(),
     // Node specific props
     val texture: Texture,
     // DSL
@@ -22,5 +23,6 @@ class Sprite2D(
         position,
         scale,
         rotation,
-        block = block,
+        groups,
+        block,
     )
