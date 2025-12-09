@@ -9,8 +9,8 @@ import ktx.math.times
 const val PLAYER_SPEED = 1000f
 
 class PlayerController(
-    node: DynamicBody2D,
-) : Behavior<DynamicBody2D>(node) {
+    node: Player,
+) : Behavior<Player>(node) {
     private val logger = logger<PlayerController>()
 
     override fun onPhysicsUpdate(delta: Float) {

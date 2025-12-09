@@ -4,15 +4,15 @@ import anchors.rogue.shared.utils.nodes.core.Behavior
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 
-class DynamicBody2D(
+open class DynamicBody2D<T : DynamicBody2D<T>>(
     name: String,
-    script: (node: DynamicBody2D) -> Behavior<DynamicBody2D>? = { null },
+    script: (node: T) -> Behavior<T>? = { null },
     position: Vector2 = Vector2.Zero,
     scale: Vector2 = Vector2(1F, 1F),
     rotation: Float = 0F,
     groups: MutableList<String> = mutableListOf(),
-    block: DynamicBody2D.() -> Unit = {},
-) : PhysicsBody2D<DynamicBody2D>(
+    block: T.() -> Unit = {},
+) : PhysicsBody2D<T>(
         name,
         script,
         position,

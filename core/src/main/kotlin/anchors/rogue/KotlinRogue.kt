@@ -1,5 +1,6 @@
 package anchors.rogue
 
+import anchors.rogue.configs.InputConfig
 import anchors.rogue.features.logbook.LogbookManager
 import anchors.rogue.screens.DemoScreen
 import anchors.rogue.shared.managers.ManagersRegistry
@@ -24,28 +25,18 @@ class KotlinRogue : KtxGame<KtxScreen>() {
 
         // Register global systems here
 
-        val sceneManager =
-            SceneManager {
-                addSystem(RenderSystem(GAME_WIDTH, GAME_HEIGHT))
-                addSystem(PhysicsSystem())
-            }
-
         ManagersRegistry.apply {
             register(AssetsManager())
             register(SaveManager())
             register(LogbookManager())
+
+            val sceneManager = SceneManager {
+                addSystem(RenderSystem(GAME_WIDTH, GAME_HEIGHT))
+                addSystem(PhysicsSystem())
+                addSystem(InputSystem(*InputConfig.getInputMappings()))
+            }
             register(sceneManager)
         }
-
-        // Register base inputs
-        sceneManager.addSystem(
-            InputSystem(
-                "move-left" to listOf(InputBind.keyboardBind(Input.Keys.A)),
-                "move-right" to listOf(InputBind.keyboardBind(Input.Keys.D)),
-                "move-up" to listOf(InputBind.keyboardBind(Input.Keys.W)),
-                "move-down" to listOf(InputBind.keyboardBind(Input.Keys.S)),
-            ),
-        )
 
         // Register and setup global managers - global access to data across screens and nodes
         ManagersRegistry.setup()
