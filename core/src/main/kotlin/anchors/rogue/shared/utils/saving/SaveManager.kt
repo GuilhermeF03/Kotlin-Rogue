@@ -61,7 +61,7 @@ class SaveManager(
     /**
      * Saves data into a given slot.
      *
-     * Json structure is defined based on registration order.
+     * JSON structure is defined based on registration order.
      *
      * Data to be saved on each module is defined by the return value of the **onSave** method.
      */

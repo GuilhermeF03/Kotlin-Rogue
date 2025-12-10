@@ -10,6 +10,7 @@ import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
 import anchors.rogue.shared.utils.nodes.types.physics.shape.CircleShape2D
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController
 import com.badlogic.gdx.math.Vector2
 
 class Player internal constructor(
