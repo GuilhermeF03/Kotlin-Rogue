@@ -13,25 +13,25 @@ class AnimationPlayer(
     groups: MutableList<String> = mutableListOf(),
     block: AnimationPlayer.() -> Unit,
 ) : Node<AnimationPlayer>(
-    name,
-    script,
-    position,
-    scale,
-    rotation,
-    groups,
-    block
-) {
-    private val animations : MutableMap<String, Animation> = mutableMapOf()
+        name,
+        script,
+        position,
+        scale,
+        rotation,
+        groups,
+        block,
+    ) {
+    private val animations: MutableMap<String, Animation> = mutableMapOf()
 
-    fun addAnimation(animation : Animation) {
+    fun addAnimation(animation: Animation) {
         animations[animation.name] = animation
     }
 
-    fun removeAnimation(name : String) {
+    fun removeAnimation(name: String) {
         animations.remove(name)
     }
 
-    fun play(name : String) {
+    fun play(name: String) {
         val animation = animations[name]
         checkNotNull(animation)
 

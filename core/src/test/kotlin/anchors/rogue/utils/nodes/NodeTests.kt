@@ -2,8 +2,12 @@ package anchors.rogue.utils.nodes
 
 import anchors.rogue.shared.managers.ManagersRegistry
 import anchors.rogue.shared.utils.nodes.SceneManager
+import anchors.rogue.shared.utils.nodes.core.Behavior
+import anchors.rogue.shared.utils.nodes.core.Node
 import anchors.rogue.shared.utils.nodes.core.behavior
+import anchors.rogue.shared.utils.nodes.core.unaryPlus
 import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
+import com.badlogic.gdx.math.Vector2
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -195,5 +199,36 @@ class NodeTests {
         child.queueFree()
 
         assertEquals(0, tree.children.size)
+    }
+
+    @Test
+    fun `custom scene should work`() {
+        class CustomScene(
+            name: String = "custom",
+            script: (node: CustomScene) -> Behavior<CustomScene>? = { null },
+            position: Vector2 = Vector2.Zero,
+            scale: Vector2 = Vector2(1f, 1f),
+            rotation: Float = 0f,
+            groups: MutableList<String> = mutableListOf(),
+            block: CustomScene.() -> Unit = {},
+        ) : Node<CustomScene>(
+                name,
+                script,
+                position,
+                scale,
+                rotation,
+                groups,
+                block = {
+                    EmptyNode("empty")
+                    block()
+                },
+            )
+
+        val customScene =
+            CustomScene {
+                EmptyNode("child")
+            }
+
+        assertEquals(2, customScene.children.size)
     }
 }

@@ -2,7 +2,6 @@ package anchors.rogue.entities.player
 
 import anchors.rogue.shared.utils.misc.toPixels
 import anchors.rogue.shared.utils.nodes.core.Behavior
-import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D
 import ktx.log.logger
 import ktx.math.times
 
@@ -10,6 +9,8 @@ const val PLAYER_SPEED = 1000f
 
 class PlayerController(
     node: Player,
+    // Custom parameters
+    private val playerSpeed: Float = PLAYER_SPEED,
 ) : Behavior<Player>(node) {
     private val logger = logger<PlayerController>()
 
@@ -22,7 +23,7 @@ class PlayerController(
                         "move-right",
                         "move-down",
                         "move-up",
-                    ).nor() * delta * PLAYER_SPEED
+                    ).nor() * delta * playerSpeed
 
             moveInstant(inputVector.toPixels())
         }

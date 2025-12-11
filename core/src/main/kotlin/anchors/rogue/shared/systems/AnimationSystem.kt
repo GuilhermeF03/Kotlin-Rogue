@@ -1,4 +1,3 @@
 package anchors.rogue.shared.systems
 
-class AnimationSystem {
-}
+class AnimationSystem

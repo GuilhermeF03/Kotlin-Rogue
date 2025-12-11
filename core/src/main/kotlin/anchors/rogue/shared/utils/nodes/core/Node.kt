@@ -287,4 +287,16 @@ abstract class Node<N : Node<N>> internal constructor(
         // Propagate ito children
         children.values.forEach { it.nodeInput(event, delta) }
     }
+
+    infix fun child(node: Node<*>) = addChild(node)
+}
+
+operator fun Node<*>.plus(node: Node<*>): Node<*> {
+    addChild(node)
+    return this
+}
+
+operator fun Node<*>.unaryPlus(): Node<*> {
+    parent?.addChild(this)
+    return this
 }
