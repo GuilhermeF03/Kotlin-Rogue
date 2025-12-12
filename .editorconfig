@@ -1,4 +1,3 @@
-# https://editorconfig.org
 root = true
 
 [*]
@@ -17,8 +16,10 @@ ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**
 ktlint_standard_no-wildcard-imports = disabled
 ktlint_standard_no-consecutive-comments = disabled
 
-[*.gradle]
-indent_size = 2
-
 [*.md]
 trim_trailing_whitespace = false
+
+[*.gradle]
+indent_size = 2
+# Default import ordering rule
+ktlint_standard_import-ordering = enabled

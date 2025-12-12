@@ -27,6 +27,9 @@ enum class UpdatePhase {
 
     /** Runs after scene frame updates */
     FrameAfterScene,
+
+    AnimationBeforeScene,
+    AnimationAfterScene,
 }
 
 // ===============================
@@ -52,6 +55,14 @@ abstract class GlobalNodeSystem(
 
     /** Nodes currently matching the system's type requirements */
     protected val matchingNodes = mutableListOf<Node<*>>()
+
+    init {
+        val parent =
+            SceneManager.currentParent.get()
+                ?: error("Key must be inside a track")
+
+        parent.addSystem(this)
+    }
 
     // ===============================
     //         LIFECYCLE HOOKS

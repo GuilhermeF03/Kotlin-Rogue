@@ -42,6 +42,14 @@ class SceneManager(
     /** Emitted whenever the active camera changes */
     val onCameraChanged = createSignal<Camera2D?>()
 
+    companion object {
+        internal val currentParent = ThreadLocal.withInitial<SceneManager> { null }
+    }
+
+    init {
+        currentParent.set(this)
+    }
+
     internal fun registerCamera(cam: Camera2D) {
         if (activeCamera == cam) return
         activeCamera = cam
@@ -77,14 +85,7 @@ class SceneManager(
     // ===============================
     //         SYSTEMS
     // ===============================
-    private val systems: Map<UpdatePhase, MutableList<GlobalNodeSystem>> =
-        mapOf(
-            UpdatePhase.Input to mutableListOf(),
-            UpdatePhase.FrameBeforeScene to mutableListOf(),
-            UpdatePhase.FrameAfterScene to mutableListOf(),
-            UpdatePhase.PhysicsBeforeScene to mutableListOf(),
-            UpdatePhase.PhysicsAfterScene to mutableListOf(),
-        )
+    private val systems: MutableMap<UpdatePhase, MutableList<GlobalNodeSystem>> = mutableMapOf()
 
     private val systemsByType = mutableMapOf<KClass<out Node<*>>, MutableList<GlobalNodeSystem>>()
 
@@ -163,7 +164,7 @@ class SceneManager(
     //      SYSTEM MANAGEMENT
     // ===============================
     fun addSystem(system: GlobalNodeSystem) {
-        systems[system.phase]?.add(system)
+        systems.getOrPut(system.phase) { mutableListOf() }.add(system)
         system.requiredTypes.forEach { type ->
             systemsByType.computeIfAbsent(type) { mutableListOf() }.add(system)
         }
@@ -209,6 +210,7 @@ class SceneManager(
     // ===============================
     fun tick(delta: Float) {
         val root = currScene ?: return
+
         systems[UpdatePhase.Input]?.forEach { it.tick(delta) }
 
         if (isPhysicsFrame(delta)) {
@@ -217,8 +219,10 @@ class SceneManager(
             systems[UpdatePhase.PhysicsAfterScene]?.forEach { it.tick(physicsStep) }
         }
 
+        systems[UpdatePhase.AnimationBeforeScene]?.forEach { it.tick(delta) }
         systems[UpdatePhase.FrameBeforeScene]?.forEach { it.tick(delta) }
         root.nodeUpdate(delta)
+        systems[UpdatePhase.AnimationAfterScene]?.forEach { it.tick(delta) }
         systems[UpdatePhase.FrameAfterScene]?.forEach { it.tick(delta) }
     }
 

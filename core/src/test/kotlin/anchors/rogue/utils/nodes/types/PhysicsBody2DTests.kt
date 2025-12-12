@@ -25,7 +25,7 @@ class PhysicsBody2DTests {
         fun setup() {
             val sceneManager =
                 SceneManager {
-                    addSystem(PhysicsSystem())
+                    PhysicsSystem()
                 }
             ManagersRegistry.register(sceneManager)
 

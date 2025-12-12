@@ -9,6 +9,7 @@ import anchors.rogue.shared.utils.nodes.types.physics.body.DynamicBody2D
 import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
 import anchors.rogue.shared.utils.nodes.types.physics.shape.CircleShape2D
 import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
+import anchors.rogue.shared.utils.nodes.types.visual.animation.AnimationPlayer
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 
@@ -43,7 +44,11 @@ class Player(
             Sprite2D("sprite", texture = texture)
             Collider2D("body", shape = CircleShape2D(200f))
 
+            AnimationPlayer("animationPlayer")
+
             // Call for custom nodes ---
             block()
         },
-    )
+    ) {
+    val animationPlayer = nodeRef<AnimationPlayer>("animationPlayer")
+}

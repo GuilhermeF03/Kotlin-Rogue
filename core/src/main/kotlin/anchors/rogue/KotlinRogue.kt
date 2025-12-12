@@ -4,6 +4,7 @@ import anchors.rogue.configs.InputConfig
 import anchors.rogue.features.logbook.LogbookManager
 import anchors.rogue.screens.DemoScreen
 import anchors.rogue.shared.managers.ManagersRegistry
+import anchors.rogue.shared.systems.AnimationSystem
 import anchors.rogue.shared.systems.RenderSystem
 import anchors.rogue.shared.systems.physics.PhysicsSystem
 import anchors.rogue.shared.utils.data.assets.AssetsManager
@@ -28,13 +29,14 @@ class KotlinRogue : KtxGame<KtxScreen>() {
             register(SaveManager())
             register(LogbookManager())
 
-            val sceneManager =
+            register(
                 SceneManager {
-                    addSystem(RenderSystem(GAME_WIDTH, GAME_HEIGHT))
-                    addSystem(PhysicsSystem())
-                    addSystem(InputSystem(*InputConfig.getInputMappings()))
-                }
-            register(sceneManager)
+                    RenderSystem(GAME_WIDTH, GAME_HEIGHT)
+                    PhysicsSystem()
+                    InputSystem(*InputConfig.getInputMappings())
+                    AnimationSystem()
+                },
+            )
         }
 
         // Register and setup global managers - global access to data across screens and nodes
