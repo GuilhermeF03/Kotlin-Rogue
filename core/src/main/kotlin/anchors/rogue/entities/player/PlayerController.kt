@@ -1,13 +1,16 @@
 package anchors.rogue.entities.player
 
-import anchors.rogue.shared.utils.misc.toPixels
-import anchors.rogue.shared.utils.nodes.core.Behavior
-import anchors.rogue.shared.utils.nodes.types.visual.animation.Animation
-import anchors.rogue.shared.utils.nodes.types.visual.animation.tracks.ActionTrack
+import anchors.framework.misc.toPixels
+import anchors.framework.nodes.core.Behavior
+import anchors.framework.nodes.types.visual.animation.Animation
+import anchors.framework.nodes.types.visual.animation.PlayMode
+import anchors.framework.nodes.types.visual.animation.tracks.ActionTrack
 import ktx.log.logger
 import ktx.math.times
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+
+// CONSTANTS - Can  be tinkered in nodes as needed
 
 const val PLAYER_SPEED = 1000f
 
@@ -23,7 +26,7 @@ class PlayerController(
         var timeRef = Clock.System.now()
 
         val testAnimation =
-            Animation("test", 2.0f, true) {
+            Animation("test", 2.0f, PlayMode.LOOP) {
                 ActionTrack {
                     key(0.5f) {
                         val ref = Clock.System.now()
@@ -42,7 +45,6 @@ class PlayerController(
             }
 
         node?.apply {
-            val animationPlayer = animationPlayer.get(this)
             animationPlayer.addAnimation(testAnimation)
             animationPlayer.play("test")
         }

@@ -1,16 +1,16 @@
 package anchors.rogue
 
+import anchors.framework.data.assets.AssetsManager
+import anchors.framework.input.InputSystem
+import anchors.framework.managers.ManagersRegistry
+import anchors.framework.nodes.SceneManager
+import anchors.framework.saving.SaveManager
+import anchors.framework.systems.AnimationSystem
+import anchors.framework.systems.RenderSystem
+import anchors.framework.systems.physics.PhysicsSystem
 import anchors.rogue.configs.InputConfig
 import anchors.rogue.features.logbook.LogbookManager
 import anchors.rogue.screens.DemoScreen
-import anchors.rogue.shared.managers.ManagersRegistry
-import anchors.rogue.shared.systems.AnimationSystem
-import anchors.rogue.shared.systems.RenderSystem
-import anchors.rogue.shared.systems.physics.PhysicsSystem
-import anchors.rogue.shared.utils.data.assets.AssetsManager
-import anchors.rogue.shared.utils.input.InputSystem
-import anchors.rogue.shared.utils.nodes.SceneManager
-import anchors.rogue.shared.utils.saving.SaveManager
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.async.KtxAsync
@@ -23,12 +23,10 @@ class KotlinRogue : KtxGame<KtxScreen>() {
         KtxAsync.initiate()
 
         // Register global systems here
-
         ManagersRegistry.apply {
             register(AssetsManager())
             register(SaveManager())
             register(LogbookManager())
-
             register(
                 SceneManager {
                     RenderSystem(GAME_WIDTH, GAME_HEIGHT)

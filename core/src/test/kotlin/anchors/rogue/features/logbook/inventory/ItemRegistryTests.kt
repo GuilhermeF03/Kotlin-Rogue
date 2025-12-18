@@ -1,8 +1,8 @@
 package anchors.rogue.features.logbook.inventory
 
+import anchors.framework.data.registry.IdRegistry
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
-import anchors.rogue.shared.utils.data.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test

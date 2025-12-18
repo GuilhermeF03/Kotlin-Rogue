@@ -9,6 +9,9 @@ plugins {
 eclipse.project.name = appName + '-core'
 
 dependencies {
+  // NODE FRAMEWORK
+  implementation project(':node-framework')
+
   // REFLECTION
   implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
   // ECS

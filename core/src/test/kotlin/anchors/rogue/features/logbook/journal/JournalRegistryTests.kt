@@ -1,7 +1,7 @@
 package anchors.rogue.features.logbook.journal
 
+import anchors.framework.data.registry.IdRegistry
 import anchors.rogue.features.logbook.journal.data.JournalEntry
-import anchors.rogue.shared.utils.data.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test

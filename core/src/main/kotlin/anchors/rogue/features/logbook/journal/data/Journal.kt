@@ -1,8 +1,9 @@
 package anchors.rogue.features.logbook.journal.data
 
-import anchors.rogue.shared.utils.data.registry.IdRegistry
-import anchors.rogue.shared.utils.saving.registerSaveModule
-import anchors.rogue.shared.utils.signals.createSignal
+import anchors.framework.data.registry.IdRegistry
+import anchors.framework.saving.SaveDestination
+import anchors.framework.saving.registerSaveModule
+import anchors.framework.signals.createSignal
 import com.badlogic.gdx.Gdx
 
 const val JOURNAL_LOCATION = "data/logbook/journal/journal.json"
@@ -21,6 +22,7 @@ class Journal(
 
     init {
         registerSaveModule<JournalSaveData>(
+            SaveDestination.PlayerData,
             id = "journal",
             serializer = JournalSaveData.serializer(),
             onSave = { this.asData() },

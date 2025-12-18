@@ -1,8 +1,11 @@
 package anchors.rogue.configs
 
-import anchors.rogue.shared.utils.input.InputBind
+import anchors.framework.input.InputBind
 import com.badlogic.gdx.Input
 
+/**
+ * This object stores all default keybinds - can be changed later in-game
+ */
 object InputConfig {
     fun getInputMappings(): Array<Pair<String, List<InputBind>>> =
         arrayOf(

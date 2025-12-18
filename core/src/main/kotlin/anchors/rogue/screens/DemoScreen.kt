@@ -1,16 +1,16 @@
 package anchors.rogue.screens
 
+import anchors.framework.data.assets.AssetsManager
+import anchors.framework.data.assets.FileSource
+import anchors.framework.managers.ManagersRegistry
+import anchors.framework.nodes.SceneManager
+import anchors.framework.nodes.types.empty.EmptyNode
+import anchors.framework.nodes.types.physics.body.StaticBody2D
+import anchors.framework.nodes.types.physics.fixture.Collider2D
+import anchors.framework.nodes.types.physics.shape.CircleShape2D
+import anchors.framework.nodes.types.visual.Sprite2D
+import anchors.framework.systems.physics.PhysicsSystem
 import anchors.rogue.entities.player.Player
-import anchors.rogue.shared.managers.ManagersRegistry
-import anchors.rogue.shared.systems.physics.PhysicsSystem
-import anchors.rogue.shared.utils.data.assets.AssetsManager
-import anchors.rogue.shared.utils.data.assets.FileSource
-import anchors.rogue.shared.utils.nodes.SceneManager
-import anchors.rogue.shared.utils.nodes.types.empty.EmptyNode
-import anchors.rogue.shared.utils.nodes.types.physics.body.StaticBody2D
-import anchors.rogue.shared.utils.nodes.types.physics.fixture.Collider2D
-import anchors.rogue.shared.utils.nodes.types.physics.shape.CircleShape2D
-import anchors.rogue.shared.utils.nodes.types.visual.Sprite2D
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -27,7 +27,7 @@ class DemoScreen : KtxScreen {
 
     private val sceneManager = ManagersRegistry.get(SceneManager::class)
     private val assetsManager = ManagersRegistry.get(AssetsManager::class)
-    private val physicsSystem = sceneManager.getSystem(PhysicsSystem::class)
+    // private val physicsSystem = sceneManager.getSystem(PhysicsSystem::class)
 
     // Screen resources
     val image =
@@ -39,7 +39,7 @@ class DemoScreen : KtxScreen {
 
     override fun show() {
         logger.info { "Show" }
-        physicsSystem.replaceWorld()
+        sceneManager.getSystem(PhysicsSystem::class).replaceWorld()
 
         sceneManager.currScene =
             EmptyNode("root") {

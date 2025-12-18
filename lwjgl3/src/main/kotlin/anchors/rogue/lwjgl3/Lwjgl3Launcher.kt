@@ -2,12 +2,11 @@
 
 package anchors.rogue.lwjgl3
 
+import anchors.framework.managers.ExecutionMode
+import anchors.framework.managers.GameManager
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import anchors.rogue.KotlinRogue
-import anchors.rogue.shared.managers.ExecutionMode
-import anchors.rogue.shared.managers.GameManager
-import anchors.rogue.shared.managers.ManagersRegistry
 
 /** Launches the desktop (LWJGL3) application. */
 fun main(args: Array<String>) {

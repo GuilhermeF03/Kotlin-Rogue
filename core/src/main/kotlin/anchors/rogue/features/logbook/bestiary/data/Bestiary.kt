@@ -1,8 +1,9 @@
 package anchors.rogue.features.logbook.bestiary.data
 
-import anchors.rogue.shared.utils.data.registry.IdRegistry
-import anchors.rogue.shared.utils.saving.registerSaveModule
-import anchors.rogue.shared.utils.signals.createSignal
+import anchors.framework.data.registry.IdRegistry
+import anchors.framework.saving.SaveDestination
+import anchors.framework.saving.registerSaveModule
+import anchors.framework.signals.createSignal
 import com.badlogic.gdx.Gdx
 
 const val BESTIARY_JSON = "data/logbook/bestiary/bestiary.json"
@@ -18,7 +19,6 @@ class Bestiary(
             Gdx.files.internal(BESTIARY_JSON),
         ).also { it.loadRegistry<BestiaryEntry>() },
 ) {
-    // Data
     val discovered = mutableListOf<BestiaryEntry>()
 
     // Total number of unique entities in the game
@@ -28,10 +28,12 @@ class Bestiary(
     val onDiscovered = createSignal<BestiaryEntry>()
 
     init {
+        // Register save module to save bestiary data onto player save file
         registerSaveModule<BestiarySaveData>(
+            SaveDestination.PlayerData,
             "bestiary",
             serializer = BestiarySaveData.serializer(),
-            onSave = { this.asData() },
+            onSave = { asData() },
             onLoad = ::loadData,
         )
     }

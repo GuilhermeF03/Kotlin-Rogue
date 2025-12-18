@@ -1,6 +1,6 @@
 package anchors.rogue.features.logbook.bestiary.data
 
-import anchors.rogue.shared.utils.data.registry.IdEntry
+import anchors.framework.data.registry.IdEntry
 import kotlinx.serialization.Serializable
 
 /**
@@ -18,5 +18,5 @@ data class BestiaryEntry(
     val description: String = "",
     val lore: String = "",
 ) : IdEntry {
-    override val domain: String = "beast"
+    override val domain: String = "bestiary"
 }

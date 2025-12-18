@@ -1,13 +1,14 @@
 package anchors.rogue.features.logbook.inventory.data
 
+import anchors.framework.data.registry.IdRegistry
+import anchors.framework.saving.SaveDestination
+import anchors.framework.saving.registerSaveModule
+import anchors.framework.signals.OneArgSignal
+import anchors.framework.signals.SignalVal
+import anchors.framework.signals.asSignalVal
+import anchors.framework.signals.createSignal
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
-import anchors.rogue.shared.utils.data.registry.IdRegistry
-import anchors.rogue.shared.utils.saving.registerSaveModule
-import anchors.rogue.shared.utils.signals.OneArgSignal
-import anchors.rogue.shared.utils.signals.SignalVal
-import anchors.rogue.shared.utils.signals.asSignalVal
-import anchors.rogue.shared.utils.signals.createSignal
 import com.badlogic.gdx.Gdx
 import kotlin.reflect.KClass
 
@@ -45,6 +46,7 @@ class Inventory(
 
     init {
         registerSaveModule<InventorySaveData>(
+            SaveDestination.PlayerData,
             id = "inventory",
             serializer = InventorySaveData.serializer(),
             onSave = { this.asData() },
@@ -67,19 +69,28 @@ class Inventory(
         currAccessory.value = data.equipment.currAccessory
 
         val trinketQuantities = data.trinkets.associate { it.id to it.quantity }
-        fillListWithQuantities(trinkets, data.trinkets) {
-            copy(quantity = trinketQuantities[id] ?: quantity)
-        }
+        trinkets.clear()
+        trinkets +=
+            registry.mapIds(data.trinkets.map { it.id }) {
+                copy(quantity = trinketQuantities[id] ?: quantity)
+            }
 
         val consumableQuantities = data.consumables.associate { it.id to it.quantity }
-        fillListWithQuantities(trinkets, data.consumables) {
-            copy(quantity = consumableQuantities[id] ?: quantity)
-        }
+        consumables.clear()
+        consumables +=
+            registry.mapIds(data.consumables.map { it.id }) {
+                copy(quantity = consumableQuantities[id] ?: quantity)
+            }
 
         // Equipment
-        fillListWithQuantities(weapons, data.weapons)
-        fillListWithQuantities(armors, data.armors)
-        fillListWithQuantities(accessories, data.accessories)
+        weapons.clear()
+        weapons += registry.mapIds(data.weapons.map { it.id })
+
+        armors.clear()
+        armors += registry.mapIds(data.armors.map { it.id })
+
+        accessories.clear()
+        accessories += registry.mapIds(data.accessories.map { it.id })
     }
 
     /**
@@ -207,15 +218,5 @@ class Inventory(
         check(item in consumables) { "Item not found in inventory." }
         consumables.remove(item)
         onUseItem.emit(item)
-    }
-
-    // ============ HELPER FUNCTIONS ===================
-    private inline fun <reified T : Item> fillListWithQuantities(
-        list: MutableList<T>,
-        dataList: List<InventoryEntry>,
-        copyMethod: T.() -> Unit = {},
-    ) {
-        list.clear()
-        list += registry.mapIds(dataList.map { it.id }, copyMethod)
     }
 }
