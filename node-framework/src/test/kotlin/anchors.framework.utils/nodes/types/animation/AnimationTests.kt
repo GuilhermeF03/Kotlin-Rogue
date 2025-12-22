@@ -1,13 +1,13 @@
-package anchors.framework.utils.nodes.types
+package anchors.framework.utils.nodes.types.animation
 
 import anchors.framework.managers.ManagersRegistry
 import anchors.framework.nodes.SceneManager
+import anchors.framework.nodes.types.animation.Animation
+import anchors.framework.nodes.types.animation.AnimationPlayer
+import anchors.framework.nodes.types.animation.PlayMode
+import anchors.framework.nodes.types.animation.tracks.ActionTrack
+import anchors.framework.nodes.types.animation.tracks.PropertyTrack
 import anchors.framework.nodes.types.empty.EmptyNode
-import anchors.framework.nodes.types.visual.animation.Animation
-import anchors.framework.nodes.types.visual.animation.AnimationPlayer
-import anchors.framework.nodes.types.visual.animation.PlayMode
-import anchors.framework.nodes.types.visual.animation.tracks.ActionTrack
-import anchors.framework.nodes.types.visual.animation.tracks.PropertyTrack
 import anchors.framework.systems.AnimationSystem
 import com.badlogic.gdx.math.Vector2
 import org.junit.jupiter.api.BeforeAll

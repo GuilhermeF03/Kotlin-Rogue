@@ -3,7 +3,8 @@ package anchors.framework.systems
 import anchors.framework.nodes.core.GlobalNodeSystem
 import anchors.framework.nodes.core.Node
 import anchors.framework.nodes.core.UpdatePhase
-import anchors.framework.nodes.types.visual.animation.AnimationPlayer
+import anchors.framework.nodes.types.animation.AnimationPlayer
+import anchors.framework.nodes.types.animation.SpriteAnimation
 import ktx.log.logger
 
 class AnimationSystem :
@@ -21,12 +22,17 @@ class AnimationSystem :
         val player = node as AnimationPlayer
         val anim = player.currentAnimation ?: return
 
-        val prevTime = player.time
+        val prevTime = player.normalizedTime
         player.update(delta)
 
         anim.tracks.forEach { track ->
-            queuedUpdates += track.collectUpdates(prevTime, player.time)
+            queuedUpdates += track.collectUpdates(prevTime, player.normalizedTime)
         }
+
+        if(anim is SpriteAnimation<*>){
+            queuedUpdates += {  }
+        }
+
     }
 
     override fun afterProcess(delta: Float) {

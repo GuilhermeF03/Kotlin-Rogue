@@ -8,6 +8,7 @@ import anchors.framework.nodes.types.physics.fixture.Collider2D
 import anchors.framework.nodes.types.physics.shape.BoxShape2D
 import anchors.framework.nodes.types.physics.shape.CircleShape2D
 import anchors.framework.systems.physics.PhysicsSystem
+import anchors.framework.utils.headlessApp
 import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.backends.headless.HeadlessApplication
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration
@@ -34,29 +35,11 @@ class PhysicsBody2DTests {
             sceneManager.getSystem(PhysicsSystem::class).replaceWorld()
         }
 
-        @BeforeAll
-        @JvmStatic
-        fun initGdx() {
-            HeadlessApplication(
-                object : ApplicationListener {
-                    override fun create() {}
-
-                    override fun resize(
-                        width: Int,
-                        height: Int,
-                    ) {}
-
-                    override fun render() {}
-
-                    override fun pause() {}
-
-                    override fun resume() {}
-
-                    override fun dispose() {}
-                },
-                HeadlessApplicationConfiguration(),
-            )
-        }
+       @BeforeAll
+       @JvmStatic
+       fun setupHeadlessApplication() {
+           headlessApp()
+       }
     }
 
     @Test

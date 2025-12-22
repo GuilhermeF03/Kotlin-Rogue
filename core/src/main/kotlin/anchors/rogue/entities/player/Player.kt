@@ -8,7 +8,7 @@ import anchors.framework.nodes.types.physics.body.DynamicBody2D
 import anchors.framework.nodes.types.physics.fixture.Collider2D
 import anchors.framework.nodes.types.physics.shape.CircleShape2D
 import anchors.framework.nodes.types.visual.Sprite2D
-import anchors.framework.nodes.types.visual.animation.AnimationPlayer
+import anchors.framework.nodes.types.animation.AnimationPlayer
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 

@@ -1,4 +1,4 @@
-package anchors.framework.nodes.types.visual.animation
+package anchors.framework.nodes.types.animation
 
 class Key<T> internal constructor(
     val time: Float,

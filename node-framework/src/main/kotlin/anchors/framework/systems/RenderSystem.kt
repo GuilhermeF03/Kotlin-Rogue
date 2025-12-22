@@ -6,6 +6,8 @@ import anchors.framework.nodes.types.camera.Camera2D
 import anchors.framework.nodes.types.visual.AnimatedSprite2D
 import anchors.framework.nodes.types.visual.Sprite2D
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ktx.graphics.use
 import ktx.log.logger
@@ -51,10 +53,16 @@ class RenderSystem(
                             sprite.draw(b)
                         }
 
-                        is AnimatedSprite2D -> {
-                            val sprite = node.currFrame ?: return
-                            sprite.setCenter(node.globalPosition.x, node.globalPosition.y)
-                            sprite.draw(b)
+                        is AnimatedSprite2D<*> -> {
+                            node.currFrame?.let {
+                                batch.draw(
+                                    it,
+                                    node.globalPosition.x,
+                                    node.globalPosition.y,
+                                    it.regionWidth * node.scale.x,
+                                    it.regionHeight * node.scale.y,
+                                )
+                            }
                         }
                     }
                 }

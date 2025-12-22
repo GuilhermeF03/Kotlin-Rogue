@@ -2,9 +2,9 @@ package anchors.rogue.entities.player
 
 import anchors.framework.misc.toPixels
 import anchors.framework.nodes.core.Behavior
-import anchors.framework.nodes.types.visual.animation.Animation
-import anchors.framework.nodes.types.visual.animation.PlayMode
-import anchors.framework.nodes.types.visual.animation.tracks.ActionTrack
+import anchors.framework.nodes.types.animation.Animation
+import anchors.framework.nodes.types.animation.PlayMode
+import anchors.framework.nodes.types.animation.tracks.ActionTrack
 import ktx.log.logger
 import ktx.math.times
 import kotlin.time.Clock
