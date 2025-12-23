@@ -4,7 +4,6 @@ import anchors.framework.nodes.core.GlobalNodeSystem
 import anchors.framework.nodes.core.Node
 import anchors.framework.nodes.core.UpdatePhase
 import anchors.framework.nodes.types.animation.AnimationPlayer
-import anchors.framework.nodes.types.animation.SpriteAnimation
 import ktx.log.logger
 
 class AnimationSystem :
@@ -28,11 +27,6 @@ class AnimationSystem :
         anim.tracks.forEach { track ->
             queuedUpdates += track.collectUpdates(prevTime, player.normalizedTime)
         }
-
-        if(anim is SpriteAnimation<*>){
-            queuedUpdates += {  }
-        }
-
     }
 
     override fun afterProcess(delta: Float) {

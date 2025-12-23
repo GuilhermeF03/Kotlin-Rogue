@@ -11,7 +11,7 @@ abstract class Track<T>{
     val keyCount: Int
         get() = keys.size
 
-    protected val animation: Animation<*>
+    protected val animation: Animation
         get() = Animation.currentParent.get()
             ?: error("Track must be inside Animation block")
 

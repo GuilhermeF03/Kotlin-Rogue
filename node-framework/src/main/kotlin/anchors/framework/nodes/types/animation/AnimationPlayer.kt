@@ -2,6 +2,7 @@ package anchors.framework.nodes.types.animation
 
 import anchors.framework.nodes.core.Behavior
 import anchors.framework.nodes.core.Node
+import anchors.framework.signals.createSignal
 import anchors.framework.systems.AnimationSystem
 import com.badlogic.gdx.math.Vector2
 import ktx.log.logger
@@ -25,14 +26,18 @@ class AnimationPlayer(
     block,
 ) {
 
-    private val animations = mutableMapOf<String, Animation<*>>()
+    private val animations = mutableMapOf<String, Animation>()
     private val logger = logger<AnimationPlayer>()
 
     private var time = 0f
     private var direction = 1
     private var playing = true
 
-    var currentAnimation: Animation<*>? = null
+    // Signals
+    val onAnimationChanged = createSignal<Animation>()
+    val onAnimationFinished = createSignal<Animation?>()
+
+    var currentAnimation: Animation? = null
         private set
 
     val normalizedTime: Float
@@ -53,7 +58,8 @@ class AnimationPlayer(
         }
     }
 
-    fun addAnimation(animation: Animation<*>) {
+    fun addAnimation(animation: Animation) {
+        animation.finalizeTracks()
         animations[animation.name] = animation
     }
 
@@ -75,6 +81,8 @@ class AnimationPlayer(
                 direction = 1
             }
         }
+
+        onAnimationChanged.emit(anim)
     }
 
     fun stop() {
@@ -129,6 +137,7 @@ class AnimationPlayer(
                 else -> {}
             }
         }
+        onAnimationFinished.emit(currentAnimation)
     }
 }
 

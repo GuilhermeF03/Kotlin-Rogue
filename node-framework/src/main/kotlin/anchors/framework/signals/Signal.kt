@@ -1,7 +1,9 @@
 package anchors.framework.signals
 
 import java.lang.ref.WeakReference
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.TimeUnit
 
 /**
  * Generic weak-reference signal-slot implementation.
@@ -51,6 +53,7 @@ class NoArgSignal : Signal<() -> Unit> {
     fun emit() = callbacks.forEach { it() }
 
     override fun clear() = callbacks.clear()
+
 }
 
 /** 1-argument signal */
@@ -64,6 +67,7 @@ class OneArgSignal<A> : Signal<(A) -> Unit> {
     fun emit(a: A) = callbacks.forEach { it(a) }
 
     override fun clear() = callbacks.clear()
+
 }
 
 /** 2-argument signal */
@@ -80,6 +84,7 @@ class TwoArgsSignal<A, B> : Signal<(A, B) -> Unit> {
     ) = callbacks.forEach { it(a, b) }
 
     override fun clear() = callbacks.clear()
+
 }
 
 // Factory functions

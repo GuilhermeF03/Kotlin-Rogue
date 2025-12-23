@@ -1,9 +1,12 @@
 package anchors.framework.utils.nodes.types.animation
 
+import anchors.framework.data.assets.AssetsManager
+import anchors.framework.data.assets.FileSource
 import anchors.framework.managers.ManagersRegistry
 import anchors.framework.nodes.SceneManager
+import anchors.framework.nodes.types.animation.Animation
 import anchors.framework.nodes.types.animation.AnimationPlayer
-import anchors.framework.nodes.types.animation.SpriteAnimation
+import anchors.framework.nodes.types.animation.tracks.ActionTrack
 import anchors.framework.nodes.types.animation.tracks.PropertyTrack
 import anchors.framework.nodes.types.animation.tracks.SpriteTrack
 import anchors.framework.nodes.types.empty.EmptyNode
@@ -14,19 +17,23 @@ import anchors.framework.utils.headlessApp
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import org.junit.jupiter.api.BeforeAll
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 
 class SpriteAnimationTests {
+    val assetsManager by lazy { ManagersRegistry.get(AssetsManager::class) }
 
     companion object {
         @BeforeAll
         @JvmStatic
         fun setup() {
-            ManagersRegistry.register(
-                SceneManager {
-                    //RenderSystem(0f, 0f)
+            ManagersRegistry.apply {
+                // Scene Manager
+                register(SceneManager{
                     AnimationSystem()
-                },
-            )
+                })
+
+                register(AssetsManager())
+            }
         }
 
         @BeforeAll
@@ -37,25 +44,60 @@ class SpriteAnimationTests {
     }
 
     @Test
-    fun `should create empty animation`(){
-        val emptyNode = EmptyNode("root"){
+    fun `should create empty animation`() {
+        val emptyNode = EmptyNode("root") {
             AnimatedSprite2D<TextureRegion>("sprite")
             AnimationPlayer("player")
         }
 
-        val animation = SpriteAnimation("animation", arrayOf()){
-            val animatedSprite = emptyNode.getNode<AnimatedSprite2D<TextureRegion>>("sprite")
+        val frames = arrayOf(
+            TextureRegion(),
+            TextureRegion(),
+            TextureRegion(),
+        )
 
-            SpriteTrack(
-                animatedSprite,
-                0.5f to 1,
-                1.0f to 2,
-            )
+        val executedFrames = mutableListOf<Int>()
+
+        val animation = Animation("animation", 1f) {
+            val animatedSprite =
+                emptyNode.getNode<AnimatedSprite2D<TextureRegion>>("sprite")
+
+            SpriteTrack(animatedSprite, frames) {
+                keyFrame(0.2f, 0)
+                keyFrame(0.5f, 1)
+                keyFrame(1f, 2)
+            }
+
+            ActionTrack {
+                key(0f) {
+                    executedFrames += frames.indexOf(animatedSprite.currFrame)
+                }
+                key(0.5f) {
+                    executedFrames += frames.indexOf(animatedSprite.currFrame)
+                }
+                key(1f) {
+                    executedFrames += frames.indexOf(animatedSprite.currFrame)
+                }
+            }
         }
 
-        val animationPlayer = emptyNode.getNode<AnimationPlayer>("player")
+        val animationPlayer =
+            emptyNode.getNode<AnimationPlayer>("player")
+
         animationPlayer.addAnimation(animation)
 
         animationPlayer.play("animation")
+
+        val sceneManager = ManagersRegistry.get(SceneManager::class)
+        val animationSystem = sceneManager.getSystem(AnimationSystem::class)
+
+        // 🔑 Drive time forward
+        repeat(11) {
+            animationSystem.tick(0.1f)
+        }
+
+        // ✅ Assert synchronously
+        assertContentEquals(listOf(0, 1, 2), executedFrames)
     }
+
 }
