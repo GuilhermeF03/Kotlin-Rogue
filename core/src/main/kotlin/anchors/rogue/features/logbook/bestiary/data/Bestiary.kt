@@ -1,10 +1,10 @@
 package anchors.rogue.features.logbook.bestiary.data
 
-import anchors.framework.data.registry.IdRegistry
-import anchors.framework.saving.SaveDestination
-import anchors.framework.saving.registerSaveModule
-import anchors.framework.signals.createSignal
+import canopy.core.signals.createSignal
+import canopy.data.registry.IdRegistry
+import canopy.data.saving.registerSaveModule
 import com.badlogic.gdx.Gdx
+import kotlinx.serialization.builtins.serializer
 
 const val BESTIARY_JSON = "data/logbook/bestiary/bestiary.json"
 
@@ -29,8 +29,8 @@ class Bestiary(
 
     init {
         // Register save module to save bestiary data onto player save file
-        registerSaveModule<BestiarySaveData>(
-            SaveDestination.PlayerData,
+        registerSaveModule(
+            "player",
             "bestiary",
             serializer = BestiarySaveData.serializer(),
             onSave = { asData() },

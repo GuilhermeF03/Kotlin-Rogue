@@ -1,10 +1,9 @@
 package anchors.rogue.entities.player
 
-import anchors.framework.misc.toPixels
-import anchors.framework.nodes.core.Behavior
-import anchors.framework.nodes.types.animation.Animation
-import anchors.framework.nodes.types.animation.PlayMode
-import anchors.framework.nodes.types.animation.tracks.ActionTrack
+import canopy.core.nodes.core.Behavior
+import canopy.graphics.nodes.animation.Animation
+import canopy.graphics.nodes.animation.tracks.ActionTrack
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import ktx.log.logger
 import ktx.math.times
 import kotlin.time.Clock
@@ -44,24 +43,24 @@ class PlayerController(
                 }
             }
 
-        node?.apply {
-            animationPlayer.addAnimation(testAnimation)
-            animationPlayer.play("test")
-        }
+//        node?.apply {
+//            animationPlayer.addAnimation(testAnimation)
+//            animationPlayer.play("test")
+//        }
     }
 
     override fun onPhysicsUpdate(delta: Float) {
-        node?.apply {
-            val inputVector =
-                inputManager
-                    .getInputVector(
-                        "move-left",
-                        "move-right",
-                        "move-down",
-                        "move-up",
-                    ).nor() * delta * playerSpeed
-
-            moveInstant(inputVector.toPixels())
-        }
+//        node?.apply {
+//            val inputVector =
+//                inputManager
+//                    .getInputVector(
+//                        "move-left",
+//                        "move-right",
+//                        "move-down",
+//                        "move-up",
+//                    ) * delta * playerSpeed
+//
+//            moveInstant(inputVector.toPixels())
+//        }
     }
 }

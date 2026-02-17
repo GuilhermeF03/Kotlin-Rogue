@@ -1,10 +1,10 @@
 package anchors.rogue.features.logbook.bestiary
 
-import anchors.framework.data.registry.IdRegistry
-import anchors.framework.managers.ManagersRegistry
-import anchors.framework.saving.SaveManager
 import anchors.rogue.features.logbook.bestiary.data.Bestiary
 import anchors.rogue.features.logbook.bestiary.data.BestiaryEntry
+import canopy.core.managers.ManagersRegistry
+import canopy.data.registry.IdRegistry
+import canopy.data.saving.SaveManager
 import org.junit.jupiter.api.BeforeAll
 import kotlin.test.Test
 import kotlin.test.assertEquals

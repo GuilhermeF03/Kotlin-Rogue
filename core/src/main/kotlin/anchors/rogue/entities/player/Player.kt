@@ -1,14 +1,15 @@
 package anchors.rogue.entities.player
 
-import anchors.framework.data.assets.FileSource
-import anchors.framework.nodes.core.Behavior
-import anchors.framework.nodes.core.nodeRef
-import anchors.framework.nodes.types.camera.Camera2D
-import anchors.framework.nodes.types.physics.body.DynamicBody2D
-import anchors.framework.nodes.types.physics.fixture.Collider2D
-import anchors.framework.nodes.types.physics.shape.CircleShape2D
-import anchors.framework.nodes.types.visual.Sprite2D
-import anchors.framework.nodes.types.animation.AnimationPlayer
+import canopy.core.managers.ManagersRegistry
+import canopy.core.nodes.core.Behavior
+import canopy.core.nodes.core.nodeRef
+import canopy.data.assets.AssetsManager
+import canopy.data.assets.FileSource
+import canopy.graphics.nodes.camera.Camera2D
+import canopy.graphics.nodes.visual.Sprite2D
+import canopy.physics.nodes.body.DynamicBody2D
+import canopy.physics.nodes.fixture.Collider2D
+import canopy.physics.nodes.shape.CircleShape2D
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 
@@ -31,27 +32,28 @@ class Player(
     // DSL
     block: Player.() -> Unit = {},
 ) : DynamicBody2D<Player>(
-        name,
-        script,
-        position,
-        scale,
-        rotation,
-        groups,
+        name = name,
+        script = script,
+        position = position,
+        scale = scale,
+        rotation = rotation,
+        groups = groups,
         block = {
+            val assetsManager = ManagersRegistry.get(AssetsManager::class)
             // Root structure logic ---
             val texture =
                 assetsManager.loadTexture("logo.png", source = FileSource.Internal) {
                     setFilter(Linear, Linear)
                 }
 
-            Camera2D("camera", nodeRef(this))
+            Camera2D("camera", targetRef = nodeRef(this))
             Sprite2D("sprite", texture) // TODO: REPLACE WITH A *ANIMATED_SPRITE_2D* FOR ANIMATION
             Collider2D("body", CircleShape2D(200f))
-            AnimationPlayer("animationPlayer")
+            // AnimationPlayer("animationPlayer")
 
             // Call for custom nodes ---
             block()
         },
     ) {
-    val animationPlayer: AnimationPlayer by lazy { getNode("animationPlayer") }
+    // val animationPlayer: AnimationPlayer by lazy { getNode("animationPlayer") }
 }

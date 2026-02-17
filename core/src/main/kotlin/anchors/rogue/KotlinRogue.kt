@@ -1,56 +1,69 @@
 package anchors.rogue
 
-import anchors.framework.data.assets.AssetsManager
-import anchors.framework.input.InputSystem
-import anchors.framework.managers.ManagersRegistry
-import anchors.framework.nodes.SceneManager
-import anchors.framework.saving.SaveManager
-import anchors.framework.systems.AnimationSystem
-import anchors.framework.systems.RenderSystem
-import anchors.framework.systems.physics.PhysicsSystem
-import anchors.rogue.configs.InputConfig
-import anchors.rogue.features.logbook.LogbookManager
 import anchors.rogue.screens.DemoScreen
-import ktx.app.KtxGame
-import ktx.app.KtxScreen
-import ktx.async.KtxAsync
+import canopy.backends.gui.GuiCanopyGame
+import canopy.core.nodes.SceneManager
+import canopy.graphics.systems.RenderSystem
+import canopy.physics.systems.PhysicsSystem
 
 const val GAME_WIDTH = 1280F
 const val GAME_HEIGHT = 720F
 
-class KotlinRogue : KtxGame<KtxScreen>() {
-    override fun create() {
-        KtxAsync.initiate()
+// class KotlinRogue : KtxGame<KtxScreen>() {
+//    override fun create() {
+//        KtxAsync.initiate()
+//
+//        // Register and setup global managers - global access to data across screens and nodes
+//        ManagersRegistry
+//            .apply {
+//                register(AssetsManager())
+//                register(SaveManager())
+//                register(LogbookManager())
+//                register(
+//                    SceneManager {
+//                        // Register global systems here
+//                        RenderSystem(GAME_WIDTH, GAME_HEIGHT)
+//                        PhysicsSystem()
+//                        InputSystem(*InputConfig.getInputMappings())
+//                        AnimationSystem()
+//                    },
+//                )
+//            }.setup()
+//
+//        addScreen(DemoScreen())
+//        setScreen<DemoScreen>()
+//    }
+//
+//    override fun resize(
+//        width: Int,
+//        height: Int,
+//    ) {
+//        ManagersRegistry.get(SceneManager::class).resize(width, height)
+//    }
+//
+//    override fun dispose() {
+//        ManagersRegistry.teardown()
+//    }
+// }
 
-        // Register global systems here
-        ManagersRegistry.apply {
-            register(AssetsManager())
-            register(SaveManager())
-            register(LogbookManager())
-            register(
-                SceneManager {
-                    RenderSystem(GAME_WIDTH, GAME_HEIGHT)
-                    PhysicsSystem()
-                    InputSystem(*InputConfig.getInputMappings())
-                    AnimationSystem()
-                },
-            )
+fun main(args: Array<String>) {
+    val sceneManager =
+        SceneManager {
+            // Register global systems here
+            RenderSystem(GAME_WIDTH, GAME_HEIGHT)
+            PhysicsSystem()
+            // InputSystem(*InputConfig.getInputMappings())
+            // AnimationSystem()
         }
 
-        // Register and setup global managers - global access to data across screens and nodes
-        ManagersRegistry.setup()
-        addScreen(DemoScreen())
-        setScreen<DemoScreen>()
-    }
+    val game =
+        GuiCanopyGame(
+            sceneManager,
+            onCreate = {
+                it.addScreen(DemoScreen())
+                it.setScreen<DemoScreen>()
+            },
+        )
 
-    override fun resize(
-        width: Int,
-        height: Int,
-    ) {
-        ManagersRegistry.get(SceneManager::class).resize(width, height)
-    }
-
-    override fun dispose() {
-        ManagersRegistry.teardown()
-    }
+    game.launch()
 }

@@ -1,6 +1,6 @@
 package anchors.rogue.features.logbook.bestiary.data
 
-import anchors.framework.data.registry.IdEntry
+import canopy.data.registry.IdEntry
 import kotlinx.serialization.Serializable
 
 /**

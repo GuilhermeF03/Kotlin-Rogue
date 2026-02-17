@@ -2,12 +2,12 @@
 
 package anchors.rogue.features.logbook.inventory
 
-import anchors.framework.data.registry.IdRegistry
-import anchors.framework.managers.ManagersRegistry
-import anchors.framework.saving.SaveManager
 import anchors.rogue.features.logbook.inventory.data.Inventory
 import anchors.rogue.features.stats.data.Stats
 import anchors.rogue.items.EquippableItem
+import canopy.core.managers.ManagersRegistry
+import canopy.data.registry.IdRegistry
+import canopy.data.saving.SaveManager
 import org.junit.jupiter.api.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

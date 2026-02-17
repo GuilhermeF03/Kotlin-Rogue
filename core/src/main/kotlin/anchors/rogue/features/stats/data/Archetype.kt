@@ -1,7 +1,7 @@
 package anchors.rogue.features.stats.data
 
-import anchors.framework.data.registry.IdEntry
 import anchors.rogue.features.combat.Skill
+import canopy.data.registry.IdEntry
 
 /**
  * Represents a character archetype or class in the game

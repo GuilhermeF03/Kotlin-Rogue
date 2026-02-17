@@ -1,14 +1,13 @@
 package anchors.rogue.features.logbook.inventory.data
 
-import anchors.framework.data.registry.IdRegistry
-import anchors.framework.saving.SaveDestination
-import anchors.framework.saving.registerSaveModule
-import anchors.framework.signals.OneArgSignal
-import anchors.framework.signals.SignalVal
-import anchors.framework.signals.asSignalVal
-import anchors.framework.signals.createSignal
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
+import canopy.core.signals.OneArgSignal
+import canopy.core.signals.SignalVal
+import canopy.core.signals.asSignalVal
+import canopy.core.signals.createSignal
+import canopy.data.registry.IdRegistry
+import canopy.data.saving.registerSaveModule
 import com.badlogic.gdx.Gdx
 import kotlin.reflect.KClass
 
@@ -45,8 +44,8 @@ class Inventory(
     val onUseItem: OneArgSignal<Item.Consumable> = createSignal<Item.Consumable>()
 
     init {
-        registerSaveModule<InventorySaveData>(
-            SaveDestination.PlayerData,
+        registerSaveModule(
+            "player",
             id = "inventory",
             serializer = InventorySaveData.serializer(),
             onSave = { this.asData() },
@@ -145,16 +144,25 @@ class Inventory(
      */
     fun sellItem(item: Item) {
         when (item) {
-            is Item.Trinket ->
+            is Item.Trinket -> {
                 check(trinkets.remove(item)) { "Item not found in inventory." }
-            is Item.Consumable ->
+            }
+
+            is Item.Consumable -> {
                 check(consumables.remove(item)) { "Item not found in inventory." }
-            is EquippableItem.Weapon ->
+            }
+
+            is EquippableItem.Weapon -> {
                 check(weapons.remove(item)) { "Item not found in inventory." }
-            is EquippableItem.Armor ->
+            }
+
+            is EquippableItem.Armor -> {
                 check(armors.remove(item)) { "Item not found in inventory." }
-            is EquippableItem.Accessory ->
+            }
+
+            is EquippableItem.Accessory -> {
                 check(accessories.remove(item)) { "Item not found in inventory." }
+            }
         }
         val sellValue = item.sellValue
         gold.value += sellValue
@@ -172,10 +180,12 @@ class Inventory(
                 check(item in weapons) { "Item not found in inventory." }
                 currWeapon.value = item
             }
+
             is EquippableItem.Armor -> {
                 check(item in armors) { "Item not found in inventory." }
                 currArmor.value = item
             }
+
             is EquippableItem.Accessory -> {
                 check(item in accessories) { "Item not found in inventory." }
                 currAccessory.value = item
@@ -197,15 +207,20 @@ class Inventory(
                 checkNotNull(currWeapon.value) { "No weapon is currently equipped" }
                 currWeapon.value = null
             }
+
             EquippableItem.Armor::class -> {
                 checkNotNull(currArmor.value) { "No armor is currently equipped" }
                 currArmor.value = null
             }
+
             EquippableItem.Accessory::class -> {
                 checkNotNull(currAccessory.value) { "No accessory is currently equipped" }
                 currAccessory.value = null
             }
-            else -> throw IllegalStateException("Unknown item type: $kClass")
+
+            else -> {
+                throw IllegalStateException("Unknown item type: $kClass")
+            }
         }
     }
 

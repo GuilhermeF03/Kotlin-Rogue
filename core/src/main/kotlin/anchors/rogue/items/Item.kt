@@ -1,6 +1,6 @@
 package anchors.rogue.items
 
-import anchors.framework.data.registry.IdEntry
+import canopy.data.registry.IdEntry
 import kotlinx.serialization.Serializable
 
 /**
