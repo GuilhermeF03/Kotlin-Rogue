@@ -2,6 +2,8 @@
 
 package anchors.rogue.features.logbook.inventory
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import anchors.rogue.features.logbook.inventory.data.Inventory
 import anchors.rogue.features.stats.data.Stats
 import anchors.rogue.items.EquippableItem
@@ -9,8 +11,6 @@ import canopy.core.managers.ManagersRegistry
 import canopy.data.registry.IdRegistry
 import canopy.data.saving.SaveManager
 import org.junit.jupiter.api.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 @DisplayName("Inventory Tests")
 class InventoryTests {
@@ -22,7 +22,9 @@ class InventoryTests {
         @JvmStatic
         @BeforeAll
         fun setup() {
-            ManagersRegistry.register(saveManager)
+            ManagersRegistry.withScope {
+                register(saveManager)
+            }
         }
     }
 
@@ -34,7 +36,7 @@ class InventoryTests {
             val sword =
                 EquippableItem.Weapon(
                     name = "Sword",
-                    stats = Stats(),
+                    stats = Stats()
                 )
             var signalEmitted = false
 
@@ -56,7 +58,7 @@ class InventoryTests {
                 EquippableItem.Armor(
                     name = "Shield",
                     stats = Stats(),
-                    sellValue = 50,
+                    sellValue = 50
                 )
             inventory.armors.add(shield)
             var goldSignalEmitted = false
@@ -125,7 +127,7 @@ class InventoryTests {
                 EquippableItem.Accessory(
                     name = "Ring",
                     stats = Stats(),
-                    sellValue = 30,
+                    sellValue = 30
                 )
             assertThrows<IllegalStateException> { inventory.sellItem(ring) }
         }
@@ -139,7 +141,7 @@ class InventoryTests {
             val sword =
                 EquippableItem.Weapon(
                     name = "Sword",
-                    stats = Stats(),
+                    stats = Stats()
                 )
             var signalEmitted = false
             inventory.currWeapon connect { signalEmitted = true }
@@ -156,7 +158,7 @@ class InventoryTests {
             val shield =
                 EquippableItem.Armor(
                     name = "Shield",
-                    stats = Stats(),
+                    stats = Stats()
                 )
             var signalEmitted = false
             inventory.currArmor.connect { signalEmitted = true }
@@ -173,7 +175,7 @@ class InventoryTests {
             val ring =
                 EquippableItem.Accessory(
                     name = "Ring",
-                    stats = Stats(),
+                    stats = Stats()
                 )
             inventory.accessories.add(ring)
             inventory.equipItem(ring)
@@ -192,7 +194,7 @@ class InventoryTests {
             val axe =
                 EquippableItem.Weapon(
                     name = "Axe",
-                    stats = Stats(),
+                    stats = Stats()
                 )
             assertThrows<IllegalStateException> { inventory.equipItem(axe) }
         }

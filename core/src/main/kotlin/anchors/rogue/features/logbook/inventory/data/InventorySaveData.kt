@@ -18,21 +18,17 @@ data class InventorySaveData(
 )
 
 @Serializable
-data class InventoryEntry(
-    val id: String,
-    val quantity: Int,
-)
+data class InventoryEntry(val id: String, val quantity: Int)
 
-fun Inventory.asData(): InventorySaveData =
-    InventorySaveData(
-        gold.value,
-        EquipmentData(currWeapon.value, currArmor.value, currAccessory.value),
-        trinkets.map { InventoryEntry(it.id, it.quantity) },
-        consumables.map { InventoryEntry(it.id, it.quantity) },
-        weapons.map { InventoryEntry(it.id, it.quantity) },
-        armors.map { InventoryEntry(it.id, it.quantity) },
-        accessories.map { InventoryEntry(it.id, it.quantity) },
-    )
+fun Inventory.asData(): InventorySaveData = InventorySaveData(
+    gold.value,
+    EquipmentData(currWeapon.value, currArmor.value, currAccessory.value),
+    trinkets.map { InventoryEntry(it.id, it.quantity) },
+    consumables.map { InventoryEntry(it.id, it.quantity) },
+    weapons.map { InventoryEntry(it.id, it.quantity) },
+    armors.map { InventoryEntry(it.id, it.quantity) },
+    accessories.map { InventoryEntry(it.id, it.quantity) }
+)
 
 @Serializable
 data class EquipmentData(

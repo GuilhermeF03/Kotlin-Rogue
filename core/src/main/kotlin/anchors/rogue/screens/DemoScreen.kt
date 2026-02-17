@@ -1,9 +1,9 @@
 package anchors.rogue.screens
 
 import anchors.rogue.entities.player.Player
-import canopy.core.app.CanopyScreen
+import canopy.app.CanopyScreen
+import canopy.core.logging.logger
 import canopy.core.managers.ManagersRegistry
-import canopy.core.nodes.SceneManager
 import canopy.core.nodes.core.asSceneRoot
 import canopy.core.nodes.types.empty.EmptyNode
 import canopy.data.assets.AssetsManager
@@ -18,7 +18,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import ktx.assets.disposeSafely
-import ktx.log.logger
 
 class DemoScreen : CanopyScreen() {
     val stage = Stage(ScreenViewport())
@@ -26,7 +25,6 @@ class DemoScreen : CanopyScreen() {
     // private val world: World = coreWorld(stage)
     private val logger = logger<DemoScreen>()
 
-    private val sceneManager = ManagersRegistry.get(SceneManager::class)
     private val assetsManager = ManagersRegistry.get(AssetsManager::class)
     // private val physicsSystem = sceneManager.getSystem(PhysicsSystem::class)
 
@@ -38,14 +36,10 @@ class DemoScreen : CanopyScreen() {
 
     // Entities
 
-    var initialized = false
+    override fun setup() {
+        super.setup()
 
-    override fun show() {
-        if (initialized) return
-
-        initialized = true
-
-        logger.info { "Show" }
+        logger.info { "Setup" }
         sceneManager.getSystem(PhysicsSystem::class).replaceWorld()
 
         EmptyNode("root") {
@@ -55,34 +49,28 @@ class DemoScreen : CanopyScreen() {
             // Static Logo
             StaticBody2D(
                 "static-logo-area",
-                position = Vector2(-200f, 200f),
+                position = Vector2(-200f, 200f)
             ) {
                 Collider2D(
                     "collider",
-                    shape = CircleShape2D(50f),
+                    shape = CircleShape2D(50f)
                 )
                 Sprite2D("logo-2", texture = image)
             }
 
             StaticBody2D(
                 "static-logo-body",
-                position = Vector2(-400f, 200f),
+                position = Vector2(-400f, 200f)
             ) {
                 Collider2D(
                     "collider",
-                    shape = CircleShape2D(100f),
+                    shape = CircleShape2D(100f)
                 )
                 Sprite2D("logo-2", texture = image)
             }
         }.asSceneRoot()
 
         logger.info { "SceneRoot" }
-    }
-
-    // Similar to "onUpdate" in other engines
-    override fun render(delta: Float) {
-        super.render(delta)
-        sceneManager.tick(delta)
     }
 
     // Clean up resources when the screen is disposed

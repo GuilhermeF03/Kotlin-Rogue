@@ -33,11 +33,7 @@ enum class SkillCategory {
 }
 
 @Serializable
-data class SkillEffect(
-    val type: EffectType,
-    val multiplier: Double = 0.0,
-    val duration: Int = 0,
-)
+data class SkillEffect(val type: EffectType, val multiplier: Double = 0.0, val duration: Int = 0)
 
 @Serializable
 enum class EffectType {

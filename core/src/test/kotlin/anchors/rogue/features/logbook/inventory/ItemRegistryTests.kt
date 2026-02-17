@@ -1,12 +1,12 @@
 package anchors.rogue.features.logbook.inventory
 
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
 import canopy.data.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.Test
-import kotlin.test.assertContentEquals
 
 class ItemRegistryTests {
     val sword = EquippableItem.Weapon(name = "sword", maxDamage = 3)
@@ -33,7 +33,7 @@ class ItemRegistryTests {
                 assertThrows<IllegalArgumentException> {
                     registry.mapIds<Item.Consumable>(listOf(consumable.id))
                 }
-            },
+            }
         )
     }
 

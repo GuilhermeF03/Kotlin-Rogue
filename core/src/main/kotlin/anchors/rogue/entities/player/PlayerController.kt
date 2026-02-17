@@ -1,13 +1,13 @@
 package anchors.rogue.entities.player
 
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import canopy.core.nodes.core.Behavior
 import canopy.graphics.nodes.animation.Animation
 import canopy.graphics.nodes.animation.tracks.ActionTrack
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import ktx.log.logger
 import ktx.math.times
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 // CONSTANTS - Can  be tinkered in nodes as needed
 

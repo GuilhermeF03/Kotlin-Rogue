@@ -1,18 +1,18 @@
 package anchors.rogue.features.logbook.journal
 
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import anchors.rogue.features.logbook.journal.data.JournalEntry
 import canopy.data.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.Test
-import kotlin.test.assertContentEquals
 
 class JournalRegistryTests {
     val entries =
         listOf(
             JournalEntry("sea"),
             JournalEntry("castle"),
-            JournalEntry("princess"),
+            JournalEntry("princess")
         )
 
     val registry = IdRegistry<JournalEntry>()
@@ -25,7 +25,7 @@ class JournalRegistryTests {
                 assertThrows<IllegalArgumentException> {
                     registry.mapIds<JournalEntry>(entries.map { it.id })
                 }
-            },
+            }
         )
     }
 

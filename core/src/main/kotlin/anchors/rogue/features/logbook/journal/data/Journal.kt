@@ -10,7 +10,7 @@ const val JOURNAL_LOCATION = "data/logbook/journal/journal.json"
 class Journal(
     private val registry: IdRegistry<JournalEntry> =
         IdRegistry<JournalEntry>(
-            Gdx.files.internal(JOURNAL_LOCATION),
+            Gdx.files.internal(JOURNAL_LOCATION)
         ).also { it.loadRegistry<JournalEntry>() },
 ) {
     // Data
@@ -25,7 +25,7 @@ class Journal(
             id = "journal",
             serializer = JournalSaveData.serializer(),
             onSave = { this.asData() },
-            onLoad = ::loadData,
+            onLoad = ::loadData
         )
     }
 

@@ -1,10 +1,10 @@
 package anchors.rogue.features.logbook.journal
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import anchors.rogue.features.logbook.journal.data.Journal
 import anchors.rogue.features.logbook.journal.data.JournalEntry
 import canopy.data.registry.IdRegistry
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class JournalTests {
     val bestiary = Journal(IdRegistry())

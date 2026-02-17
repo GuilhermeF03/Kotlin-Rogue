@@ -22,7 +22,7 @@ class Player(
     script: (node: Player) -> Behavior<Player>? = {
         PlayerController(
             it,
-            2000f,
+            2000f
         )
     },
     position: Vector2 = Vector2.Zero,
@@ -32,28 +32,28 @@ class Player(
     // DSL
     block: Player.() -> Unit = {},
 ) : DynamicBody2D<Player>(
-        name = name,
-        script = script,
-        position = position,
-        scale = scale,
-        rotation = rotation,
-        groups = groups,
-        block = {
-            val assetsManager = ManagersRegistry.get(AssetsManager::class)
-            // Root structure logic ---
-            val texture =
-                assetsManager.loadTexture("logo.png", source = FileSource.Internal) {
-                    setFilter(Linear, Linear)
-                }
+    name = name,
+    script = script,
+    position = position,
+    scale = scale,
+    rotation = rotation,
+    groups = groups,
+    block = {
+        val assetsManager = ManagersRegistry.get(AssetsManager::class)
+        // Root structure logic ---
+        val texture =
+            assetsManager.loadTexture("logo.png", source = FileSource.Internal) {
+                setFilter(Linear, Linear)
+            }
 
-            Camera2D("camera", targetRef = nodeRef(this))
-            Sprite2D("sprite", texture) // TODO: REPLACE WITH A *ANIMATED_SPRITE_2D* FOR ANIMATION
-            Collider2D("body", CircleShape2D(200f))
-            // AnimationPlayer("animationPlayer")
+        Camera2D("camera", targetRef = nodeRef(this))
+        Sprite2D("sprite", texture) // TODO: REPLACE WITH A *ANIMATED_SPRITE_2D* FOR ANIMATION
+        Collider2D("body", CircleShape2D(200f))
+        // AnimationPlayer("animationPlayer")
 
-            // Call for custom nodes ---
-            block()
-        },
-    ) {
+        // Call for custom nodes ---
+        block()
+    }
+) {
     // val animationPlayer: AnimationPlayer by lazy { getNode("animationPlayer") }
 }

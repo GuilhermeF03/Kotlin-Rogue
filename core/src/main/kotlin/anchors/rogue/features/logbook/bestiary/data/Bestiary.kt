@@ -16,7 +16,7 @@ const val BESTIARY_JSON = "data/logbook/bestiary/bestiary.json"
 class Bestiary(
     private val registry: IdRegistry<BestiaryEntry> =
         IdRegistry<BestiaryEntry>(
-            Gdx.files.internal(BESTIARY_JSON),
+            Gdx.files.internal(BESTIARY_JSON)
         ).also { it.loadRegistry<BestiaryEntry>() },
 ) {
     val discovered = mutableListOf<BestiaryEntry>()
@@ -34,7 +34,7 @@ class Bestiary(
             "bestiary",
             serializer = BestiarySaveData.serializer(),
             onSave = { asData() },
-            onLoad = ::loadData,
+            onLoad = ::loadData
         )
     }
 

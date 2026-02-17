@@ -1,18 +1,18 @@
 package anchors.rogue.features.logbook.bestiary
 
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import anchors.rogue.features.logbook.bestiary.data.BestiaryEntry
 import canopy.data.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.Test
-import kotlin.test.assertContentEquals
 
 class BestiaryRegistryTests {
     val entries =
         listOf(
             BestiaryEntry("dog"),
             BestiaryEntry("cat"),
-            BestiaryEntry("parrot"),
+            BestiaryEntry("parrot")
         )
 
     val registry = IdRegistry<BestiaryEntry>()
@@ -25,7 +25,7 @@ class BestiaryRegistryTests {
                 assertThrows<IllegalArgumentException> {
                     registry.mapIds<BestiaryEntry>(entries.map { it.id })
                 }
-            },
+            }
         )
     }
 

@@ -1,6 +1,6 @@
 package anchors.rogue.levels
 
-import com.github.quillraven.fleks.World
+import com.badlogic.gdx.physics.box2d.World
 
 /**
  * Level interface defines the structure for game levels.

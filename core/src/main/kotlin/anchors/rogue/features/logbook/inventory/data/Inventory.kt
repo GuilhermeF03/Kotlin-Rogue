@@ -1,5 +1,6 @@
 package anchors.rogue.features.logbook.inventory.data
 
+import kotlin.reflect.KClass
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
 import canopy.core.signals.OneArgSignal
@@ -9,7 +10,6 @@ import canopy.core.signals.createSignal
 import canopy.data.registry.IdRegistry
 import canopy.data.saving.registerSaveModule
 import com.badlogic.gdx.Gdx
-import kotlin.reflect.KClass
 
 const val ITEMS_JSON = "data/items"
 
@@ -49,7 +49,7 @@ class Inventory(
             id = "inventory",
             serializer = InventorySaveData.serializer(),
             onSave = { this.asData() },
-            onLoad = ::loadData,
+            onLoad = ::loadData
         )
     }
 
