@@ -1,16 +1,16 @@
 package anchors.rogue.entities.player
 
-import canopy.engine.core.managers.ManagersRegistry
-import canopy.engine.core.nodes.core.Behavior
-import canopy.engine.core.nodes.core.nodeRef
-import canopy.engine.data.core.assets.AssetsManager
-import canopy.engine.graphics.nodes.camera.Camera2D
-import canopy.engine.graphics.nodes.visual.Sprite2D
-import canopy.engine.physics.nodes.body.DynamicBody2D
-import canopy.engine.physics.nodes.fixture.Collider2D
-import canopy.engine.physics.nodes.shape.CircleShape2D
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
+import io.canopy.engine.core.managers.ManagersRegistry
+import io.canopy.engine.core.nodes.core.Behavior
+import io.canopy.engine.core.nodes.core.nodeRef
+import io.canopy.engine.data.core.assets.AssetsManager
+import io.canopy.engine.graphics.nodes.camera.Camera2D
+import io.canopy.engine.graphics.nodes.visual.Sprite2D
+import io.canopy.engine.physics.nodes.body.DynamicBody2D
+import io.canopy.engine.physics.nodes.fixture.Collider2D
+import io.canopy.engine.physics.nodes.shape.CircleShape2D
 
 /**
  * Player scene - represents the player

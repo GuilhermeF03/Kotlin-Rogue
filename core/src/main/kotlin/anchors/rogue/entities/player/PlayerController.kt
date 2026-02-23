@@ -2,10 +2,10 @@ package anchors.rogue.entities.player
 
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import canopy.engine.core.nodes.core.Behavior
-import canopy.engine.graphics.nodes.animation.Animation
-import canopy.engine.graphics.nodes.animation.tracks.ActionTrack
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
+import io.canopy.engine.core.nodes.core.Behavior
+import io.canopy.engine.graphics.nodes.animation.Animation
+import io.canopy.engine.graphics.nodes.animation.tracks.ActionTrack
 import ktx.log.logger
 import ktx.math.times
 

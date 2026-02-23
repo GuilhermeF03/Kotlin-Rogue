@@ -1,7 +1,7 @@
 package anchors.rogue.entitites.player
 
-import canopy.engine.core.managers.ManagersRegistry
-import canopy.engine.core.managers.SceneManager
+import io.canopy.engine.core.managers.ManagersRegistry
+import io.canopy.engine.core.managers.SceneManager
 import org.junit.jupiter.api.BeforeAll
 
 class PlayerTests {

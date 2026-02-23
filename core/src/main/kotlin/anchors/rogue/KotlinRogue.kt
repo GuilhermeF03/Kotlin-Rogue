@@ -1,26 +1,19 @@
 package anchors.rogue
 
 import anchors.rogue.screens.DemoScreen
-import canopy.engine.app.desktop.DesktopCanopyApp
-import canopy.engine.app.desktop.DesktopCanopyAppConfig
-import canopy.engine.core.managers.SceneManager
-import canopy.engine.physics.systems.PhysicsSystem
+import io.canopy.engine.app.desktop.DesktopCanopyApp
+import io.canopy.engine.app.desktop.DesktopCanopyAppConfig
+import io.canopy.engine.core.managers.SceneManager
+import io.canopy.engine.physics.systems.PhysicsSystem
 
 const val GAME_WIDTH = 1280
 const val GAME_HEIGHT = 720
 
 fun main(args: Array<String>) {
-    println("java.version=" + System.getProperty("java.version"))
-    println("java.home=" + System.getProperty("java.home"))
-    val sceneManager = SceneManager {
-        // Register global systems here
-        registerSystem(PhysicsSystem())
-        // InputSystem(*InputConfig.getInputMappings())
-        // AnimationSystem()
-    }
-
-    val game = DesktopCanopyApp(
-        sceneManager,
+    DesktopCanopyApp(
+        sceneManager = SceneManager {
+            registerSystem(PhysicsSystem())
+        },
         config = DesktopCanopyAppConfig(
             title = "Kotlin Rogue",
             screenWidth = GAME_WIDTH,
@@ -30,7 +23,5 @@ fun main(args: Array<String>) {
             it.addScreen(DemoScreen())
             it.setScreen<DemoScreen>()
         }
-    )
-
-    game.launch()
+    ).launch()
 }

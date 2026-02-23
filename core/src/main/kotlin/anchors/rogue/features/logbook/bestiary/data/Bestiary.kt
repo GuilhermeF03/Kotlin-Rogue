@@ -1,9 +1,9 @@
 package anchors.rogue.features.logbook.bestiary.data
 
-import canopy.engine.core.signals.createSignal
-import canopy.engine.data.core.registry.IdRegistry
-import canopy.engine.data.saving.registerSaveModule
 import com.badlogic.gdx.Gdx
+import io.canopy.engine.core.signals.createSignal
+import io.canopy.engine.data.core.registry.IdRegistry
+import io.canopy.engine.data.saving.registerSaveModule
 import kotlinx.serialization.builtins.serializer
 
 const val BESTIARY_JSON = "data/logbook/bestiary/bestiary.json"

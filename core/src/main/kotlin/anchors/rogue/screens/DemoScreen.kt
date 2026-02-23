@@ -1,21 +1,21 @@
 package anchors.rogue.screens
 
 import anchors.rogue.entities.player.Player
-import canopy.engine.app.core.CanopyScreen
-import canopy.engine.core.log.logger
-import canopy.engine.core.managers.ManagersRegistry
-import canopy.engine.core.nodes.core.asSceneRoot
-import canopy.engine.core.nodes.types.empty.EmptyNode
-import canopy.engine.data.core.assets.AssetsManager
-import canopy.engine.graphics.nodes.visual.Sprite2D
-import canopy.engine.physics.nodes.body.StaticBody2D
-import canopy.engine.physics.nodes.fixture.Collider2D
-import canopy.engine.physics.nodes.shape.CircleShape2D
-import canopy.engine.physics.systems.PhysicsSystem
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
+import io.canopy.engine.app.core.CanopyScreen
+import io.canopy.engine.core.managers.ManagersRegistry
+import io.canopy.engine.core.nodes.core.asSceneRoot
+import io.canopy.engine.core.nodes.types.empty.EmptyNode
+import io.canopy.engine.data.core.assets.AssetsManager
+import io.canopy.engine.graphics.nodes.visual.Sprite2D
+import io.canopy.engine.logging.api.logger
+import io.canopy.engine.physics.nodes.body.StaticBody2D
+import io.canopy.engine.physics.nodes.fixture.Collider2D
+import io.canopy.engine.physics.nodes.shape.CircleShape2D
+import io.canopy.engine.physics.systems.PhysicsSystem
 import ktx.assets.disposeSafely
 
 class DemoScreen : CanopyScreen() {
@@ -38,7 +38,10 @@ class DemoScreen : CanopyScreen() {
     override fun setup() {
         super.setup()
 
-        logger.info { "Setup" }
+        logger.info { "Example info" }
+        logger.warn { "Example warn" }
+        logger.debug { "Example log" }
+        logger.error { "Example error" }
         sceneManager.getSystem(PhysicsSystem::class).replaceWorld()
 
         EmptyNode("root") {

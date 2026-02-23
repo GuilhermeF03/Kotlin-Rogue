@@ -4,9 +4,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import anchors.rogue.features.logbook.bestiary.data.Bestiary
 import anchors.rogue.features.logbook.bestiary.data.BestiaryEntry
-import canopy.engine.core.managers.ManagersRegistry
-import canopy.engine.data.core.registry.IdRegistry
-import canopy.engine.data.saving.SaveManager
+import io.canopy.engine.core.managers.ManagersRegistry
+import io.canopy.engine.data.core.registry.IdRegistry
+import io.canopy.engine.data.saving.SaveManager
 import org.junit.jupiter.api.BeforeAll
 
 class BestiaryTests {

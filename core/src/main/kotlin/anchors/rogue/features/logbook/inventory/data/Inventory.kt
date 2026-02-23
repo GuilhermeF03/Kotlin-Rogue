@@ -3,12 +3,12 @@ package anchors.rogue.features.logbook.inventory.data
 import kotlin.reflect.KClass
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
-import canopy.engine.core.signals.SignalVal
-import canopy.engine.core.signals.asSignalVal
-import canopy.engine.core.signals.createSignal
-import canopy.engine.data.core.registry.IdRegistry
-import canopy.engine.data.saving.registerSaveModule
 import com.badlogic.gdx.Gdx
+import io.canopy.engine.core.signals.SignalVal
+import io.canopy.engine.core.signals.asSignalVal
+import io.canopy.engine.core.signals.createSignal
+import io.canopy.engine.data.core.registry.IdRegistry
+import io.canopy.engine.data.saving.registerSaveModule
 
 const val ITEMS_JSON = "data/items"
 

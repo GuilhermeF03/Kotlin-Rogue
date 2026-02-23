@@ -1,7 +1,7 @@
 package anchors.rogue.configs
 
-import canopy.engine.input.InputBind
 import com.badlogic.gdx.Input
+import io.canopy.engine.input.InputBind
 
 /**
  * This object stores all default keybinds - can be changed later in-game

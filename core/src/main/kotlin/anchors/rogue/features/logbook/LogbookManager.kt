@@ -3,7 +3,7 @@ package anchors.rogue.features.logbook
 import anchors.rogue.features.logbook.bestiary.data.Bestiary
 import anchors.rogue.features.logbook.inventory.data.Inventory
 import anchors.rogue.features.logbook.journal.data.Journal
-import canopy.engine.core.managers.Manager
+import io.canopy.engine.core.managers.Manager
 
 /**
  * The **Logbook Manager** represents info about the player that isn't directly related to location, run info, or stats.

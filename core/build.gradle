@@ -21,10 +21,10 @@ dependencies {
   implementation "io.github.canopyengine:graphics:$canopyVersion"
   implementation "io.github.canopyengine:input:$canopyVersion"
   implementation "io.github.canopyengine:data-saving:$canopyVersion"
+  implementation "io.github.canopyengine:logging:$canopyVersion"
   testApi "io.github.canopyengine:testkit:$canopyVersion"
 
   // Logging
-  runtimeOnly("ch.qos.logback:logback-classic:1.5.16")
 
   // REFLECTION
   implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"

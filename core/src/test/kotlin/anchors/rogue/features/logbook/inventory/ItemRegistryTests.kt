@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
-import canopy.engine.data.core.registry.IdRegistry
+import io.canopy.engine.data.core.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 
