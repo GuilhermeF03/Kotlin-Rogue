@@ -1,8 +1,8 @@
 package anchors.rogue.features.logbook.journal.data
 
-import canopy.core.signals.createSignal
-import canopy.data.registry.IdRegistry
-import canopy.data.saving.registerSaveModule
+import canopy.engine.core.signals.createSignal
+import canopy.engine.data.core.registry.IdRegistry
+import canopy.engine.data.saving.registerSaveModule
 import com.badlogic.gdx.Gdx
 
 const val JOURNAL_LOCATION = "data/logbook/journal/journal.json"

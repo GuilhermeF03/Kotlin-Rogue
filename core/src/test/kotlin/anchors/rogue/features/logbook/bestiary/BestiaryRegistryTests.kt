@@ -3,7 +3,7 @@ package anchors.rogue.features.logbook.bestiary
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import anchors.rogue.features.logbook.bestiary.data.BestiaryEntry
-import canopy.data.registry.IdRegistry
+import canopy.engine.data.core.registry.IdRegistry
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 

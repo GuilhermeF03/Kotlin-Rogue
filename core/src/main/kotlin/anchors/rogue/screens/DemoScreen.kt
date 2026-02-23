@@ -1,18 +1,17 @@
 package anchors.rogue.screens
 
 import anchors.rogue.entities.player.Player
-import canopy.app.CanopyScreen
-import canopy.core.logging.logger
-import canopy.core.managers.ManagersRegistry
-import canopy.core.nodes.core.asSceneRoot
-import canopy.core.nodes.types.empty.EmptyNode
-import canopy.data.assets.AssetsManager
-import canopy.data.assets.FileSource
-import canopy.graphics.nodes.visual.Sprite2D
-import canopy.physics.nodes.body.StaticBody2D
-import canopy.physics.nodes.fixture.Collider2D
-import canopy.physics.nodes.shape.CircleShape2D
-import canopy.physics.systems.PhysicsSystem
+import canopy.engine.app.core.CanopyScreen
+import canopy.engine.core.log.logger
+import canopy.engine.core.managers.ManagersRegistry
+import canopy.engine.core.nodes.core.asSceneRoot
+import canopy.engine.core.nodes.types.empty.EmptyNode
+import canopy.engine.data.core.assets.AssetsManager
+import canopy.engine.graphics.nodes.visual.Sprite2D
+import canopy.engine.physics.nodes.body.StaticBody2D
+import canopy.engine.physics.nodes.fixture.Collider2D
+import canopy.engine.physics.nodes.shape.CircleShape2D
+import canopy.engine.physics.systems.PhysicsSystem
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -30,7 +29,7 @@ class DemoScreen : CanopyScreen() {
 
     // Screen resources
     val image =
-        assetsManager.loadTexture("logo.png", FileSource.Internal) {
+        assetsManager.loadTexture("logo.png", AssetsManager.FileSource.Internal) {
             setFilter(Linear, Linear)
         }
 

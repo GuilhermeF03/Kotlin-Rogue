@@ -1,15 +1,14 @@
 package anchors.rogue.entities.player
 
-import canopy.core.managers.ManagersRegistry
-import canopy.core.nodes.core.Behavior
-import canopy.core.nodes.core.nodeRef
-import canopy.data.assets.AssetsManager
-import canopy.data.assets.FileSource
-import canopy.graphics.nodes.camera.Camera2D
-import canopy.graphics.nodes.visual.Sprite2D
-import canopy.physics.nodes.body.DynamicBody2D
-import canopy.physics.nodes.fixture.Collider2D
-import canopy.physics.nodes.shape.CircleShape2D
+import canopy.engine.core.managers.ManagersRegistry
+import canopy.engine.core.nodes.core.Behavior
+import canopy.engine.core.nodes.core.nodeRef
+import canopy.engine.data.core.assets.AssetsManager
+import canopy.engine.graphics.nodes.camera.Camera2D
+import canopy.engine.graphics.nodes.visual.Sprite2D
+import canopy.engine.physics.nodes.body.DynamicBody2D
+import canopy.engine.physics.nodes.fixture.Collider2D
+import canopy.engine.physics.nodes.shape.CircleShape2D
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 
@@ -42,7 +41,7 @@ class Player(
         val assetsManager = ManagersRegistry.get(AssetsManager::class)
         // Root structure logic ---
         val texture =
-            assetsManager.loadTexture("logo.png", source = FileSource.Internal) {
+            assetsManager.loadTexture("logo.png", source = AssetsManager.FileSource.Internal) {
                 setFilter(Linear, Linear)
             }
 

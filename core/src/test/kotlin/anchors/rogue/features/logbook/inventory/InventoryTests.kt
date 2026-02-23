@@ -7,9 +7,9 @@ import kotlin.test.assertEquals
 import anchors.rogue.features.logbook.inventory.data.Inventory
 import anchors.rogue.features.stats.data.Stats
 import anchors.rogue.items.EquippableItem
-import canopy.core.managers.ManagersRegistry
-import canopy.data.registry.IdRegistry
-import canopy.data.saving.SaveManager
+import canopy.engine.core.managers.ManagersRegistry
+import canopy.engine.data.core.registry.IdRegistry
+import canopy.engine.data.saving.SaveManager
 import org.junit.jupiter.api.*
 
 @DisplayName("Inventory Tests")

@@ -3,12 +3,11 @@ package anchors.rogue.features.logbook.inventory.data
 import kotlin.reflect.KClass
 import anchors.rogue.items.EquippableItem
 import anchors.rogue.items.Item
-import canopy.core.signals.OneArgSignal
-import canopy.core.signals.SignalVal
-import canopy.core.signals.asSignalVal
-import canopy.core.signals.createSignal
-import canopy.data.registry.IdRegistry
-import canopy.data.saving.registerSaveModule
+import canopy.engine.core.signals.SignalVal
+import canopy.engine.core.signals.asSignalVal
+import canopy.engine.core.signals.createSignal
+import canopy.engine.data.core.registry.IdRegistry
+import canopy.engine.data.saving.registerSaveModule
 import com.badlogic.gdx.Gdx
 
 const val ITEMS_JSON = "data/items"
@@ -36,12 +35,12 @@ class Inventory(
     val accessories: MutableList<EquippableItem.Accessory> = mutableListOf()
 
     // Signals - events that can be listened to
-    val onItemPick: OneArgSignal<Item> = createSignal<Item>()
-    val onItemDrop: OneArgSignal<Item> = createSignal<Item>()
-    val onItemSold: OneArgSignal<Item> = createSignal<Item>()
+    val onItemPick = createSignal<Item>()
+    val onItemDrop = createSignal<Item>()
+    val onItemSold = createSignal<Item>()
 
     // Equipment
-    val onUseItem: OneArgSignal<Item.Consumable> = createSignal<Item.Consumable>()
+    val onUseItem = createSignal<Item.Consumable>()
 
     init {
         registerSaveModule(

@@ -13,13 +13,15 @@ eclipse.project.name = appName + '-core'
 
 dependencies {
   // Canopy
-  implementation "io.github.canopyengine:canopy-core:$canopyVersion"
-  implementation "io.github.canopyengine:canopy-app:$canopyVersion"
-  implementation "io.github.canopyengine:canopy-data:$canopyVersion"
-  implementation "io.github.canopyengine:canopy-physics:$canopyVersion"
-  implementation "io.github.canopyengine:canopy-graphics:$canopyVersion"
-  implementation "io.github.canopyengine:canopy-input:$canopyVersion"
-  testApi "io.github.canopyengine:canopy-test:$canopyVersion"
+  implementation "io.github.canopyengine:core:$canopyVersion"
+  implementation "io.github.canopyengine:app-core:$canopyVersion"
+  implementation "io.github.canopyengine:app-desktop:$canopyVersion"
+  implementation "io.github.canopyengine:data-core:$canopyVersion"
+  implementation "io.github.canopyengine:physics:$canopyVersion"
+  implementation "io.github.canopyengine:graphics:$canopyVersion"
+  implementation "io.github.canopyengine:input:$canopyVersion"
+  implementation "io.github.canopyengine:data-saving:$canopyVersion"
+  testApi "io.github.canopyengine:testkit:$canopyVersion"
 
   // Logging
   runtimeOnly("ch.qos.logback:logback-classic:1.5.16")

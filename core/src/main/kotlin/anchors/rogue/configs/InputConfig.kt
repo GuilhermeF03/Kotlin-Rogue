@@ -1,6 +1,6 @@
 package anchors.rogue.configs
 
-import canopy.input.InputBind
+import canopy.engine.input.InputBind
 import com.badlogic.gdx.Input
 
 /**

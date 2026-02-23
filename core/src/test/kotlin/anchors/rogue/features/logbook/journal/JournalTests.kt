@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import anchors.rogue.features.logbook.journal.data.Journal
 import anchors.rogue.features.logbook.journal.data.JournalEntry
-import canopy.data.registry.IdRegistry
+import canopy.engine.data.core.registry.IdRegistry
 
 class JournalTests {
     val bestiary = Journal(IdRegistry())

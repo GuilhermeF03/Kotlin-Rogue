@@ -1,10 +1,10 @@
 package anchors.rogue
 
 import anchors.rogue.screens.DemoScreen
-import canopy.core.managers.SceneManager
-import canopy.graphics.backends.CanopyDesktopGame
-import canopy.graphics.backends.CanopyDesktopGameConfig
-import canopy.physics.systems.PhysicsSystem
+import canopy.engine.app.desktop.DesktopCanopyApp
+import canopy.engine.app.desktop.DesktopCanopyAppConfig
+import canopy.engine.core.managers.SceneManager
+import canopy.engine.physics.systems.PhysicsSystem
 
 const val GAME_WIDTH = 1280
 const val GAME_HEIGHT = 720
@@ -19,9 +19,9 @@ fun main(args: Array<String>) {
         // AnimationSystem()
     }
 
-    val game = CanopyDesktopGame(
+    val game = DesktopCanopyApp(
         sceneManager,
-        config = CanopyDesktopGameConfig(
+        config = DesktopCanopyAppConfig(
             title = "Kotlin Rogue",
             screenWidth = GAME_WIDTH,
             screenHeight = GAME_HEIGHT
