@@ -1,0 +1,5 @@
+17:00:29.714 INFO  anchors.rogue.screens.DemoScreen [run=20260224-170029] Example info
+17:00:29.719 WARN  anchors.rogue.screens.DemoScreen [run=20260224-170029] Example warn
+17:00:29.720 DEBUG anchors.rogue.screens.DemoScreen [run=20260224-170029] Example log
+17:00:29.720 ERROR anchors.rogue.screens.DemoScreen [run=20260224-170029] Example error
+17:00:29.772 INFO  anchors.rogue.screens.DemoScreen [run=20260224-170029] SceneRoot

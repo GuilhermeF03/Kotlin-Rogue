@@ -1,0 +1,14 @@
+17:00:29.660 INFO  canopy.engine.session [run=20260224-170029] Session start
+17:00:29.677 INFO  canopy.bootstrap.logging [run=20260224-170029] Canopy logging initialized
+17:00:29.680 INFO  canopy.engine.lifecycle [run=20260224-170029] Launching app
+17:00:29.682 INFO  canopy.engine.managers [run=20260224-170029] Bootstrapping managers
+17:00:29.686 INFO  canopy.engine.scene [run=20260224-170029] Setup
+17:00:29.687 INFO  canopy.engine.di [run=20260224-170029] Registered injectable
+17:00:29.691 INFO  canopy.engine.managers [run=20260224-170029] Finished bootstrapping managers
+17:00:29.750 INFO  canopy.engine.scene [run=20260224-170029] Replacing scene
+17:00:29.770 INFO  canopy.engine.scene [run=20260224-170029] Set as scene root
+17:00:31.232 INFO  canopy.engine.lifecycle [run=20260224-170029] Disposing app
+17:00:31.232 INFO  canopy.engine.managers [run=20260224-170029] Tearing down managers
+17:00:31.234 INFO  canopy.engine.scene [run=20260224-170029] Teardown
+17:00:31.234 INFO  canopy.engine.managers [run=20260224-170029] Finished tearing down managers
+17:00:31.234 INFO  canopy.engine.session [run=20260224-170029] Session end
