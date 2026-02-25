@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
-import io.canopy.engine.app.core.CanopyScreen
+import io.canopy.engine.app.core.screen.CanopyScreen
 import io.canopy.engine.core.managers.ManagersRegistry
 import io.canopy.engine.core.nodes.core.asSceneRoot
 import io.canopy.engine.core.nodes.types.empty.EmptyNode
@@ -19,7 +19,7 @@ import io.canopy.engine.physics.systems.PhysicsSystem
 import ktx.assets.disposeSafely
 
 class DemoScreen : CanopyScreen() {
-    val stage = Stage(ScreenViewport())
+    //val stage = Stage(ScreenViewport())
 
     // private val world: World = coreWorld(stage)
     private val logger = logger<DemoScreen>()

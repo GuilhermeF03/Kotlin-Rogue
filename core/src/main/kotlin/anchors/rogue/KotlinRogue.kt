@@ -21,7 +21,7 @@ fun main(args: Array<String>) = desktopApp {
         )
     )
 
-    onCreate {
-        startScreen(DemoScreen())
+    screens {
+        start(DemoScreen())
     }
 }.launch()
