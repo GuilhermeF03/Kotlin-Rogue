@@ -1,5 +1,0 @@
-18:15:51.792 INFO  anchors.rogue.screens.DemoScreen [run=20260223-181551] Example info
-18:15:51.800 WARN  anchors.rogue.screens.DemoScreen [run=20260223-181551] Example warn
-18:15:51.801 DEBUG anchors.rogue.screens.DemoScreen [run=20260223-181551] Example log
-18:15:51.801 ERROR anchors.rogue.screens.DemoScreen [run=20260223-181551] Example error
-18:15:51.865 INFO  anchors.rogue.screens.DemoScreen [run=20260223-181551] SceneRoot

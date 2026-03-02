@@ -10,7 +10,7 @@ const val GAME_HEIGHT = 720
 
 fun main(args: Array<String>) = desktopApp {
     sceneManager {
-        registerSystem(PhysicsSystem())
+        +PhysicsSystem()
     }
 
     config(

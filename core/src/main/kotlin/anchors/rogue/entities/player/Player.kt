@@ -1,9 +1,8 @@
 package anchors.rogue.entities.player
 
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
-import com.badlogic.gdx.math.Vector2
-import io.canopy.engine.core.managers.ManagersRegistry
-import io.canopy.engine.core.nodes.core.Behavior
+import io.canopy.engine.core.managers.manager
+import io.canopy.engine.core.nodes.core.attachBehavior
 import io.canopy.engine.core.nodes.core.nodeRef
 import io.canopy.engine.data.core.assets.AssetsManager
 import io.canopy.engine.graphics.nodes.camera.Camera2D
@@ -17,28 +16,16 @@ import io.canopy.engine.physics.nodes.shape.CircleShape2D
  */
 class Player(
     name: String = "player",
-    // Base node props
-    script: (node: Player) -> Behavior<Player>? = {
-        PlayerController(
-            it,
-            2000f
-        )
-    },
-    position: Vector2 = Vector2.Zero,
-    scale: Vector2 = Vector2(1f, 1f),
-    rotation: Float = 0f,
-    groups: MutableList<String> = mutableListOf(),
+    private val speed: Float = 2000f,
     // DSL
     block: Player.() -> Unit = {},
-) : DynamicBody2D<Player>(
-    name = name,
-    script = script,
-    position = position,
-    scale = scale,
-    rotation = rotation,
-    groups = groups,
-    block = {
-        val assetsManager = ManagersRegistry.get(AssetsManager::class)
+) : DynamicBody2D<Player>(name, block) {
+    override fun create() {
+        super.create()
+
+        attachBehavior { PlayerController(it, playerSpeed = speed) }
+
+        val assetsManager = manager<AssetsManager>()
         // Root structure logic ---
         val texture =
             assetsManager.loadTexture("logo.png", source = AssetsManager.FileSource.Internal) {
@@ -48,11 +35,5 @@ class Player(
         Camera2D("camera", targetRef = nodeRef(this))
         Sprite2D("sprite", texture) // TODO: REPLACE WITH A *ANIMATED_SPRITE_2D* FOR ANIMATION
         Collider2D("body", CircleShape2D(200f))
-        // AnimationPlayer("animationPlayer")
-
-        // Call for custom nodes ---
-        block()
     }
-) {
-    // val animationPlayer: AnimationPlayer by lazy { getNode("animationPlayer") }
 }
